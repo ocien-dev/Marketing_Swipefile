@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/content_segments.schema.json",
+  "title": "Normalized Content Segments",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_kind",
+    "segments"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "episode_video_id": {
+      "type": ["string", "null"]
+    },
+    "asset_id": {
+      "type": ["string", "null"]
+    },
+    "source_kind": {
+      "type": "string",
+      "enum": ["transcript", "description", "comment", "asset"]
+    },
+    "language_original": {
+      "type": ["string", "null"]
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "segment_id",
+          "segment_index",
+          "source_kind",
+          "text_original"
+        ],
+        "properties": {
+          "segment_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "segment_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": ["transcript", "description", "comment", "asset"]
+          },
+          "start_seconds": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "end_seconds": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "page_number": {
+            "type": ["integer", "null"],
+            "minimum": 1
+          },
+          "sheet_name": {
+            "type": ["string", "null"]
+          },
+          "cell_range": {
+            "type": ["string", "null"]
+          },
+          "slide_number": {
+            "type": ["integer", "null"],
+            "minimum": 1
+          },
+          "section_title": {
+            "type": ["string", "null"]
+          },
+          "text_original": {
+            "type": "string"
+          },
+          "text_ptbr": {
+            "type": ["string", "null"]
+          },
+          "language": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+  }
+}
+

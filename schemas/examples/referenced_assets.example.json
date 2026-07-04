@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "referenced_assets": [
+    {
+      "referenced_asset_id": "fixture001-refasset-0001",
+      "name": "PDF modelo de VSL",
+      "asset_type_guess": "pdf",
+      "mention_source": "transcript",
+      "mention_start_seconds": 420,
+      "mention_end_seconds": 435,
+      "mention_quote_original": "Comenta VSL que eu mando o PDF com o modelo completo.",
+      "mention_quote_ptbr": null,
+      "acquisition_instruction": "Comentar a palavra VSL conforme instrucao do episodio e inserir o PDF em data/input/assets/fixture001/.",
+      "expected_value": "Possivel framework e copy completa de VSL.",
+      "status": "needs_user_action",
+      "priority": "high"
+    }
+  ]
+}
+

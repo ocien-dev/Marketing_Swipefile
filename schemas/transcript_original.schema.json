@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/transcript_original.schema.json",
+  "title": "Original YouTube Transcript",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "youtube_video_id",
+    "source_kind",
+    "language",
+    "collected_at",
+    "segments"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "youtube_video_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_kind": {
+      "type": "string",
+      "const": "transcript"
+    },
+    "language": {
+      "type": ["string", "null"]
+    },
+    "provider": {
+      "type": ["string", "null"],
+      "examples": ["youtube_auto"]
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "start_seconds", "text"],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "start_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "duration_seconds": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/acquisition_tasks.schema.json",
+  "title": "Asset Acquisition Tasks",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "episode_video_id",
+    "tasks"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "episode_video_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_id",
+          "referenced_asset_id",
+          "task_type",
+          "instruction",
+          "status",
+          "priority"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "referenced_asset_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "task_type": {
+            "type": "string",
+            "enum": [
+              "comment_keyword",
+              "send_direct_message",
+              "open_description_link",
+              "access_member_area",
+              "download_public_file",
+              "request_from_participant",
+              "manual_search"
+            ]
+          },
+          "instruction": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "obtained", "unavailable", "discarded"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          },
+          "user_notes": {
+            "type": ["string", "null"]
+          },
+          "result_asset_id": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+  }
+}
+

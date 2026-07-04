@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "referenced_assets": [
+    {
+      "referenced_asset_id": "fixture001-refasset-0001",
+      "name": "PDF mencionado no episodio",
+      "asset_type_guess": "pdf",
+      "mention_source": "transcript",
+      "mention_start_seconds": 420,
+      "mention_end_seconds": 450,
+      "mention_quote_original": "Eu deixei um PDF com o modelo completo. Comenta VSL que eu mando o PDF e usa junto com a planilha de oferta que esta no link da descricao.",
+      "mention_quote_ptbr": null,
+      "acquisition_instruction": "Comentar a palavra VSL conforme instrucao do episodio. Inserir o arquivo obtido em data/input/assets/fixture001/.",
+      "expected_value": "Possivel framework, template, checklist ou copy complementar.",
+      "status": "needs_user_action",
+      "priority": "high"
+    },
+    {
+      "referenced_asset_id": "fixture001-refasset-0002",
+      "name": "Planilha mencionada no episodio",
+      "asset_type_guess": "spreadsheet",
+      "mention_source": "transcript",
+      "mention_start_seconds": 420,
+      "mention_end_seconds": 450,
+      "mention_quote_original": "Eu deixei um PDF com o modelo completo. Comenta VSL que eu mando o PDF e usa junto com a planilha de oferta que esta no link da descricao.",
+      "mention_quote_ptbr": null,
+      "acquisition_instruction": "Buscar a planilha no link da descricao do video. Inserir o arquivo obtido em data/input/assets/fixture001/.",
+      "expected_value": "Possivel modelo, calculadora, tabela de oferta, funil ou criativos.",
+      "status": "needs_user_action",
+      "priority": "high"
+    }
+  ]
+}

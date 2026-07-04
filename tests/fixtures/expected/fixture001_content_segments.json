@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "asset_id": null,
+  "source_kind": "transcript",
+  "language_original": "pt-BR",
+  "segments": [
+    {
+      "segment_id": "fixture001-transcript-0001",
+      "segment_index": 0,
+      "source_kind": "transcript",
+      "start_seconds": 30,
+      "end_seconds": 65,
+      "page_number": null,
+      "sheet_name": null,
+      "cell_range": null,
+      "slide_number": null,
+      "section_title": null,
+      "text_original": "Quando voce abre uma VSL, a primeira tarefa nao e explicar o produto. A primeira tarefa e criar uma tensao que a pessoa queira resolver.",
+      "text_ptbr": null,
+      "language": "pt-BR"
+    },
+    {
+      "segment_id": "fixture001-transcript-0002",
+      "segment_index": 1,
+      "source_kind": "transcript",
+      "start_seconds": 120,
+      "end_seconds": 180,
+      "page_number": null,
+      "sheet_name": null,
+      "cell_range": null,
+      "slide_number": null,
+      "section_title": null,
+      "text_original": "O lead da VSL precisa abrir uma tensao clara e prometer uma descoberta sem entregar todo o mecanismo. Se voce revela o mecanismo cedo demais, perde a curiosidade.",
+      "text_ptbr": null,
+      "language": "pt-BR"
+    },
+    {
+      "segment_id": "fixture001-transcript-0003",
+      "segment_index": 2,
+      "source_kind": "transcript",
+      "start_seconds": 420,
+      "end_seconds": 450,
+      "page_number": null,
+      "sheet_name": null,
+      "cell_range": null,
+      "slide_number": null,
+      "section_title": null,
+      "text_original": "Eu deixei um PDF com o modelo completo. Comenta VSL que eu mando o PDF e usa junto com a planilha de oferta que esta no link da descricao.",
+      "text_ptbr": null,
+      "language": "pt-BR"
+    }
+  ]
+}
+

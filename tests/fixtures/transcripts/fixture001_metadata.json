@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "source": "VTurb",
+  "youtube_video_id": "fixture001",
+  "url": "https://www.youtube.com/watch?v=fixture001",
+  "title": "Fixture episode about VSL hooks",
+  "channel_name": "VTurb",
+  "channel_id": null,
+  "description": "Neste episodio falamos sobre leads de VSL. Comente VSL para receber o PDF com o modelo completo e veja a planilha de oferta no link da descricao.",
+  "published_at": "2026-01-01T12:00:00Z",
+  "duration_seconds": 1800,
+  "language_original": "pt-BR",
+  "collected_at": "2026-07-04T00:00:00Z",
+  "processing_status": "pending",
+  "transcript_status": "available",
+  "asset_detection_status": "pending",
+  "notes": "Fixture only."
+}
+

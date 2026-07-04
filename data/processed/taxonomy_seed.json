@@ -1,0 +1,433 @@
+{
+  "schema_version": "1.0",
+  "taxonomy_version": "2026-07-04.1",
+  "project": "Marketing Swipe File",
+  "governance": {
+    "new_term_policy": "Prefer existing terms. Suggest a new term only when at least three insights or one highly valuable framework cannot be described by the existing taxonomy.",
+    "status_values": ["active", "suggested", "deprecated", "merged"],
+    "default_new_term_status": "suggested",
+    "synonym_policy": "Add synonyms to existing terms before creating a new term."
+  },
+  "term_types": [
+    "theme",
+    "subtheme",
+    "niche",
+    "funnel_stage",
+    "asset_type",
+    "source_kind",
+    "agent_role",
+    "market",
+    "mechanism",
+    "objection",
+    "promise",
+    "insight_type",
+    "level"
+  ],
+  "terms": [
+    {
+      "id": "theme-anuncios",
+      "term": "anuncios",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["ads", "trafego pago", "criativos pagos"],
+      "description": "Hooks, scripts, angulos, criativos e testes de anuncios.",
+      "status": "active"
+    },
+    {
+      "id": "theme-criativos",
+      "term": "criativos",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["creative", "pecas", "imagem", "video curto"],
+      "description": "Direcao criativa para imagens, videos, UGC, thumbnails e assets de campanha.",
+      "status": "active"
+    },
+    {
+      "id": "theme-hooks",
+      "term": "hooks",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["abertura", "gancho", "headline inicial"],
+      "description": "Padroes de abertura que capturam atencao e criam curiosidade.",
+      "status": "active"
+    },
+    {
+      "id": "theme-vsl",
+      "term": "VSL",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["video sales letter", "carta de vendas em video"],
+      "description": "Estrutura, copy, narrativa, mecanismo, prova e fechamento de VSLs.",
+      "status": "active"
+    },
+    {
+      "id": "theme-webinar",
+      "term": "webinar",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["aula", "aula de vendas", "masterclass"],
+      "description": "Estrutura de apresentacao, pitch e conversao em webinars.",
+      "status": "active"
+    },
+    {
+      "id": "theme-quiz",
+      "term": "quiz",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["diagnostico", "perguntas", "resultado"],
+      "description": "Quizzes, diagnosticos, perguntas, resultados e pontes de oferta.",
+      "status": "active"
+    },
+    {
+      "id": "theme-ofertas",
+      "term": "ofertas",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["offer", "stack", "promessa comercial"],
+      "description": "Promessa, stack, bonus, garantia, preco, urgencia e escassez.",
+      "status": "active"
+    },
+    {
+      "id": "theme-estrategias",
+      "term": "estrategias",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["strategy", "plano", "posicionamento"],
+      "description": "Decisoes estrategicas de mercado, posicionamento, crescimento e campanha.",
+      "status": "active"
+    },
+    {
+      "id": "theme-funil",
+      "term": "funil",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["funnel", "jornada", "esteira"],
+      "description": "Arquitetura de aquisicao, nutricao, conversao, upsell e retencao.",
+      "status": "active"
+    },
+    {
+      "id": "theme-checkout",
+      "term": "checkout",
+      "term_type": "theme",
+      "parent_id": "theme-funil",
+      "synonyms": ["pagina de pagamento", "order form", "conversao final"],
+      "description": "Otimizacao de checkout, order bumps, upsells e abandono.",
+      "status": "active"
+    },
+    {
+      "id": "theme-gestao",
+      "term": "gestao",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["management", "operacao", "rituais"],
+      "description": "Gestao de time, rotina, producao, processos e execucao.",
+      "status": "active"
+    },
+    {
+      "id": "theme-produto",
+      "term": "produto",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["product", "entrega", "experiencia"],
+      "description": "Produto, entrega, transformacao, retencao e experiencia do cliente.",
+      "status": "active"
+    },
+    {
+      "id": "theme-copy",
+      "term": "copy",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["copywriting", "mensagem", "persuasao"],
+      "description": "Mensagem persuasiva, headlines, leads, argumentos, CTAs e estrutura.",
+      "status": "active"
+    },
+    {
+      "id": "theme-prova-social",
+      "term": "prova social",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["depoimento", "case", "resultado"],
+      "description": "Provas, cases, resultados, autoridade, demonstracoes e validacao.",
+      "status": "active"
+    },
+    {
+      "id": "theme-avatar",
+      "term": "avatar",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["persona", "cliente ideal", "ICP"],
+      "description": "Dores, desejos, crencas, objecoes, contexto e sofisticacao do comprador.",
+      "status": "active"
+    },
+    {
+      "id": "theme-preco",
+      "term": "preco",
+      "term_type": "theme",
+      "parent_id": "theme-ofertas",
+      "synonyms": ["pricing", "ticket", "ancoragem"],
+      "description": "Estrategia de preco, ancoragem, parcelamento, ticket e valor percebido.",
+      "status": "active"
+    },
+    {
+      "id": "theme-retencao",
+      "term": "retencao",
+      "term_type": "theme",
+      "parent_id": "theme-produto",
+      "synonyms": ["retencao", "churn", "recorrencia"],
+      "description": "Retencao, recompra, recorrencia, engajamento e ativacao.",
+      "status": "active"
+    },
+    {
+      "id": "theme-low-ticket",
+      "term": "low ticket",
+      "term_type": "theme",
+      "parent_id": "theme-ofertas",
+      "synonyms": ["baixo ticket", "tripwire", "entrada"],
+      "description": "Ofertas de entrada, funis low ticket e monetizacao inicial.",
+      "status": "active"
+    },
+    {
+      "id": "theme-high-ticket",
+      "term": "high ticket",
+      "term_type": "theme",
+      "parent_id": "theme-ofertas",
+      "synonyms": ["alto ticket", "premium", "mentoria"],
+      "description": "Ofertas premium, vendas consultivas e alta percepcao de valor.",
+      "status": "active"
+    },
+    {
+      "id": "theme-lancamento",
+      "term": "lancamento",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["launch", "PLF", "campanha com carrinho"],
+      "description": "Lancamentos, campanhas com data, eventos e picos de conversao.",
+      "status": "active"
+    },
+    {
+      "id": "theme-perpetuo",
+      "term": "perpetuo",
+      "term_type": "theme",
+      "parent_id": null,
+      "synonyms": ["evergreen", "vendas todos os dias"],
+      "description": "Funis e vendas continuas sem campanha com data fixa.",
+      "status": "active"
+    },
+    {
+      "id": "asset-type-pdf",
+      "term": "pdf",
+      "term_type": "asset_type",
+      "parent_id": null,
+      "synonyms": ["ebook", "guia", "documento em PDF"],
+      "description": "Arquivo PDF complementar.",
+      "status": "active"
+    },
+    {
+      "id": "asset-type-spreadsheet",
+      "term": "spreadsheet",
+      "term_type": "asset_type",
+      "parent_id": null,
+      "synonyms": ["planilha", "xlsx", "csv", "google sheets"],
+      "description": "Planilha, modelo, calculadora ou tabela.",
+      "status": "active"
+    },
+    {
+      "id": "asset-type-doc",
+      "term": "doc",
+      "term_type": "asset_type",
+      "parent_id": null,
+      "synonyms": ["documento", "docx", "google docs"],
+      "description": "Documento textual complementar.",
+      "status": "active"
+    },
+    {
+      "id": "asset-type-slides",
+      "term": "slides",
+      "term_type": "asset_type",
+      "parent_id": null,
+      "synonyms": ["apresentacao", "pptx", "google slides"],
+      "description": "Apresentacao ou deck complementar.",
+      "status": "active"
+    },
+    {
+      "id": "source-kind-transcript",
+      "term": "transcript",
+      "term_type": "source_kind",
+      "parent_id": null,
+      "synonyms": ["transcricao", "fala do episodio"],
+      "description": "Conteudo vindo da transcricao do video.",
+      "status": "active"
+    },
+    {
+      "id": "source-kind-asset",
+      "term": "asset",
+      "term_type": "source_kind",
+      "parent_id": null,
+      "synonyms": ["material complementar", "arquivo", "anexo"],
+      "description": "Conteudo vindo de arquivo complementar processado.",
+      "status": "active"
+    },
+    {
+      "id": "funnel-stage-awareness",
+      "term": "awareness",
+      "term_type": "funnel_stage",
+      "parent_id": null,
+      "synonyms": ["topo", "descoberta", "atencao"],
+      "description": "Primeiro contato e captura de atencao.",
+      "status": "active"
+    },
+    {
+      "id": "funnel-stage-conversion",
+      "term": "conversion",
+      "term_type": "funnel_stage",
+      "parent_id": null,
+      "synonyms": ["conversao", "venda", "compra"],
+      "description": "Momento de venda e decisao.",
+      "status": "active"
+    },
+    {
+      "id": "funnel-stage-retention",
+      "term": "retention",
+      "term_type": "funnel_stage",
+      "parent_id": null,
+      "synonyms": ["retencao", "recompra", "recorrencia"],
+      "description": "Experiencia pos-compra e continuidade.",
+      "status": "active"
+    },
+    {
+      "id": "agent-role-copy-strategist",
+      "term": "copy strategist",
+      "term_type": "agent_role",
+      "parent_id": null,
+      "synonyms": ["estrategista de copy"],
+      "description": "Agente que monta estrategia de mensagem e persuasao.",
+      "status": "active"
+    },
+    {
+      "id": "agent-role-vsl-copywriter",
+      "term": "copywriter de VSLs",
+      "term_type": "agent_role",
+      "parent_id": null,
+      "synonyms": ["VSL writer", "roteirista de VSL"],
+      "description": "Agente que cria VSLs e variacoes de lead.",
+      "status": "active"
+    },
+    {
+      "id": "agent-role-ad-copywriter",
+      "term": "copywriter de anuncios",
+      "term_type": "agent_role",
+      "parent_id": null,
+      "synonyms": ["ad writer", "criador de anuncios"],
+      "description": "Agente que cria hooks, angulos e scripts de anuncios.",
+      "status": "active"
+    },
+    {
+      "id": "agent-role-cmo",
+      "term": "CMO",
+      "term_type": "agent_role",
+      "parent_id": null,
+      "synonyms": ["head de marketing"],
+      "description": "Agente que transforma aprendizados em plano de marketing.",
+      "status": "active"
+    },
+    {
+      "id": "market-infoproducts",
+      "term": "infoprodutos",
+      "term_type": "market",
+      "parent_id": null,
+      "synonyms": ["produto digital", "curso online"],
+      "description": "Mercado de infoprodutos e educacao digital.",
+      "status": "active"
+    },
+    {
+      "id": "market-saas",
+      "term": "SaaS",
+      "term_type": "market",
+      "parent_id": null,
+      "synonyms": ["software", "assinatura"],
+      "description": "Software como servico.",
+      "status": "active"
+    },
+    {
+      "id": "market-ecommerce",
+      "term": "e-commerce",
+      "term_type": "market",
+      "parent_id": null,
+      "synonyms": ["loja online", "produto fisico"],
+      "description": "Venda online de produtos fisicos.",
+      "status": "active"
+    },
+    {
+      "id": "market-encapsulados",
+      "term": "encapsulados",
+      "term_type": "market",
+      "parent_id": null,
+      "synonyms": ["suplementos", "nutra"],
+      "description": "Mercado de suplementos e produtos encapsulados.",
+      "status": "active"
+    },
+    {
+      "id": "level-strategic",
+      "term": "strategic",
+      "term_type": "level",
+      "parent_id": null,
+      "synonyms": ["estrategico"],
+      "description": "Insight sobre direcao, posicionamento, mercado ou decisao macro.",
+      "status": "active"
+    },
+    {
+      "id": "level-tactical",
+      "term": "tactical",
+      "term_type": "level",
+      "parent_id": null,
+      "synonyms": ["tatico"],
+      "description": "Insight sobre abordagem, estrutura, campanha ou execucao intermediaria.",
+      "status": "active"
+    },
+    {
+      "id": "level-operational",
+      "term": "operational",
+      "term_type": "level",
+      "parent_id": null,
+      "synonyms": ["operacional"],
+      "description": "Insight sobre passo, checklist, implementacao ou procedimento.",
+      "status": "active"
+    },
+    {
+      "id": "insight-type-principle",
+      "term": "principle",
+      "term_type": "insight_type",
+      "parent_id": null,
+      "synonyms": ["principio"],
+      "description": "Principio geral aplicavel em varias situacoes.",
+      "status": "active"
+    },
+    {
+      "id": "insight-type-framework",
+      "term": "framework",
+      "term_type": "insight_type",
+      "parent_id": null,
+      "synonyms": ["modelo", "estrutura"],
+      "description": "Estrutura reutilizavel para pensar ou executar uma tarefa.",
+      "status": "active"
+    },
+    {
+      "id": "insight-type-complete-copy",
+      "term": "complete_copy",
+      "term_type": "insight_type",
+      "parent_id": null,
+      "synonyms": ["copy completa", "roteiro completo"],
+      "description": "Copy completa encontrada em material, exemplo ou transcricao.",
+      "status": "active"
+    },
+    {
+      "id": "insight-type-spreadsheet-model",
+      "term": "spreadsheet_model",
+      "term_type": "insight_type",
+      "parent_id": null,
+      "synonyms": ["modelo de planilha", "calculadora"],
+      "description": "Modelo ou logica estruturada presente em planilha.",
+      "status": "active"
+    }
+  ]
+}

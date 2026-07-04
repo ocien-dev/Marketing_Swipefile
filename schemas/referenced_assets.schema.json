@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/referenced_assets.schema.json",
+  "title": "Referenced Complementary Assets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "episode_video_id",
+    "referenced_assets"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "episode_video_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "referenced_assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "referenced_asset_id",
+          "asset_type_guess",
+          "mention_quote_original",
+          "status",
+          "priority"
+        ],
+        "properties": {
+          "referenced_asset_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": ["string", "null"]
+          },
+          "asset_type_guess": {
+            "type": "string",
+            "enum": ["pdf", "doc", "spreadsheet", "slides", "image", "html", "text", "unknown"]
+          },
+          "mention_source": {
+            "type": ["string", "null"],
+            "enum": ["transcript", "description", "comment", null]
+          },
+          "mention_start_seconds": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "mention_end_seconds": {
+            "type": ["number", "null"],
+            "minimum": 0
+          },
+          "mention_quote_original": {
+            "type": "string"
+          },
+          "mention_quote_ptbr": {
+            "type": ["string", "null"]
+          },
+          "acquisition_instruction": {
+            "type": ["string", "null"]
+          },
+          "expected_value": {
+            "type": ["string", "null"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["detected", "needs_user_action", "obtained", "processing", "processed", "unavailable", "discarded"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          }
+        }
+      }
+    }
+  }
+}
+

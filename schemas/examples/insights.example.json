@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "asset_id": null,
+  "insights": [
+    {
+      "insight_id": "fixture001-insight-0001",
+      "source_kind": "transcript",
+      "title": "Lead de VSL deve abrir tensao sem revelar o mecanismo",
+      "insight_original": null,
+      "insight_ptbr": "Um lead forte de VSL cria tensao e curiosidade sobre uma descoberta, mas nao entrega todo o mecanismo logo no inicio.",
+      "summary_ptbr": "Use curiosidade e especificidade sem matar a tensao.",
+      "level": "tactical",
+      "insight_type": "principle",
+      "themes": ["VSL", "copy", "hooks"],
+      "subthemes": ["lead", "mecanismo"],
+      "applicability": ["copywriter de VSLs", "copy strategist"],
+      "niches": ["infoprodutos"],
+      "funnel_stages": ["topo", "conversao"],
+      "confidence_score": 0.86,
+      "review_status": "auto_accepted",
+      "source_agent": "fixture_extractor",
+      "dedupe_key": "vsl-lead-tensao-sem-revelar-mecanismo",
+      "evidence": [
+        {
+          "evidence_id": "fixture001-evidence-0001",
+          "segment_id": "fixture001-transcript-0001",
+          "episode_video_id": "fixture001",
+          "asset_id": null,
+          "start_seconds": 120,
+          "end_seconds": 180,
+          "page_number": null,
+          "sheet_name": null,
+          "cell_range": null,
+          "slide_number": null,
+          "quote_original": "O lead da VSL precisa abrir uma tensao clara e prometer uma descoberta sem entregar todo o mecanismo.",
+          "quote_ptbr": null,
+          "evidence_strength": "strong"
+        }
+      ],
+      "relations": []
+    }
+  ]
+}
+

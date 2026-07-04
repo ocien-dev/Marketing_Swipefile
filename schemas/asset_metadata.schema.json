@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/asset_metadata.schema.json",
+  "title": "Complementary Asset Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "asset_id",
+    "episode_video_id",
+    "original_filename",
+    "storage_path",
+    "asset_type",
+    "checksum",
+    "processing_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "referenced_asset_id": {
+      "type": ["string", "null"]
+    },
+    "episode_video_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": ["string", "null"]
+    },
+    "original_filename": {
+      "type": "string"
+    },
+    "storage_path": {
+      "type": "string"
+    },
+    "mime_type": {
+      "type": ["string", "null"]
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": ["pdf", "doc", "spreadsheet", "slides", "image", "html", "text", "other"]
+    },
+    "language_original": {
+      "type": ["string", "null"]
+    },
+    "checksum": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processing_status": {
+      "type": "string",
+      "enum": ["pending", "processing", "processed", "failed", "skipped"]
+    },
+    "created_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "processed_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}
+

@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "asset_id": null,
+  "source_kind": "transcript",
+  "language_original": "pt-BR",
+  "segments": [
+    {
+      "segment_id": "fixture001-transcript-0001",
+      "segment_index": 0,
+      "source_kind": "transcript",
+      "start_seconds": 120,
+      "end_seconds": 180,
+      "page_number": null,
+      "sheet_name": null,
+      "cell_range": null,
+      "slide_number": null,
+      "section_title": null,
+      "text_original": "O lead da VSL precisa abrir uma tensao clara e prometer uma descoberta sem entregar todo o mecanismo.",
+      "text_ptbr": null,
+      "language": "pt-BR"
+    }
+  ]
+}
+

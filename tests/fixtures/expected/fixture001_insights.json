@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "asset_id": null,
+  "insights": [
+    {
+      "insight_id": "fixture001-insight-0001",
+      "source_kind": "transcript",
+      "title": "Lead de VSL deve abrir tensao antes de explicar o produto",
+      "insight_original": null,
+      "insight_ptbr": "A abertura de uma VSL deve criar uma tensao que o avatar queira resolver antes de explicar produto, oferta ou detalhes tecnicos.",
+      "summary_ptbr": "Comece pela tensao, nao pela explicacao do produto.",
+      "level": "tactical",
+      "insight_type": "principle",
+      "themes": ["VSL", "copy", "hooks"],
+      "subthemes": ["lead", "tensao"],
+      "applicability": ["copywriter de VSLs", "copy strategist"],
+      "niches": ["infoprodutos"],
+      "funnel_stages": ["awareness", "conversion"],
+      "confidence_score": 0.88,
+      "review_status": "auto_accepted",
+      "source_agent": "fixture_extractor",
+      "dedupe_key": "vsl-lead-tensao-antes-produto",
+      "evidence": [
+        {
+          "evidence_id": "fixture001-evidence-0001",
+          "segment_id": "fixture001-transcript-0001",
+          "episode_video_id": "fixture001",
+          "asset_id": null,
+          "start_seconds": 30,
+          "end_seconds": 65,
+          "page_number": null,
+          "sheet_name": null,
+          "cell_range": null,
+          "slide_number": null,
+          "quote_original": "Quando voce abre uma VSL, a primeira tarefa nao e explicar o produto. A primeira tarefa e criar uma tensao que a pessoa queira resolver.",
+          "quote_ptbr": null,
+          "evidence_strength": "strong"
+        }
+      ],
+      "relations": []
+    }
+  ]
+}
+

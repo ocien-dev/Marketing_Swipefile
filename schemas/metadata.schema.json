@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/metadata.schema.json",
+  "title": "YouTube Episode Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source",
+    "youtube_video_id",
+    "url",
+    "title",
+    "channel_name",
+    "collected_at",
+    "processing_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "source": {
+      "type": "string",
+      "examples": ["VTurb"]
+    },
+    "youtube_video_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "type": "string"
+    },
+    "channel_name": {
+      "type": "string"
+    },
+    "channel_id": {
+      "type": ["string", "null"]
+    },
+    "description": {
+      "type": ["string", "null"]
+    },
+    "published_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "duration_seconds": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "language_original": {
+      "type": ["string", "null"]
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "processing_status": {
+      "type": "string",
+      "enum": ["pending", "processing", "processed", "failed", "skipped"]
+    },
+    "transcript_status": {
+      "type": ["string", "null"],
+      "enum": ["pending", "available", "missing", "failed", null]
+    },
+    "asset_detection_status": {
+      "type": ["string", "null"],
+      "enum": ["pending", "processed", "failed", null]
+    },
+    "notes": {
+      "type": ["string", "null"]
+    }
+  }
+}
+

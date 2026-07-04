@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "episode_video_id": "fixture001",
+  "tasks": [
+    {
+      "task_id": "fixture001-task-0001",
+      "referenced_asset_id": "fixture001-refasset-0001",
+      "task_type": "comment_keyword",
+      "instruction": "Comentar a palavra VSL conforme instrucao do episodio. Inserir o arquivo obtido em data/input/assets/fixture001/.",
+      "status": "pending",
+      "priority": "high",
+      "user_notes": null,
+      "result_asset_id": null
+    },
+    {
+      "task_id": "fixture001-task-0002",
+      "referenced_asset_id": "fixture001-refasset-0002",
+      "task_type": "open_description_link",
+      "instruction": "Buscar a planilha no link da descricao do video. Inserir o arquivo obtido em data/input/assets/fixture001/.",
+      "status": "pending",
+      "priority": "high",
+      "user_notes": null,
+      "result_asset_id": null
+    }
+  ]
+}

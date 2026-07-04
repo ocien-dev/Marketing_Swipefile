@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "youtube_video_id": "fixture001",
+  "source_kind": "transcript",
+  "language": "pt-BR",
+  "provider": "fixture",
+  "collected_at": "2026-07-04T00:00:00Z",
+  "segments": [
+    {
+      "index": 0,
+      "start_seconds": 30,
+      "duration_seconds": 35,
+      "text": "Quando voce abre uma VSL, a primeira tarefa nao e explicar o produto. A primeira tarefa e criar uma tensao que a pessoa queira resolver."
+    },
+    {
+      "index": 1,
+      "start_seconds": 120,
+      "duration_seconds": 60,
+      "text": "O lead da VSL precisa abrir uma tensao clara e prometer uma descoberta sem entregar todo o mecanismo. Se voce revela o mecanismo cedo demais, perde a curiosidade."
+    },
+    {
+      "index": 2,
+      "start_seconds": 420,
+      "duration_seconds": 30,
+      "text": "Eu deixei um PDF com o modelo completo. Comenta VSL que eu mando o PDF e usa junto com a planilha de oferta que esta no link da descricao."
+    }
+  ]
+}
+

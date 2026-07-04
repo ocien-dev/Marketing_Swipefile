@@ -1,0 +1,63 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+.mcp.local.json
+*.key
+*.pem
+*.p12
+
+# Python / Node local artifacts
+__pycache__/
+*.py[cod]
+.playwright-cli/
+.venv/
+venv/
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Marketing Swipe File data
+# Raw/source materials can include transcripts, member-area files, private PDFs,
+# spreadsheets, and copyrighted assets. Keep them local by default.
+data/input/youtube_urls.csv
+data/input/assets/**
+data/raw/**
+data/processed/**
+data/exports/**
+data/logs/**
+
+# Allow lightweight tracked project scaffolding and seed/config files.
+!data/input/
+!data/input/assets/
+!data/input/assets/.gitkeep
+!data/raw/
+!data/raw/youtube/
+!data/raw/youtube/.gitkeep
+!data/raw/assets/
+!data/raw/assets/.gitkeep
+!data/processed/
+!data/processed/assets/
+!data/processed/assets/.gitkeep
+!data/processed/taxonomy_seed.json
+!data/exports/
+!data/exports/.gitkeep
+!data/logs/
+!data/logs/.gitkeep
+
+# Large generated media
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.m4a
+
+# Generated test outputs
+tests/tmp/
