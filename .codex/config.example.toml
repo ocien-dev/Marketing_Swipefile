@@ -1,0 +1,10 @@
+# Example project-scoped Codex MCP config for Marketing Swipe File.
+# Copy the relevant values into .codex/config.toml locally.
+
+[mcp_servers.supabase_msf]
+url = "https://mcp.supabase.com/mcp?project_ref=REPLACE_WITH_MSF_SUPABASE_PROJECT_REF&read_only=true"
+bearer_token_env_var = "MSF_SUPABASE_ACCESS_TOKEN"
+enabled = false
+startup_timeout_sec = 20
+tool_timeout_sec = 60
+default_tools_approval_mode = "prompt"

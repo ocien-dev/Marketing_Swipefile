@@ -1,8 +1,11 @@
 {
   "mcpServers": {
-    "supabase": {
+    "supabase_msf": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?read_only=true"
+      "url": "https://mcp.supabase.com/mcp?project_ref=${MSF_SUPABASE_PROJECT_REF}&read_only=true",
+      "headers": {
+        "Authorization": "Bearer ${MSF_SUPABASE_ACCESS_TOKEN}"
+      }
     }
   }
 }

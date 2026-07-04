@@ -3,6 +3,8 @@
 .env.*
 !.env.example
 .mcp.local.json
+.codex/config.toml
+.codex/*.local.toml
 *.key
 *.pem
 *.p12
