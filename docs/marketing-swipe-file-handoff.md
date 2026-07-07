@@ -75,7 +75,7 @@ Ja existe um MVP local operavel em arquivos:
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: Gate R1 esta aprovado e registrado. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi preparado, nao julgado: `data/exports/output_r10_blind_sample_2026-07-07.csv` e `data/exports/output_r10_blind_key_2026-07-07.json` aguardam juiz externo. Nao iniciar MSF-S, backfill MSF-R14, Supabase ou MCP antes de fechar R2/R3 conforme o backlog de remediacao.
+Importante: Gate R1 e Gate R2 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. Nao iniciar MSF-S, backfill MSF-R14, Supabase ou MCP antes de fechar R3 conforme o backlog de remediacao.
 
 ## Lote VTurb
 
@@ -103,8 +103,10 @@ Artefatos de prova:
 - `data/exports/generated_ads_lowticket.md`
 - `data/exports/generated_vsl_lowticket_evaluation.md`: score honesto 30/40, `needs_revision`; o 39/40 antigo era apenas proxy de keywords.
 - `data/exports/generated_ads_lowticket_evaluation.md`: score honesto 30/40, `needs_revision`; o 37/40 antigo era apenas proxy de keywords.
-- `data/exports/output_r10_blind_sample_2026-07-07.csv`: pacote cego R10 preparado, sem julgamento.
+- `data/exports/output_r10_blind_sample_2026-07-07.csv`: pacote cego R10 original.
 - `data/exports/output_r10_blind_key_2026-07-07.json`: chave local ignorada do R10.
+- `data/exports/output_r10_blind_sample_2026-07-07_judged.csv`: julgamento externo concluido.
+- `docs/output-r10-blind-review-2026-07-07.md`: Gate R2 aprovado.
 - `data/exports/acquisition_tasks_master.csv`: 13 tarefas de materiais complementares.
 
 - `data/raw/**`, `data/processed/**`, `data/input/youtube_urls.csv` e assets locais sao ignorados pelo Git por politica de dados. Eles existem localmente nesta maquina, mas nao devem ser assumidos como versionados.
@@ -204,7 +206,7 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir da remediacao local: Gate R1 esta aprovado; MSF-R07 e MSF-R08 estao done. MSF-R09 tambem esta done: o avaliador honesto usa julgamento Codex-first validado em JSON, e o score antigo por keywords virou apenas `keyword_presence_check`. MSF-R10 esta preparado, mas ainda sem julgamento externo: usar `data/exports/output_r10_blind_sample_2026-07-07.csv` para o juiz e preservar a chave local `data/exports/output_r10_blind_key_2026-07-07.json`. Nao rode score nem declare Gate R2 ate o julgamento externo. Nao inicie MSF-S, MSF-R14 backfill, Supabase ou MCP antes de R2/R3.
+Continue a partir da remediacao local: Gates R1 e R2 estao aprovados; MSF-R07, MSF-R08, MSF-R09 e MSF-R10 estao done. O proximo passo e EPIC R3: MSF-R11 diversidade no ranking, MSF-R12 primeiro lote de `curated_insights` priorizando as tags da primeira leva, e MSF-R13 packs regenerados. Nao inicie MSF-S, MSF-R14 backfill, Supabase ou MCP antes de R3; antes do backfill MSF-R14, reabra MSF-R03.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
@@ -347,12 +349,11 @@ Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rod
 
 Prioridade imediata:
 
-1. Aguardar julgamento externo do pacote cego R10 e so depois de-anonimizar/pontuar.
-2. Se R10 aprovar, declarar Gate R2; se nao aprovar, iterar prompt/curadoria antes de escala.
-3. Em seguida executar R3: MSF-R11/MSF-R12/MSF-R13 para diversidade, curadoria e packs a partir de `curated_insights`.
-4. So depois destravar o EPIC MSF-S em `docs/marketing-swipe-file-skills-backlog.md`.
-5. Antes do backfill MSF-R14 dos 508 chunks restantes, reabrir MSF-R03 como combinado.
-6. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
+1. Executar EPIC R3: MSF-R11/MSF-R12/MSF-R13 para diversidade, curadoria e packs a partir de `curated_insights`.
+2. Declarar Gate R3 somente apos packs novos avaliados.
+3. So depois destravar o EPIC MSF-S em `docs/marketing-swipe-file-skills-backlog.md`.
+4. Antes do backfill MSF-R14 dos 508 chunks restantes, reabrir MSF-R03 como combinado.
+5. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
 
 Segundo bloco:
 

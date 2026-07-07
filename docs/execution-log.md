@@ -953,3 +953,25 @@ Validation:
 - Reran non-ASCII scan on tracked changed files before commit.
 - Reran `scripts/audit_insights_v2_text.py` for the v2 editorial/audit protocol.
 - Reran `git diff --check`.
+
+## 2026-07-07 - MSF-R10 blind score and Gate R2 approval
+
+External blind judgment:
+
+- External judge completed `data/exports/output_r10_blind_sample_2026-07-07_judged.csv`: 2/2 pairs and 16/16 criterion cells.
+- Ran `scripts/generate_output_blind_review.py --mode score` with `python -B`, using the local ignored key only after the judged CSV was returned.
+- De-anonymized key confirmed side B was `with_base_v2` for both pairs.
+- Result: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`; VSL with base won 7/8 and tied 1/8; ads with base won 7/8 and tied 1/8.
+- Gate R2 formally APPROVED because output with base won or tied the baseline.
+
+Caveats:
+
+- Judge was blind to label, not style; base vocabulary and mechanics may be recognizable.
+- Judgment was anchored in content quality: specificity, mechanics, testability, and operational usefulness, not vocabulary alone.
+- Sample limitation: 1 briefing x 2 artifacts. This is sufficient for the formal R2 criterion, but MSF-S09 must validate varied briefings.
+
+Updates:
+
+- Updated `docs/output-r10-blind-review-2026-07-07.md`, `docs/output-evaluation-review-2026-07-07.md`, the remediation backlog, README, and handoff.
+- MSF-R09 remains `done`; MSF-R10 is now `done`.
+- Next session: EPIC R3 with MSF-R11 diversity in ranking, MSF-R12 first curated_insights lot, and MSF-R13 regenerated packs.

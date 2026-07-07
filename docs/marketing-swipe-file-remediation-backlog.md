@@ -58,6 +58,7 @@ Gate de saida R2:
 
 - Output gerado com a base vence ou empata com baseline sem base em avaliacao cega.
 - Se perder, tratar como sinal de que a base ainda nao paga o proprio custo; voltar ao R1 antes de escalar.
+- Gate R2 declarado APROVADO em 2026-07-07: no julgamento cego externo do MSF-R10, `with_base_v2` venceu 14/16 criterios e empatou 2/16; baseline venceu 0/16.
 
 ### Bloco R3 - Retrieval e curadoria
 
@@ -436,7 +437,7 @@ Execucao 2026-07-07:
 
 Prioridade: `P1`
 Tipo: `qa`
-Status: `in_progress`
+Status: `done`
 
 Escopo:
 
@@ -460,6 +461,14 @@ Execucao 2026-07-07 - prepare only:
 - Chave local ignorada criada em `data/exports/output_r10_blind_key_2026-07-07.json`.
 - Relatorio pendente criado em `docs/output-r10-blind-review-2026-07-07.md`.
 - Julgamento e score R10 nao foram executados; Gate R2 nao foi declarado e depende de juiz externo.
+
+Execucao 2026-07-07 - julgamento cego pontuado:
+
+- Julgamento cego externo concluido em `data/exports/output_r10_blind_sample_2026-07-07_judged.csv`: 2 pares e 16/16 celulas preenchidas.
+- Desanonimizacao com `data/exports/output_r10_blind_key_2026-07-07.json` confirmou que B era `with_base_v2` nos dois pares.
+- Resultado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`; VSL com base venceu 7/8 e empatou 1/8, ads com base venceu 7/8 e empatou 1/8.
+- Gate R2 declarado APROVADO porque output com base venceu ou empatou com baseline no julgamento cego.
+- Ressalvas registradas no relatorio: cegueira de rotulo, nao de estilo; julgamento ancorado em conteudo, especificidade, mecanica, testabilidade e utilidade operacional, nao em vocabulario. Limitacao amostral: 1 briefing x 2 artefatos; MSF-S09 deve validar skills com briefings variados.
 
 ## EPIC R3 - Retrieval e curadoria
 
@@ -554,7 +563,7 @@ Aceite:
 
 Dependencias:
 
-- Gates R1 e R2 aprovados.
+- Gates R1, R2 e R3 aprovados; MSF-R03 reaberto antes do backfill.
 
 ### MSF-R15 - Triagem das tarefas de materiais complementares
 
@@ -612,13 +621,14 @@ Ordem de ataque sugerida, em sessoes:
 1. Sessao 1: MSF-R01, MSF-R02, MSF-R04 (estabilizacao; R03 se sobrar tempo).
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
 3. Sessao 3: MSF-R07 e MSF-R08 done; Gate R1 aprovado em 2026-07-07 apos julgamento cego externo e verificacao independente da remediacao do batch 006.
-4. Sessao 4: MSF-R09 done; MSF-R10 preparado e pendente de julgamento externo antes de declarar Gate R2.
-5. Sessao 5: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
+4. Sessao 4: MSF-R09 e MSF-R10 done; Gate R2 aprovado em 2026-07-07 apos julgamento cego externo.
+5. Proxima sessao: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.
 
 Regras permanentes durante a remediacao:
 
 - Nao iniciar o backfill MSF-R14 dos 508 chunks restantes antes de reabrir MSF-R03 e concluir a sequencia R2 acordada.
+- Com R2 aprovado, nao iniciar backfill MSF-R14, Supabase/MCP ou MSF-S antes de fechar R3.
 - Nao citar os scores antigos 39/40 e 37/40 como prova de valor.
 - Toda saida LLM validada contra schema antes de entrar na base.
 - Atualizar `docs/execution-log.md` ao fim de cada sessao, como ja e pratica do projeto.

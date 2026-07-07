@@ -30,7 +30,7 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
-Current remediation guardrail: Gate R1 is approved, but do not run the MSF-R14 backfill or start Supabase/MCP before the R2/R3 gates in `docs/marketing-swipe-file-remediation-backlog.md` are closed. The skills backlog in `docs/marketing-swipe-file-skills-backlog.md` is blocked behind R2 and R3.
+Current remediation guardrail: Gates R1 and R2 are approved, but do not run MSF-S, the MSF-R14 backfill, Supabase, or MCP before Gate R3 closes in `docs/marketing-swipe-file-remediation-backlog.md`.
 
 ## Local Data Policy
 
@@ -92,7 +92,7 @@ Current local state as of 2026-07-07:
 - MSF-R05/MSF-R06 are complete as a Codex-first pilot: `schemas/insights_v2.schema.json`, `schemas/examples/insights_v2.example.json`, `scripts/validate_insights_v2.py`, `scripts/extract_transcript_insights_llm.py`, and `prompts/extraction/base_insight_extraction_v2.md` exist; 2 local processed episodes have validated ignored `insights_v2.json` pilots.
 - MSF-R07/MSF-R08 are complete for the amended Gate R1: 15 complete v2 episodes, 246 chunks, external blind judgment, batch 006 remediation, and formal Gate R1 approval are recorded in `docs/insight-v1-vs-v2-review-2026-07-07.md` and `docs/execution-log.md`.
 - MSF-R09 is complete: `scripts/evaluate_output.py` keeps the old keyword score only as `keyword_presence_check`, and the honest Codex-first rubric evaluation validates JSON against `schemas/output_evaluation.schema.json`.
-- MSF-R10 is prepared but not judged: local ignored blind package `data/exports/output_r10_blind_sample_2026-07-07.csv` and key `data/exports/output_r10_blind_key_2026-07-07.json` await external blind judgment.
+- MSF-R10 is complete: external blind judgment scored `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, so Gate R2 is formally approved. The sample limitation is 1 briefing x 2 artifacts; MSF-S09 still needs varied-briefing validation.
 
 Proof-of-value artifacts generated locally:
 
@@ -103,4 +103,4 @@ Proof-of-value artifacts generated locally:
 - `data/exports/generated_vsl_lowticket_evaluation.md`: honest rubric score 30/40, `needs_revision`; old 39/40 was only a keyword proxy.
 - `data/exports/generated_ads_lowticket_evaluation.md`: honest rubric score 30/40, `needs_revision`; old 37/40 was only a keyword proxy.
 
-Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R2 remains pending the external R10 blind judgment; do not start MSF-S, MSF-R14 backfill, or Supabase/MCP before the agreed gates.
+Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R2 is approved by the blind R10 result, and the next remediation session is EPIC R3 before MSF-S, MSF-R14 backfill, Supabase, or MCP.
