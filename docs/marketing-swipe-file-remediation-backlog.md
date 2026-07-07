@@ -354,7 +354,7 @@ Escopo:
 Aceite:
 
 - Documento de comparacao com veredito explicito e exemplos.
-- Gate R1 declarado como aprovado ou reprovado no execution log.
+- Relatorio de score desanonimizado produzido; decisao formal de Gate R1 registrada no execution log somente apos as investigacoes pre-gate e aceite do owner.
 
 Dependencias:
 
@@ -377,6 +377,18 @@ Execucao 2026-07-07 - amostra cega preparada:
 - Saidas locais ignoradas: `data/exports/insight_v1_v2_blind_sample_2026-07-07.csv` e `data/exports/insight_v1_v2_blind_key_2026-07-07.json`.
 - `docs/insight-v1-vs-v2-review-2026-07-07.md` atualizado como pendente de julgamento cego externo.
 - `--mode score` nao foi executado. Gate R1 fica pendente do juiz externo e da decisao formal do owner.
+
+Execucao 2026-07-07 - julgamento cego pontuado e remediacao pre-gate:
+
+- Julgamento cego externo concluido em `data/exports/insight_v1_v2_blind_sample_2026-07-07_judged.csv`: 40/40 pares e 160/160 celulas preenchidas.
+- Rodado `scripts/generate_insight_v1_v2_review.py --mode score --judgments data/exports/insight_v1_v2_blind_sample_2026-07-07_judged.csv`; relatorio desanonimizado atualizado em `docs/insight-v1-vs-v2-review-2026-07-07.md`.
+- Resultado por criterio: specificity `v2=24`, `tie=14`, `v1=2`; evidence_fidelity `v2=19`, `tie=10`, `v1=11`; applicability `v2=39`, `tie=1`, `v1=0`; quote_cleanliness `v2=4`, `tie=18`, `v1=18`.
+- Ressalva registrada: applicability deve ser lido com desconto porque a divisao cega foi `A=21`, `B=18`, `tie=1` e o lado com campos operacionais vence quase por estrutura; specificity e evidence_fidelity sao os criterios decisivos.
+- Investigacao obrigatoria confirmou duplicacao de `specific_takeaway` no batch 006, incluindo o cluster Bbh/JF2 apontado pelo juiz. A regressao veio de takeaways genericos reutilizados enquanto os titulos eram sufixados por capitulo.
+- Batch 006 remediado nos `llm_v2_outputs` de origem e recombinado: Bbh/JF2 tiveram janelas de evidencia alargadas ou limpas, `qohJceyapS0-v2-0002` foi removido como pitch, `qj04cUeaRAw-v2-0001` foi reancorado em evidencia substantiva, e os takeaways repetidos restantes foram diferenciados.
+- `scripts/audit_insights_v2_text.py` agora falha em `specific_takeaway` duplicado normalizado, alem de non-ASCII e `?` orfao; `scripts/generate_insight_v1_v2_review.py` ganhou padroes de ruido para pitch de imersao/treinamento, intro e `espero que voces gostem`.
+- Validacao final: 15/15 arquivos v2 validos, `scripts/audit_insights_v2_text.py` passou em 261 arquivos, quote check passou em 207/207 evidencias com 0 noise hits, consolidacao reportou 207 insights v2 e 246 chunks completos.
+- Gate R1 permanece nao declarado; proxima acao e decisao formal do owner sobre o score e as remediacoes pre-gate.
 
 ## EPIC R2 - Avaliacao honesta de outputs
 
@@ -567,7 +579,7 @@ Ordem de ataque sugerida, em sessoes:
 
 1. Sessao 1: MSF-R01, MSF-R02, MSF-R04 (estabilizacao; R03 se sobrar tempo).
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
-3. Sessao 3: MSF-R07 atingiu a cobertura emendada e MSF-R08 tem amostra cega preparada; proximo passo e julgamento externo, depois decisao do Gate R1.
+3. Sessao 3: MSF-R07 atingiu a cobertura emendada e MSF-R08 tem julgamento cego pontuado, com remediacoes pre-gate aplicadas; proximo passo e decisao formal do owner sobre Gate R1.
 4. Sessao 4: MSF-R09, MSF-R10 (avaliacao honesta + teste cego; declarar gate R2).
 5. Sessao 5: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.

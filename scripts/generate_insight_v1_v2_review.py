@@ -24,9 +24,32 @@ from msf_common import first_evidence, insight_text, jaccard, load_json, normali
 CRITERIA = ["specificity", "evidence_fidelity", "applicability", "quote_cleanliness"]
 NOISE_PATTERNS = [
     ("subscribe_cta", re.compile(r"\b(inscreva|inscreva-se|se inscreva|inscrito|sininho)\b")),
-    ("engagement_cta", re.compile(r"\b(like|curte|curtir|compartilha|comenta|comentario|segue)\b")),
+    (
+        "engagement_cta",
+        re.compile(
+            r"\b(deixa o like|deixem o like|da o like|dar o like|curte ai|curtir o video|"
+            r"compartilha esse video|compartilhem esse video|comenta aqui|comentem aqui|"
+            r"deixa [a-z0-9 ]{0,40}comentario|segue la|sigam la)\b"
+        ),
+    ),
     ("description_cta", re.compile(r"\b(link na descricao|descricao do video|acesse o link)\b")),
     ("watch_next", re.compile(r"\b(assista tambem|proximo video|video recomendado|continua assistindo)\b")),
+    (
+        "promo_training_pitch",
+        re.compile(
+            r"\b(imersao|call semanal|calls semanais|condicao especial|14 dias [a-z0-9 ]{0,20}gratis|15% de desconto|"
+            r"te dar um treinamento|vou te dar um treinamento|treinamento gratuito|treinamento exclusivo|"
+            r"receber [a-z0-9 ]{0,40}treinamento)\b"
+        ),
+    ),
+    (
+        "intro_narration",
+        re.compile(
+            r"\b(fala pessoal|sejam bem-vindos|nesse episodio|no episodio de hoje|"
+            r"hoje a gente vai ter um episodio|e com voces|bem-vindo a mais um episodio)\b"
+        ),
+    ),
+    ("closing_narration", re.compile(r"\bespero que (tu|voce|voces) goste[m]?\b")),
     ("hashtag", re.compile(r"#[a-z0-9_]+")),
 ]
 
@@ -327,9 +350,12 @@ def load_key(path: Path) -> dict[str, Any]:
     return payload
 
 
-def score_judgments(rows: list[dict[str, str]], key: dict[str, Any]) -> tuple[dict[str, Counter[str]], list[list[Any]], int]:
+def score_judgments(
+    rows: list[dict[str, str]], key: dict[str, Any]
+) -> tuple[dict[str, Counter[str]], dict[str, Counter[str]], list[list[Any]], int]:
     key_by_pair = {str(pair.get("pair_id")): pair for pair in key.get("pairs", [])}
     counts: dict[str, Counter[str]] = {criterion: Counter() for criterion in CRITERIA}
+    blind_counts: dict[str, Counter[str]] = {criterion: Counter() for criterion in CRITERIA}
     pair_rows: list[list[Any]] = []
     pending = 0
 
@@ -345,6 +371,7 @@ def score_judgments(rows: list[dict[str, str]], key: dict[str, Any]) -> tuple[di
                 pending += 1
                 winners.append(f"{criterion}=pending")
                 continue
+            blind_counts[criterion][choice] += 1
             if choice == "tie":
                 counts[criterion]["tie"] += 1
                 winners.append(f"{criterion}=tie")
@@ -369,10 +396,17 @@ def score_judgments(rows: list[dict[str, str]], key: dict[str, Any]) -> tuple[di
                 ", ".join(winners),
             ]
         )
-    return counts, pair_rows, pending
+    return counts, blind_counts, pair_rows, pending
 
 
-def render_scored_report(args: argparse.Namespace, key: dict[str, Any], counts: dict[str, Counter[str]], pair_rows: list[list[Any]], pending: int) -> str:
+def render_scored_report(
+    args: argparse.Namespace,
+    key: dict[str, Any],
+    counts: dict[str, Counter[str]],
+    blind_counts: dict[str, Counter[str]],
+    pair_rows: list[list[Any]],
+    pending: int,
+) -> str:
     score_rows = []
     for criterion in CRITERIA:
         criterion_counts = counts[criterion]
@@ -386,11 +420,12 @@ def render_scored_report(args: argparse.Namespace, key: dict[str, Any], counts: 
     elif not target_reached:
         verdict = "Pilot scored, but Gate R1 is not declared because the 40-pair R08 target is not met."
     elif total_v2 > total_v1:
-        verdict = "Gate R1 candidate: v2 wins more judged criteria than v1, pending R07 chunk coverage and manual acceptance."
+        verdict = "Blind review scored: v2 wins more judged criteria than v1. Gate R1 is not declared by this report."
     elif total_v1 > total_v2:
-        verdict = "Gate R1 failed: v1 wins more judged criteria than v2."
+        verdict = "Blind review scored: v1 wins more judged criteria than v2. Gate R1 is not declared by this report."
     else:
-        verdict = "Gate R1 inconclusive: v1 and v2 are tied across judged criteria."
+        verdict = "Blind review scored: v1 and v2 are tied across judged criteria. Gate R1 is not declared by this report."
+    applicability_blind = blind_counts["applicability"]
 
     return "\n".join(
         [
@@ -411,6 +446,17 @@ def render_scored_report(args: argparse.Namespace, key: dict[str, Any], counts: 
             "## Criteria Counts",
             "",
             markdown_table(["criterion", "v2_wins", "ties", "v1_wins"], score_rows),
+            "",
+            "## Interpretation Notes",
+            "",
+            (
+                "- Applicability should be read with discount: before de-anonymization, blind sides split "
+                f"A={applicability_blind.get('A', 0)}, B={applicability_blind.get('B', 0)}, "
+                f"tie={applicability_blind.get('tie', 0)}. The side with richer operational fields can win "
+                "by structure, so specificity and evidence_fidelity are the decisive criteria."
+            ),
+            "- This report records the external blind judgment only; remediation findings discovered during score review must be resolved before any gate declaration.",
+            "- De-anonymized pair rows reference the sample as judged; batch 006 duplicate-takeaway and evidence-window remediation can change current v2 insight IDs or quotes after scoring.",
             "",
             "## De-Anonymized Pair Results",
             "",
@@ -447,8 +493,8 @@ def prepare_mode(args: argparse.Namespace) -> int:
 def score_mode(args: argparse.Namespace) -> int:
     rows = read_csv(args.judgments)
     key = load_key(args.key_output)
-    counts, pair_rows, pending = score_judgments(rows, key)
-    write_text(args.output, render_scored_report(args, key, counts, pair_rows, pending))
+    counts, blind_counts, pair_rows, pending = score_judgments(rows, key)
+    write_text(args.output, render_scored_report(args, key, counts, blind_counts, pair_rows, pending))
     print(f"wrote_report={args.output}")
     print(f"pairs={len(pair_rows)}")
     print(f"pending_cells={pending}")
@@ -463,7 +509,7 @@ def main() -> int:
     parser.add_argument("--date", default=utc_date())
     parser.add_argument("--sample-size", type=int, default=40)
     parser.add_argument("--target-pairs", type=int, default=40)
-    parser.add_argument("--target-episodes", type=int, default=50)
+    parser.add_argument("--target-episodes", type=int, default=15)
     parser.add_argument("--seed", default=None)
     parser.add_argument("--blind-output", type=Path)
     parser.add_argument("--key-output", type=Path)

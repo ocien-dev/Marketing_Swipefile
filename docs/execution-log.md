@@ -827,3 +827,33 @@ Throughput and stop point:
 - Time cost: 1 autonomous Codex session; terminal wall-clock was not separately stopwatched.
 - Current amended gate progress: 15/15 minimum complete episodes; 246 chunks extracted, inside the expected 225-300 chunk gate range.
 - Stop extraction here. Next step is external blind judgment, then Gate R1 decision. Before any post-gate backfill, reopen MSF-R03 as scheduled.
+
+## 2026-07-07 - MSF-R08 blind score and pre-gate remediation
+
+External blind judgment:
+
+- External judge completed `data/exports/insight_v1_v2_blind_sample_2026-07-07_judged.csv`: 40/40 pairs and 160/160 criterion cells filled.
+- Ran `scripts/generate_insight_v1_v2_review.py --mode score --judgments data/exports/insight_v1_v2_blind_sample_2026-07-07_judged.csv`.
+- Wrote the de-anonymized score report to `docs/insight-v1-vs-v2-review-2026-07-07.md`.
+- Score result: specificity `v2=24`, `tie=14`, `v1=2`; evidence_fidelity `v2=19`, `tie=10`, `v1=11`; applicability `v2=39`, `tie=1`, `v1=0`; quote_cleanliness `v2=4`, `tie=18`, `v1=18`.
+- Interpretation caveat recorded in the report: applicability is structurally biased toward the side with operational fields; blind-side applicability split was `A=21`, `B=18`, `tie=1`. Specificity and evidence_fidelity remain the decisive criteria.
+- Gate R1 was not declared in this session.
+
+Mandatory investigation:
+
+- Confirmed duplicate normalized `specific_takeaway` in the v2 base after blind review, including the judge's Bbh/JF2 cluster.
+- Regression source: batch 006 extraction template reused generic `specific_takeaway` text while suffixing titles by chapter. Earlier batches had no per-episode duplicate takeaway clusters in the same check.
+- Remediated batch 006 chunk outputs and recombined final `insights_v2.json` files from source chunk outputs.
+- Removed or rewrote promo/intro-backed evidence in affected batch 006 items, including `qohJceyapS0-v2-0002`, `qj04cUeaRAw-v2-0001`, `BbhJn8NXRso-v2-0005`, and `JF2oC44lBG8-v2-0019`.
+- Differentiated remaining repeated takeaways across batch 006 episodes, then reran the duplicate scan: `duplicate_takeaway_groups=0`, `duplicate_items=0`.
+
+Protocol and validation:
+
+- Added normalized duplicate `specific_takeaway` checking to `scripts/audit_insights_v2_text.py`.
+- Added promo/intro patterns to the review quote-noise detector: imersao/treinamento pitch language, intro narration, and `espero que voces gostem`.
+- Updated `loops/episode-processing.md` so evidence can span complete segment ranges and post-lot scans include duplicate takeaway checks.
+- Full v2 schema validation passed for all 15 `insights_v2.json` files.
+- `scripts/audit_insights_v2_text.py` passed: `VALID editorial_text_files=261`.
+- Evidence quote check passed across the current v2 base: 207/207 quotes matched their source segment or segment range; 0 quote-noise hits with the updated detector.
+- `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 207 v2 insights, and 13 acquisition tasks.
+- Status after consolidation: 15/50 target episodes fully extracted in v2, 246/754 target chunks extracted, `gate_r1_ready=true` for amended coverage only. Formal Gate R1 decision remains pending owner review.
