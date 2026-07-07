@@ -54,6 +54,10 @@ Session rules:
 - Run quote-noise checks on all new evidence. Reject or reprocess evidence containing promo CTAs, "inscreva-se", "assista tambem", hashtags, unrelated episode-title lists, description boilerplate, intro narration, "espero que voces gostem", or pitch language for imersao/treinamento.
 - After each lot, run `scripts/audit_insights_v2_text.py` to scan editorial fields (`canonical_title`, `specific_takeaway`, `use_case`, `when_to_use`, `when_not_to_use`) for non-ASCII characters, orphan `?` encoding artifacts, and normalized duplicate `specific_takeaway` values in the final v2 base.
 - At session close, run `scripts/consolidate_exports.py`.
+- After consolidation, run process-tag classification as post-processing over v1 and v2 exports, without changing the R07 extraction prompt:
+  - `.\.venv\Scripts\python.exe -B scripts/classify_taxonomy.py --input data/exports/insights_master.json --output data/exports/insights_master.json --report data/exports/process_tag_classification_v1.md --process-review-queue data/exports/process_tag_review_queue_v1.json`
+  - `.\.venv\Scripts\python.exe -B scripts/classify_taxonomy.py --input data/exports/insights_v2_master.json --output data/exports/insights_v2_master.json --report data/exports/process_tag_classification_v2.md --process-review-queue data/exports/process_tag_review_queue_v2.json`
+- Report the unmatched insight counts from both process-tag review queues. Do not assign a generic fallback process tag.
 - Record throughput in `docs/execution-log.md`: chunks processed, session time cost, episodes touched, insights added, validation status, and updated estimate to the amended R1 gate.
 - Commit the versioned docs/scripts changed in the session. Generated `data/processed/**` and `data/exports/**` remain local ignored artifacts unless policy changes.
 

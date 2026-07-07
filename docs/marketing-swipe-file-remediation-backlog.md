@@ -470,11 +470,13 @@ Escopo:
 - Clusterizar a base v2 por similaridade (Jaccard sobre tokens como primeiro corte; embeddings ficam para MSF-R16).
 - Gerar o primeiro lote de 100-150 `curated_insights` priorizando temas de VSL e anuncios (os que alimentam os strategy packs), conforme recomendado na quality review.
 - Preencher os campos editoriais do schema v2: `canonical_title`, `when_to_use`, `when_not_to_use`, `claim_risk`, `editorial_score` com a regua 0-100 da review (evidencia 25, especificidade 25, aplicabilidade 20, portabilidade 15, novidade 10, limpeza 5).
+- Preencher `process_tags` em todo `curated_insight` com ids validos `process-*` da taxonomia de processos; minimo 1 tag valida por insight curado, sem tag generica de fallback.
 - Curadoria pode ser LLM-assistida, mas o lote inicial passa por revisao humana amostral (minimo 30 itens).
 
 Aceite:
 
 - `data/exports/curated_insights.json` com 100-150 itens validos.
+- Cada item curado tem pelo menos 1 `process_tag` valida e referenciada no `taxonomy_seed.json`.
 - Distribuicao de `editorial_score` registrada; itens abaixo de 50 nao entram.
 
 Dependencias:
@@ -559,6 +561,8 @@ Escopo:
 
 - Somente apos gate R3: nao industrializar formato instavel.
 - Desenhar schema com dois niveis desde o inicio: `raw_insights` e `curated_insights`, espelhando o contrato v2.
+- Incluir tabela de processos baseada nos ids `process-*` do `taxonomy_seed.json`, com FK a partir dos insights curados ou tabela de ligacao equivalente para tags multiprocessos.
+- Reservar tabela/campos para anotacoes de outcome ligadas a insights usados em outputs, permitindo registrar resultado observado, contexto, fonte e data sem sobrescrever o insight original.
 - Incluir `pgvector` para busca semantica de insights e evidencias (a busca por keywords degrada com a base crescendo).
 - Importadores idempotentes a partir dos exports locais.
 - RLS e politicas definidas antes de expor qualquer API, conforme Definition of Done do backlog mestre.
@@ -566,6 +570,8 @@ Escopo:
 Aceite:
 
 - Schema versionado em migrations.
+- Tabela de processos e FKs/relacionamentos de `process_tags` cobertos por migration e import idempotente.
+- Estrutura de outcome annotations versionada e ligada aos insights usados.
 - Import dos exports v2 completo e idempotente.
 - Uma query semantica real retornando insights com evidencia sem ler arquivos locais.
 

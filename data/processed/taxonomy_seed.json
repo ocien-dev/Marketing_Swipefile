@@ -1,10 +1,15 @@
 {
   "schema_version": "1.0",
-  "taxonomy_version": "2026-07-04.1",
+  "taxonomy_version": "2026-07-07.1",
   "project": "Marketing Swipe File",
   "governance": {
     "new_term_policy": "Prefer existing terms. Suggest a new term only when at least three insights or one highly valuable framework cannot be described by the existing taxonomy.",
-    "status_values": ["active", "suggested", "deprecated", "merged"],
+    "status_values": [
+      "active",
+      "suggested",
+      "deprecated",
+      "merged"
+    ],
     "default_new_term_status": "suggested",
     "synonym_policy": "Add synonyms to existing terms before creating a new term."
   },
@@ -21,7 +26,9 @@
     "objection",
     "promise",
     "insight_type",
-    "level"
+    "level",
+    "process_area",
+    "process"
   ],
   "terms": [
     {
@@ -29,7 +36,11 @@
       "term": "anuncios",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["ads", "trafego pago", "criativos pagos"],
+      "synonyms": [
+        "ads",
+        "trafego pago",
+        "criativos pagos"
+      ],
       "description": "Hooks, scripts, angulos, criativos e testes de anuncios.",
       "status": "active"
     },
@@ -38,7 +49,12 @@
       "term": "criativos",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["creative", "pecas", "imagem", "video curto"],
+      "synonyms": [
+        "creative",
+        "pecas",
+        "imagem",
+        "video curto"
+      ],
       "description": "Direcao criativa para imagens, videos, UGC, thumbnails e assets de campanha.",
       "status": "active"
     },
@@ -47,7 +63,11 @@
       "term": "hooks",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["abertura", "gancho", "headline inicial"],
+      "synonyms": [
+        "abertura",
+        "gancho",
+        "headline inicial"
+      ],
       "description": "Padroes de abertura que capturam atencao e criam curiosidade.",
       "status": "active"
     },
@@ -56,7 +76,10 @@
       "term": "VSL",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["video sales letter", "carta de vendas em video"],
+      "synonyms": [
+        "video sales letter",
+        "carta de vendas em video"
+      ],
       "description": "Estrutura, copy, narrativa, mecanismo, prova e fechamento de VSLs.",
       "status": "active"
     },
@@ -65,7 +88,11 @@
       "term": "webinar",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["aula", "aula de vendas", "masterclass"],
+      "synonyms": [
+        "aula",
+        "aula de vendas",
+        "masterclass"
+      ],
       "description": "Estrutura de apresentacao, pitch e conversao em webinars.",
       "status": "active"
     },
@@ -74,7 +101,11 @@
       "term": "quiz",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["diagnostico", "perguntas", "resultado"],
+      "synonyms": [
+        "diagnostico",
+        "perguntas",
+        "resultado"
+      ],
       "description": "Quizzes, diagnosticos, perguntas, resultados e pontes de oferta.",
       "status": "active"
     },
@@ -83,7 +114,11 @@
       "term": "ofertas",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["offer", "stack", "promessa comercial"],
+      "synonyms": [
+        "offer",
+        "stack",
+        "promessa comercial"
+      ],
       "description": "Promessa, stack, bonus, garantia, preco, urgencia e escassez.",
       "status": "active"
     },
@@ -92,7 +127,11 @@
       "term": "estrategias",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["strategy", "plano", "posicionamento"],
+      "synonyms": [
+        "strategy",
+        "plano",
+        "posicionamento"
+      ],
       "description": "Decisoes estrategicas de mercado, posicionamento, crescimento e campanha.",
       "status": "active"
     },
@@ -101,7 +140,11 @@
       "term": "funil",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["funnel", "jornada", "esteira"],
+      "synonyms": [
+        "funnel",
+        "jornada",
+        "esteira"
+      ],
       "description": "Arquitetura de aquisicao, nutricao, conversao, upsell e retencao.",
       "status": "active"
     },
@@ -110,7 +153,11 @@
       "term": "checkout",
       "term_type": "theme",
       "parent_id": "theme-funil",
-      "synonyms": ["pagina de pagamento", "order form", "conversao final"],
+      "synonyms": [
+        "pagina de pagamento",
+        "order form",
+        "conversao final"
+      ],
       "description": "Otimizacao de checkout, order bumps, upsells e abandono.",
       "status": "active"
     },
@@ -119,7 +166,11 @@
       "term": "gestao",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["management", "operacao", "rituais"],
+      "synonyms": [
+        "management",
+        "operacao",
+        "rituais"
+      ],
       "description": "Gestao de time, rotina, producao, processos e execucao.",
       "status": "active"
     },
@@ -128,7 +179,11 @@
       "term": "produto",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["product", "entrega", "experiencia"],
+      "synonyms": [
+        "product",
+        "entrega",
+        "experiencia"
+      ],
       "description": "Produto, entrega, transformacao, retencao e experiencia do cliente.",
       "status": "active"
     },
@@ -137,7 +192,11 @@
       "term": "copy",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["copywriting", "mensagem", "persuasao"],
+      "synonyms": [
+        "copywriting",
+        "mensagem",
+        "persuasao"
+      ],
       "description": "Mensagem persuasiva, headlines, leads, argumentos, CTAs e estrutura.",
       "status": "active"
     },
@@ -146,7 +205,11 @@
       "term": "prova social",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["depoimento", "case", "resultado"],
+      "synonyms": [
+        "depoimento",
+        "case",
+        "resultado"
+      ],
       "description": "Provas, cases, resultados, autoridade, demonstracoes e validacao.",
       "status": "active"
     },
@@ -155,7 +218,11 @@
       "term": "avatar",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["persona", "cliente ideal", "ICP"],
+      "synonyms": [
+        "persona",
+        "cliente ideal",
+        "ICP"
+      ],
       "description": "Dores, desejos, crencas, objecoes, contexto e sofisticacao do comprador.",
       "status": "active"
     },
@@ -164,7 +231,11 @@
       "term": "preco",
       "term_type": "theme",
       "parent_id": "theme-ofertas",
-      "synonyms": ["pricing", "ticket", "ancoragem"],
+      "synonyms": [
+        "pricing",
+        "ticket",
+        "ancoragem"
+      ],
       "description": "Estrategia de preco, ancoragem, parcelamento, ticket e valor percebido.",
       "status": "active"
     },
@@ -173,7 +244,11 @@
       "term": "retencao",
       "term_type": "theme",
       "parent_id": "theme-produto",
-      "synonyms": ["retencao", "churn", "recorrencia"],
+      "synonyms": [
+        "retencao",
+        "churn",
+        "recorrencia"
+      ],
       "description": "Retencao, recompra, recorrencia, engajamento e ativacao.",
       "status": "active"
     },
@@ -182,7 +257,11 @@
       "term": "low ticket",
       "term_type": "theme",
       "parent_id": "theme-ofertas",
-      "synonyms": ["baixo ticket", "tripwire", "entrada"],
+      "synonyms": [
+        "baixo ticket",
+        "tripwire",
+        "entrada"
+      ],
       "description": "Ofertas de entrada, funis low ticket e monetizacao inicial.",
       "status": "active"
     },
@@ -191,7 +270,11 @@
       "term": "high ticket",
       "term_type": "theme",
       "parent_id": "theme-ofertas",
-      "synonyms": ["alto ticket", "premium", "mentoria"],
+      "synonyms": [
+        "alto ticket",
+        "premium",
+        "mentoria"
+      ],
       "description": "Ofertas premium, vendas consultivas e alta percepcao de valor.",
       "status": "active"
     },
@@ -200,7 +283,11 @@
       "term": "lancamento",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["launch", "PLF", "campanha com carrinho"],
+      "synonyms": [
+        "launch",
+        "PLF",
+        "campanha com carrinho"
+      ],
       "description": "Lancamentos, campanhas com data, eventos e picos de conversao.",
       "status": "active"
     },
@@ -209,7 +296,10 @@
       "term": "perpetuo",
       "term_type": "theme",
       "parent_id": null,
-      "synonyms": ["evergreen", "vendas todos os dias"],
+      "synonyms": [
+        "evergreen",
+        "vendas todos os dias"
+      ],
       "description": "Funis e vendas continuas sem campanha com data fixa.",
       "status": "active"
     },
@@ -218,7 +308,11 @@
       "term": "pdf",
       "term_type": "asset_type",
       "parent_id": null,
-      "synonyms": ["ebook", "guia", "documento em PDF"],
+      "synonyms": [
+        "ebook",
+        "guia",
+        "documento em PDF"
+      ],
       "description": "Arquivo PDF complementar.",
       "status": "active"
     },
@@ -227,7 +321,12 @@
       "term": "spreadsheet",
       "term_type": "asset_type",
       "parent_id": null,
-      "synonyms": ["planilha", "xlsx", "csv", "google sheets"],
+      "synonyms": [
+        "planilha",
+        "xlsx",
+        "csv",
+        "google sheets"
+      ],
       "description": "Planilha, modelo, calculadora ou tabela.",
       "status": "active"
     },
@@ -236,7 +335,11 @@
       "term": "doc",
       "term_type": "asset_type",
       "parent_id": null,
-      "synonyms": ["documento", "docx", "google docs"],
+      "synonyms": [
+        "documento",
+        "docx",
+        "google docs"
+      ],
       "description": "Documento textual complementar.",
       "status": "active"
     },
@@ -245,7 +348,11 @@
       "term": "slides",
       "term_type": "asset_type",
       "parent_id": null,
-      "synonyms": ["apresentacao", "pptx", "google slides"],
+      "synonyms": [
+        "apresentacao",
+        "pptx",
+        "google slides"
+      ],
       "description": "Apresentacao ou deck complementar.",
       "status": "active"
     },
@@ -254,7 +361,10 @@
       "term": "transcript",
       "term_type": "source_kind",
       "parent_id": null,
-      "synonyms": ["transcricao", "fala do episodio"],
+      "synonyms": [
+        "transcricao",
+        "fala do episodio"
+      ],
       "description": "Conteudo vindo da transcricao do video.",
       "status": "active"
     },
@@ -263,7 +373,11 @@
       "term": "asset",
       "term_type": "source_kind",
       "parent_id": null,
-      "synonyms": ["material complementar", "arquivo", "anexo"],
+      "synonyms": [
+        "material complementar",
+        "arquivo",
+        "anexo"
+      ],
       "description": "Conteudo vindo de arquivo complementar processado.",
       "status": "active"
     },
@@ -272,7 +386,11 @@
       "term": "awareness",
       "term_type": "funnel_stage",
       "parent_id": null,
-      "synonyms": ["topo", "descoberta", "atencao"],
+      "synonyms": [
+        "topo",
+        "descoberta",
+        "atencao"
+      ],
       "description": "Primeiro contato e captura de atencao.",
       "status": "active"
     },
@@ -281,7 +399,11 @@
       "term": "conversion",
       "term_type": "funnel_stage",
       "parent_id": null,
-      "synonyms": ["conversao", "venda", "compra"],
+      "synonyms": [
+        "conversao",
+        "venda",
+        "compra"
+      ],
       "description": "Momento de venda e decisao.",
       "status": "active"
     },
@@ -290,7 +412,11 @@
       "term": "retention",
       "term_type": "funnel_stage",
       "parent_id": null,
-      "synonyms": ["retencao", "recompra", "recorrencia"],
+      "synonyms": [
+        "retencao",
+        "recompra",
+        "recorrencia"
+      ],
       "description": "Experiencia pos-compra e continuidade.",
       "status": "active"
     },
@@ -299,7 +425,9 @@
       "term": "copy strategist",
       "term_type": "agent_role",
       "parent_id": null,
-      "synonyms": ["estrategista de copy"],
+      "synonyms": [
+        "estrategista de copy"
+      ],
       "description": "Agente que monta estrategia de mensagem e persuasao.",
       "status": "active"
     },
@@ -308,7 +436,10 @@
       "term": "copywriter de VSLs",
       "term_type": "agent_role",
       "parent_id": null,
-      "synonyms": ["VSL writer", "roteirista de VSL"],
+      "synonyms": [
+        "VSL writer",
+        "roteirista de VSL"
+      ],
       "description": "Agente que cria VSLs e variacoes de lead.",
       "status": "active"
     },
@@ -317,7 +448,10 @@
       "term": "copywriter de anuncios",
       "term_type": "agent_role",
       "parent_id": null,
-      "synonyms": ["ad writer", "criador de anuncios"],
+      "synonyms": [
+        "ad writer",
+        "criador de anuncios"
+      ],
       "description": "Agente que cria hooks, angulos e scripts de anuncios.",
       "status": "active"
     },
@@ -326,7 +460,9 @@
       "term": "CMO",
       "term_type": "agent_role",
       "parent_id": null,
-      "synonyms": ["head de marketing"],
+      "synonyms": [
+        "head de marketing"
+      ],
       "description": "Agente que transforma aprendizados em plano de marketing.",
       "status": "active"
     },
@@ -335,7 +471,10 @@
       "term": "infoprodutos",
       "term_type": "market",
       "parent_id": null,
-      "synonyms": ["produto digital", "curso online"],
+      "synonyms": [
+        "produto digital",
+        "curso online"
+      ],
       "description": "Mercado de infoprodutos e educacao digital.",
       "status": "active"
     },
@@ -344,7 +483,10 @@
       "term": "SaaS",
       "term_type": "market",
       "parent_id": null,
-      "synonyms": ["software", "assinatura"],
+      "synonyms": [
+        "software",
+        "assinatura"
+      ],
       "description": "Software como servico.",
       "status": "active"
     },
@@ -353,7 +495,10 @@
       "term": "e-commerce",
       "term_type": "market",
       "parent_id": null,
-      "synonyms": ["loja online", "produto fisico"],
+      "synonyms": [
+        "loja online",
+        "produto fisico"
+      ],
       "description": "Venda online de produtos fisicos.",
       "status": "active"
     },
@@ -362,7 +507,10 @@
       "term": "encapsulados",
       "term_type": "market",
       "parent_id": null,
-      "synonyms": ["suplementos", "nutra"],
+      "synonyms": [
+        "suplementos",
+        "nutra"
+      ],
       "description": "Mercado de suplementos e produtos encapsulados.",
       "status": "active"
     },
@@ -371,7 +519,9 @@
       "term": "strategic",
       "term_type": "level",
       "parent_id": null,
-      "synonyms": ["estrategico"],
+      "synonyms": [
+        "estrategico"
+      ],
       "description": "Insight sobre direcao, posicionamento, mercado ou decisao macro.",
       "status": "active"
     },
@@ -380,7 +530,9 @@
       "term": "tactical",
       "term_type": "level",
       "parent_id": null,
-      "synonyms": ["tatico"],
+      "synonyms": [
+        "tatico"
+      ],
       "description": "Insight sobre abordagem, estrutura, campanha ou execucao intermediaria.",
       "status": "active"
     },
@@ -389,7 +541,9 @@
       "term": "operational",
       "term_type": "level",
       "parent_id": null,
-      "synonyms": ["operacional"],
+      "synonyms": [
+        "operacional"
+      ],
       "description": "Insight sobre passo, checklist, implementacao ou procedimento.",
       "status": "active"
     },
@@ -398,7 +552,9 @@
       "term": "principle",
       "term_type": "insight_type",
       "parent_id": null,
-      "synonyms": ["principio"],
+      "synonyms": [
+        "principio"
+      ],
       "description": "Principio geral aplicavel em varias situacoes.",
       "status": "active"
     },
@@ -407,7 +563,10 @@
       "term": "framework",
       "term_type": "insight_type",
       "parent_id": null,
-      "synonyms": ["modelo", "estrutura"],
+      "synonyms": [
+        "modelo",
+        "estrutura"
+      ],
       "description": "Estrutura reutilizavel para pensar ou executar uma tarefa.",
       "status": "active"
     },
@@ -416,7 +575,10 @@
       "term": "complete_copy",
       "term_type": "insight_type",
       "parent_id": null,
-      "synonyms": ["copy completa", "roteiro completo"],
+      "synonyms": [
+        "copy completa",
+        "roteiro completo"
+      ],
       "description": "Copy completa encontrada em material, exemplo ou transcricao.",
       "status": "active"
     },
@@ -425,8 +587,975 @@
       "term": "spreadsheet_model",
       "term_type": "insight_type",
       "parent_id": null,
-      "synonyms": ["modelo de planilha", "calculadora"],
+      "synonyms": [
+        "modelo de planilha",
+        "calculadora"
+      ],
       "description": "Modelo ou logica estruturada presente em planilha.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-pesquisa-inteligencia",
+      "term": "pesquisa e inteligencia",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Pesquisa de avatar, mercado, concorrencia e validacao antes de investir.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-estrategia-posicionamento",
+      "term": "estrategia e posicionamento",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Decisoes de marca, modelo de negocio, campanha e preco.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-oferta-produto",
+      "term": "oferta e produto",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Construcao de ofertas e produtos em todos os niveis de ticket.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-copywriting",
+      "term": "copywriting",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Escrita persuasiva em todos os formatos e fundamentos de persuasao.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-funis-paginas",
+      "term": "funis e paginas",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Arquitetura de funis, paginas e mecanismos de conversao.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-trafego-aquisicao",
+      "term": "trafego e aquisicao",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Aquisicao paga, organica e por parceiros.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-criativos",
+      "term": "criativos",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Producao de videos, imagens e variacoes para anuncios e VSLs.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-conversao-otimizacao",
+      "term": "conversao e otimizacao",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "CRO, metricas, testes e recuperacao de vendas.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-vendas-relacionamento",
+      "term": "vendas e relacionamento",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Vendas humanas, atendimento e suporte.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-pos-venda-retencao",
+      "term": "pos-venda e retencao",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Onboarding, retencao, reembolso e monetizacao da base.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-gestao-operacao",
+      "term": "gestao e operacao",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Time, processos, financas e desenvolvimento profissional.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-ia-automacao",
+      "term": "ia e automacao",
+      "term_type": "process_area",
+      "parent_id": null,
+      "synonyms": [],
+      "description": "Aplicacao de IA e automacao aos processos de marketing.",
+      "status": "active"
+    },
+    {
+      "id": "process-pesquisa-avatar",
+      "term": "pesquisa de avatar",
+      "term_type": "process",
+      "parent_id": "process-area-pesquisa-inteligencia",
+      "synonyms": [
+        "avatar",
+        "persona",
+        "ICP",
+        "dor",
+        "desejo",
+        "consciencia",
+        "publico"
+      ],
+      "description": "Mapear dores, desejos, crencas, objecoes e nivel de consciencia do comprador.",
+      "status": "active"
+    },
+    {
+      "id": "process-pesquisa-mercado",
+      "term": "pesquisa de mercado e nicho",
+      "term_type": "process",
+      "parent_id": "process-area-pesquisa-inteligencia",
+      "synonyms": [
+        "mercado",
+        "nicho",
+        "demanda",
+        "oportunidade",
+        "tendencia"
+      ],
+      "description": "Avaliar mercados, nichos, demanda e oportunidades de entrada.",
+      "status": "active"
+    },
+    {
+      "id": "process-analise-concorrencia",
+      "term": "analise de concorrencia e modelagem",
+      "term_type": "process",
+      "parent_id": "process-area-pesquisa-inteligencia",
+      "synonyms": [
+        "modelagem",
+        "swipe file",
+        "referencias",
+        "espionagem",
+        "benchmark"
+      ],
+      "description": "Estudar concorrentes e modelar pecas e funis validados.",
+      "status": "active"
+    },
+    {
+      "id": "process-validacao-oferta",
+      "term": "validacao de oferta",
+      "term_type": "process",
+      "parent_id": "process-area-pesquisa-inteligencia",
+      "synonyms": [
+        "validacao",
+        "teste seco",
+        "MVP",
+        "prova de demanda"
+      ],
+      "description": "Validar promessa, nome e oferta com o menor investimento possivel.",
+      "status": "active"
+    },
+    {
+      "id": "process-posicionamento-marca",
+      "term": "posicionamento de marca",
+      "term_type": "process",
+      "parent_id": "process-area-estrategia-posicionamento",
+      "synonyms": [
+        "marca",
+        "branding",
+        "posicionamento",
+        "boca a boca"
+      ],
+      "description": "Construir posicionamento, percepcao de marca e diferenciacao.",
+      "status": "active"
+    },
+    {
+      "id": "process-estrategia-negocio",
+      "term": "estrategia de negocio",
+      "term_type": "process",
+      "parent_id": "process-area-estrategia-posicionamento",
+      "synonyms": [
+        "modelo de negocio",
+        "escala",
+        "crescimento",
+        "foco",
+        "80/20",
+        "negocio",
+        "founder mode"
+      ],
+      "description": "Decisoes macro de modelo, escala, foco e alocacao de esforco.",
+      "status": "active"
+    },
+    {
+      "id": "process-planejamento-campanha",
+      "term": "planejamento de campanha",
+      "term_type": "process",
+      "parent_id": "process-area-estrategia-posicionamento",
+      "synonyms": [
+        "campanha",
+        "plano de marketing",
+        "calendario"
+      ],
+      "description": "Planejar campanhas, sazonalidade e orquestracao de canais.",
+      "status": "active"
+    },
+    {
+      "id": "process-precificacao",
+      "term": "precificacao",
+      "term_type": "process",
+      "parent_id": "process-area-estrategia-posicionamento",
+      "synonyms": [
+        "preco",
+        "ticket",
+        "ancoragem",
+        "parcelamento",
+        "ticket medio"
+      ],
+      "description": "Estrategia de preco, ancoragem, parcelamento e valor percebido.",
+      "status": "active"
+    },
+    {
+      "id": "process-construcao-oferta",
+      "term": "construcao de oferta",
+      "term_type": "process",
+      "parent_id": "process-area-oferta-produto",
+      "synonyms": [
+        "oferta",
+        "stack",
+        "bonus",
+        "garantia",
+        "promessa",
+        "nome chiclete",
+        "ofertas"
+      ],
+      "description": "Montar promessa, stack, bonus, garantia, urgencia e nome da oferta.",
+      "status": "active"
+    },
+    {
+      "id": "process-produto-low-ticket",
+      "term": "criacao de produto low ticket",
+      "term_type": "process",
+      "parent_id": "process-area-oferta-produto",
+      "synonyms": [
+        "low ticket",
+        "tripwire",
+        "entrada",
+        "front-end"
+      ],
+      "description": "Criar produtos de entrada e funis de aquisicao low ticket.",
+      "status": "active"
+    },
+    {
+      "id": "process-produto-high-ticket",
+      "term": "criacao de produto high ticket",
+      "term_type": "process",
+      "parent_id": "process-area-oferta-produto",
+      "synonyms": [
+        "high ticket",
+        "mentoria",
+        "premium",
+        "consultoria"
+      ],
+      "description": "Criar ofertas premium e vendas de alta percepcao de valor.",
+      "status": "active"
+    },
+    {
+      "id": "process-escada-produtos",
+      "term": "escada de produtos e esteira",
+      "term_type": "process",
+      "parent_id": "process-area-oferta-produto",
+      "synonyms": [
+        "esteira",
+        "escada de produtos",
+        "ascensao",
+        "backend",
+        "cross-sell"
+      ],
+      "description": "Desenhar a sequencia de ofertas do front-end ao backend.",
+      "status": "active"
+    },
+    {
+      "id": "process-assinatura-recorrencia",
+      "term": "assinatura e recorrencia",
+      "term_type": "process",
+      "parent_id": "process-area-oferta-produto",
+      "synonyms": [
+        "assinatura",
+        "recorrencia",
+        "clube",
+        "membership"
+      ],
+      "description": "Modelos de receita recorrente e assinaturas.",
+      "status": "active"
+    },
+    {
+      "id": "process-copy-vsl",
+      "term": "copy para VSL",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "VSL",
+        "lead de VSL",
+        "mini VSL",
+        "video sales letter",
+        "roteiro de VSL"
+      ],
+      "description": "Escrever VSLs: lead, historia, mecanismo, prova, oferta e CTA.",
+      "status": "active"
+    },
+    {
+      "id": "process-copy-carta-vendas",
+      "term": "copy para carta de vendas",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "carta de vendas",
+        "sales letter",
+        "advertorial",
+        "TSL"
+      ],
+      "description": "Escrever cartas de vendas e advertoriais em texto.",
+      "status": "active"
+    },
+    {
+      "id": "process-copy-anuncios",
+      "term": "copy para anuncios",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "copy de anuncio",
+        "script de anuncio",
+        "angulo",
+        "anuncios",
+        "ads"
+      ],
+      "description": "Escrever hooks, angulos e scripts de anuncios pagos.",
+      "status": "active"
+    },
+    {
+      "id": "process-copy-email",
+      "term": "copy para email",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "email",
+        "sequencia de email",
+        "broadcast",
+        "newsletter"
+      ],
+      "description": "Escrever emails de venda, nutricao e relacionamento.",
+      "status": "active"
+    },
+    {
+      "id": "process-copy-paginas",
+      "term": "copy para paginas",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "copy de pagina",
+        "headline de pagina",
+        "bullets",
+        "pagina de vendas"
+      ],
+      "description": "Escrever o texto de paginas de captura, vendas e checkout.",
+      "status": "active"
+    },
+    {
+      "id": "process-mecanismo-big-idea",
+      "term": "mecanismo e big idea",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "mecanismo",
+        "one belief",
+        "crenca",
+        "big idea",
+        "nova oportunidade"
+      ],
+      "description": "Definir a crenca central, o mecanismo unico e a big idea da comunicacao.",
+      "status": "active"
+    },
+    {
+      "id": "process-storytelling",
+      "term": "storytelling e narrativa",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "historia",
+        "narrativa",
+        "storytelling",
+        "jornada do heroi"
+      ],
+      "description": "Construir historias e narrativas de venda.",
+      "status": "active"
+    },
+    {
+      "id": "process-headlines-hooks",
+      "term": "headlines e hooks",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "hook",
+        "headline",
+        "gancho",
+        "abertura",
+        "atencao",
+        "clique"
+      ],
+      "description": "Criar aberturas, ganchos e titulos que capturam atencao.",
+      "status": "active"
+    },
+    {
+      "id": "process-prova-depoimentos",
+      "term": "prova e depoimentos",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "prova",
+        "prova social",
+        "depoimento",
+        "case",
+        "demonstracao",
+        "autoridade",
+        "expert"
+      ],
+      "description": "Usar provas, cases, demonstracoes e autoridade na comunicacao.",
+      "status": "active"
+    },
+    {
+      "id": "process-argumentacao-objecoes",
+      "term": "argumentacao e objecoes",
+      "term_type": "process",
+      "parent_id": "process-area-copywriting",
+      "synonyms": [
+        "objecoes",
+        "argumento",
+        "argumentacao",
+        "persuasao",
+        "psicologia",
+        "quebra de objecao"
+      ],
+      "description": "Estruturar argumentos e quebrar objecoes de compra.",
+      "status": "active"
+    },
+    {
+      "id": "process-arquitetura-funil",
+      "term": "arquitetura de funil",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "funil",
+        "jornada",
+        "fluxo",
+        "arquitetura de aquisicao"
+      ],
+      "description": "Desenhar a arquitetura completa de aquisicao e conversao.",
+      "status": "active"
+    },
+    {
+      "id": "process-quiz",
+      "term": "criacao de quiz",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "quiz",
+        "diagnostico",
+        "pergunta inicial",
+        "quiz funnel"
+      ],
+      "description": "Criar quizzes e diagnosticos que segmentam e preparam a venda.",
+      "status": "active"
+    },
+    {
+      "id": "process-webinario",
+      "term": "webinario e aula de vendas",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "webinar",
+        "webinario",
+        "aula de vendas",
+        "masterclass",
+        "evento online"
+      ],
+      "description": "Estruturar webinarios, aulas de vendas e pitches ao vivo.",
+      "status": "active"
+    },
+    {
+      "id": "process-lancamento",
+      "term": "lancamento",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "lancamento",
+        "PLF",
+        "carrinho aberto",
+        "campanha com data"
+      ],
+      "description": "Planejar e executar lancamentos e campanhas com data.",
+      "status": "active"
+    },
+    {
+      "id": "process-perpetuo",
+      "term": "funil perpetuo",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "perpetuo",
+        "evergreen",
+        "vendas todos os dias"
+      ],
+      "description": "Operar funis de venda continua sem data fixa.",
+      "status": "active"
+    },
+    {
+      "id": "process-captura-leadgen",
+      "term": "captura e geracao de leads",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "captura",
+        "leadgen",
+        "isca digital",
+        "e-book",
+        "lead magnet",
+        "leads",
+        "lista"
+      ],
+      "description": "Gerar leads com iscas, paginas de captura e listas.",
+      "status": "active"
+    },
+    {
+      "id": "process-checkout",
+      "term": "checkout e order bump",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "checkout",
+        "order bump",
+        "pagina de pagamento",
+        "abandono de carrinho"
+      ],
+      "description": "Otimizar checkout, order bumps e reducao de abandono.",
+      "status": "active"
+    },
+    {
+      "id": "process-upsell-downsell",
+      "term": "upsell e downsell",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "upsell",
+        "downsell",
+        "OTO",
+        "oferta pos-compra"
+      ],
+      "description": "Desenhar ofertas pos-compra para elevar ticket medio.",
+      "status": "active"
+    },
+    {
+      "id": "process-criacao-paginas",
+      "term": "criacao de paginas",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "landing page",
+        "pagina de captura",
+        "page builder",
+        "UX",
+        "design de pagina"
+      ],
+      "description": "Construir e estruturar paginas: layout, UX e elementos de conversao.",
+      "status": "active"
+    },
+    {
+      "id": "process-area-membros",
+      "term": "area de membros e entrega",
+      "term_type": "process",
+      "parent_id": "process-area-funis-paginas",
+      "synonyms": [
+        "area de membros",
+        "entrega",
+        "portal do aluno"
+      ],
+      "description": "Estruturar a entrega do produto digital e a experiencia de consumo.",
+      "status": "active"
+    },
+    {
+      "id": "process-trafego-meta",
+      "term": "trafego pago Meta",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "Meta Ads",
+        "Facebook Ads",
+        "Instagram Ads",
+        "CBO",
+        "ABO",
+        "pixel"
+      ],
+      "description": "Gestao de campanhas pagas no ecossistema Meta.",
+      "status": "active"
+    },
+    {
+      "id": "process-trafego-google-youtube",
+      "term": "trafego pago Google e YouTube",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "Google Ads",
+        "YouTube Ads",
+        "rede de display",
+        "search"
+      ],
+      "description": "Gestao de campanhas pagas no Google e YouTube.",
+      "status": "active"
+    },
+    {
+      "id": "process-trafego-outros-canais",
+      "term": "trafego pago outros canais",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "TikTok Ads",
+        "native ads",
+        "Taboola",
+        "Outbrain",
+        "Pinterest Ads"
+      ],
+      "description": "Gestao de midia paga fora de Meta e Google.",
+      "status": "active"
+    },
+    {
+      "id": "process-trafego-organico",
+      "term": "trafego organico e conteudo",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "organico",
+        "conteudo",
+        "redes sociais",
+        "reels",
+        "shorts",
+        "podcast"
+      ],
+      "description": "Aquisicao por conteudo organico e presenca em redes.",
+      "status": "active"
+    },
+    {
+      "id": "process-influenciadores",
+      "term": "influenciadores e creators",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "influenciadores",
+        "creators",
+        "marcas virais",
+        "seeding"
+      ],
+      "description": "Aquisicao e amplificacao via influenciadores e creators.",
+      "status": "active"
+    },
+    {
+      "id": "process-afiliados-parcerias",
+      "term": "afiliados e parcerias",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "afiliados",
+        "coproducao",
+        "parcerias",
+        "joint venture"
+      ],
+      "description": "Aquisicao via afiliados, coproducoes e parcerias comerciais.",
+      "status": "active"
+    },
+    {
+      "id": "process-seo",
+      "term": "SEO e busca organica",
+      "term_type": "process",
+      "parent_id": "process-area-trafego-aquisicao",
+      "synonyms": [
+        "SEO",
+        "busca organica",
+        "rankeamento",
+        "palavras-chave"
+      ],
+      "description": "Aquisicao via otimizacao para mecanismos de busca.",
+      "status": "active"
+    },
+    {
+      "id": "process-video-anuncio",
+      "term": "criacao de video para anuncios",
+      "term_type": "process",
+      "parent_id": "process-area-criativos",
+      "synonyms": [
+        "video de anuncio",
+        "UGC",
+        "roteiro de criativo",
+        "edicao",
+        "video curto"
+      ],
+      "description": "Roteirizar, gravar e editar videos de anuncio.",
+      "status": "active"
+    },
+    {
+      "id": "process-imagem-anuncio",
+      "term": "criacao de imagem para anuncios",
+      "term_type": "process",
+      "parent_id": "process-area-criativos",
+      "synonyms": [
+        "imagem estatica",
+        "estatico",
+        "banner",
+        "thumbnail"
+      ],
+      "description": "Criar imagens, estaticos e thumbnails para campanhas.",
+      "status": "active"
+    },
+    {
+      "id": "process-teste-variacao-criativos",
+      "term": "teste e variacao de criativos",
+      "term_type": "process",
+      "parent_id": "process-area-criativos",
+      "synonyms": [
+        "teste de criativos",
+        "variacoes",
+        "esteira de variacoes",
+        "recombinacao",
+        "formato"
+      ],
+      "description": "Metodologia de teste, variacao e escala de criativos validados.",
+      "status": "active"
+    },
+    {
+      "id": "process-producao-vsl-player",
+      "term": "producao e player de VSL",
+      "term_type": "process",
+      "parent_id": "process-area-criativos",
+      "synonyms": [
+        "gravacao de VSL",
+        "player",
+        "autoplay",
+        "template de player",
+        "retencao de video",
+        "VTurb"
+      ],
+      "description": "Producao audiovisual da VSL e otimizacao de player e retencao.",
+      "status": "active"
+    },
+    {
+      "id": "process-cro-testes",
+      "term": "CRO e testes A/B",
+      "term_type": "process",
+      "parent_id": "process-area-conversao-otimizacao",
+      "synonyms": [
+        "CRO",
+        "teste A/B",
+        "otimizacao de conversao",
+        "split test"
+      ],
+      "description": "Otimizar conversao com testes controlados.",
+      "status": "active"
+    },
+    {
+      "id": "process-metricas-analise",
+      "term": "metricas e analise",
+      "term_type": "process",
+      "parent_id": "process-area-conversao-otimizacao",
+      "synonyms": [
+        "metricas",
+        "CAC",
+        "LTV",
+        "ROAS",
+        "ROI",
+        "atribuicao",
+        "planilha",
+        "dashboard",
+        "margem"
+      ],
+      "description": "Medir, atribuir e analisar performance e unit economics.",
+      "status": "active"
+    },
+    {
+      "id": "process-recuperacao-remarketing",
+      "term": "recuperacao e remarketing",
+      "term_type": "process",
+      "parent_id": "process-area-conversao-otimizacao",
+      "synonyms": [
+        "recuperacao",
+        "remarketing",
+        "retargeting",
+        "carrinho abandonado"
+      ],
+      "description": "Recuperar vendas perdidas e reimpactar audiencias.",
+      "status": "active"
+    },
+    {
+      "id": "process-time-vendas",
+      "term": "time de vendas",
+      "term_type": "process",
+      "parent_id": "process-area-vendas-relacionamento",
+      "synonyms": [
+        "time de vendas",
+        "closer",
+        "televendas",
+        "whatsapp",
+        "social selling",
+        "SDR"
+      ],
+      "description": "Estruturar e operar vendas humanas e canais diretos.",
+      "status": "active"
+    },
+    {
+      "id": "process-atendimento-suporte",
+      "term": "atendimento e suporte",
+      "term_type": "process",
+      "parent_id": "process-area-vendas-relacionamento",
+      "synonyms": [
+        "suporte",
+        "atendimento",
+        "CS",
+        "customer success"
+      ],
+      "description": "Atendimento ao cliente como alavanca de venda e retencao.",
+      "status": "active"
+    },
+    {
+      "id": "process-onboarding-ativacao",
+      "term": "onboarding e ativacao",
+      "term_type": "process",
+      "parent_id": "process-area-pos-venda-retencao",
+      "synonyms": [
+        "onboarding",
+        "ativacao",
+        "primeiros passos"
+      ],
+      "description": "Ativar o cliente e garantir o primeiro valor rapido.",
+      "status": "active"
+    },
+    {
+      "id": "process-retencao-churn",
+      "term": "retencao e churn",
+      "term_type": "process",
+      "parent_id": "process-area-pos-venda-retencao",
+      "synonyms": [
+        "retencao",
+        "churn",
+        "engajamento",
+        "recompra"
+      ],
+      "description": "Reter clientes, reduzir churn e sustentar engajamento.",
+      "status": "active"
+    },
+    {
+      "id": "process-reembolso-chargeback",
+      "term": "reembolso e chargeback",
+      "term_type": "process",
+      "parent_id": "process-area-pos-venda-retencao",
+      "synonyms": [
+        "reembolso",
+        "chargeback",
+        "garantia acionada"
+      ],
+      "description": "Reduzir e tratar reembolsos e chargebacks.",
+      "status": "active"
+    },
+    {
+      "id": "process-monetizacao-base",
+      "term": "monetizacao da base",
+      "term_type": "process",
+      "parent_id": "process-area-pos-venda-retencao",
+      "synonyms": [
+        "base de clientes",
+        "LTV da base",
+        "remonetizacao",
+        "lista de compradores"
+      ],
+      "description": "Extrair mais valor da base existente de clientes e leads.",
+      "status": "active"
+    },
+    {
+      "id": "process-gestao-time",
+      "term": "gestao de time",
+      "term_type": "process",
+      "parent_id": "process-area-gestao-operacao",
+      "synonyms": [
+        "time",
+        "contratacao",
+        "treinamento",
+        "delegacao",
+        "cultura"
+      ],
+      "description": "Contratar, treinar e liderar times de marketing e copy.",
+      "status": "active"
+    },
+    {
+      "id": "process-processos-operacao",
+      "term": "processos e operacao",
+      "term_type": "process",
+      "parent_id": "process-area-gestao-operacao",
+      "synonyms": [
+        "operacao",
+        "processos",
+        "rituais",
+        "sistemas",
+        "disciplina",
+        "rotina"
+      ],
+      "description": "Processos, rituais e sistemas de execucao da operacao.",
+      "status": "active"
+    },
+    {
+      "id": "process-financas-margem",
+      "term": "financas e margem",
+      "term_type": "process",
+      "parent_id": "process-area-gestao-operacao",
+      "synonyms": [
+        "lucro",
+        "margem",
+        "caixa",
+        "financeiro",
+        "custos"
+      ],
+      "description": "Gestao financeira, margem e saude de caixa da operacao.",
+      "status": "active"
+    },
+    {
+      "id": "process-carreira",
+      "term": "carreira e desenvolvimento",
+      "term_type": "process",
+      "parent_id": "process-area-gestao-operacao",
+      "synonyms": [
+        "carreira",
+        "desenvolvimento profissional",
+        "repertorio",
+        "aprendizado"
+      ],
+      "description": "Trajetoria e desenvolvimento de profissionais de marketing.",
+      "status": "active"
+    },
+    {
+      "id": "process-ia-marketing",
+      "term": "IA aplicada a marketing",
+      "term_type": "process",
+      "parent_id": "process-area-ia-automacao",
+      "synonyms": [
+        "IA",
+        "inteligencia artificial",
+        "automacao",
+        "agentes",
+        "Manus"
+      ],
+      "description": "Usar IA e automacao para acelerar processos de marketing.",
       "status": "active"
     }
   ]

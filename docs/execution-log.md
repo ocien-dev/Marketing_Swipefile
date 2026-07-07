@@ -857,3 +857,32 @@ Protocol and validation:
 - Evidence quote check passed across the current v2 base: 207/207 quotes matched their source segment or segment range; 0 quote-noise hits with the updated detector.
 - `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 207 v2 insights, and 13 acquisition tasks.
 - Status after consolidation: 15/50 target episodes fully extracted in v2, 246/754 target chunks extracted, `gate_r1_ready=true` for amended coverage only. Formal Gate R1 decision remains pending owner review.
+
+## 2026-07-07 - Process taxonomy seed and process_tags post-processing
+
+Scope:
+
+- Documentation/process-taxonomy session only; R07 extraction prompt was not changed.
+- External taxonomy seed accepted locally as `taxonomy_version=2026-07-07.1`.
+
+Validation:
+
+- Parsed `data/processed/taxonomy_seed.json` successfully.
+- Non-ASCII scan passed for `data/processed/taxonomy_seed.json` and `docs/process-taxonomy.md`: 0 non-ASCII characters in both files.
+- Seed structure check passed: 12 `process_area` terms, 58 `process` terms, 0 duplicate ids, 0 invalid `process-*` ids, and 0 invalid process parent references.
+- `scripts/validate_insights_v2.py` passed for all 15 current v2 episode files after adding optional `process_tags` support to the v2 schema.
+
+Implementation:
+
+- Extended `scripts/classify_taxonomy.py` to assign `process_tags` as deterministic post-processing over v1/v2 payloads by matching active `process` terms and synonyms from the taxonomy seed.
+- Insights with no process match are written to a review queue and receive no generic process fallback tag.
+- `scripts/consolidate_exports.py` now preserves `process_tags` in v1/v2 CSV exports when present.
+- `loops/episode-processing.md` now requires process-tag classification after each R07 consolidation and reporting of unmatched insight counts.
+- MSF-R12 now requires `curated_insights.process_tags` with at least one valid `process-*` tag.
+- MSF-R16 now reserves process tables/FKs and outcome annotations linked to used insights.
+
+Classification run:
+
+- Rebuilt exports with `scripts/consolidate_exports.py`: 253 episode records, 46 assets, 1,406 v1 insights, 207 v2 insights, and 13 acquisition tasks.
+- Ran process-tag classification on `data/exports/insights_master.json`: 1,406 insights classified; 3 insights without process match written to `data/exports/process_tag_review_queue_v1.json`.
+- Ran process-tag classification on `data/exports/insights_v2_master.json`: 207 insights classified; 0 insights without process match written to `data/exports/process_tag_review_queue_v2.json`.
