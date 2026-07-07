@@ -237,7 +237,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `data`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -255,11 +255,23 @@ Dependencias:
 
 - MSF-R06.
 
+Execucao parcial 2026-07-07:
+
+- Atualizado `scripts/consolidate_exports.py` para gerar exports v2 separados:
+  - `data/exports/insights_v2_master.json`
+  - `data/exports/insights_v2_master.csv`
+  - `data/exports/insights_v2_status.json`
+  - `data/exports/insights_v2_episode_status.csv`
+  - `data/exports/insights_v2_title_distribution.csv`
+- A consolidacao preserva o master v1 e valida cada `insights_v2.json` contra `schemas/insights_v2.schema.json` antes de incluir no master v2.
+- Rodada local atual: 8 insights v2 validos em 2 episodios (`mCaFyZpXJdE` e `TOW0sWhPaZw`), 0 arquivos v2 invalidos, nenhuma repeticao de titulo v2 acima de 5% com contagem >1.
+- `data/exports/insights_v2_status.json` registra `gate_r1_ready=false`, porque a cobertura segue 2/50 episodios alvo.
+
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `not_started`
+Status: `blocked`
 
 Escopo:
 
@@ -276,6 +288,13 @@ Aceite:
 Dependencias:
 
 - MSF-R07.
+
+Execucao parcial 2026-07-07:
+
+- Criado `scripts/generate_insight_v1_v2_review.py` para gerar uma review pareada v1/v2 sem copiar quotes brutas para docs versionados.
+- Gerado `docs/insight-v1-vs-v2-review-2026-07-07.md` com 8 pares piloto a partir dos 2 episodios v2 existentes.
+- Resultado piloto: v2 e direcionalmente superior em especificidade, locators de evidencia e campos operacionais.
+- Gate R1 nao foi declarado; R08 completo continua bloqueado por MSF-R07 ate haver cobertura v2 nos 50 episodios alvo e amostra de 40 pares comparaveis.
 
 ## EPIC R2 - Avaliacao honesta de outputs
 

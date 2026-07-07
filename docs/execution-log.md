@@ -548,3 +548,41 @@ Next:
 
 - MSF-R07: run v2 extraction over the 50 complete episodes and update consolidation to produce `data/exports/insights_v2_master.json`.
 - MSF-R08: compare a paired v1/v2 sample before declaring the R1 gate.
+
+## 2026-07-07 - MSF-R07/MSF-R08 instrumentation and pilot review
+
+Completed:
+
+- Updated `scripts/consolidate_exports.py` to keep the v1 master unchanged while also generating ignored local v2 exports:
+  - `data/exports/insights_v2_master.json`
+  - `data/exports/insights_v2_master.csv`
+  - `data/exports/insights_v2_status.json`
+  - `data/exports/insights_v2_episode_status.csv`
+  - `data/exports/insights_v2_title_distribution.csv`
+- Added v2 validation during consolidation; invalid `insights_v2.json` files are reported and excluded from the v2 master.
+- Added `scripts/generate_insight_v1_v2_review.py` to produce a paired v1/v2 review without copying raw transcript quotes into tracked docs.
+- Generated `docs/insight-v1-vs-v2-review-2026-07-07.md` from the current pilot data.
+
+Current v2 status:
+
+- `scripts/consolidate_exports.py` reported 253 episode records, 46 assets, 1,406 v1 insights, 8 v2 insights, and 13 acquisition tasks.
+- R07 coverage is 2/50 target episodes.
+- `data/exports/insights_v2_status.json` reports 0 invalid v2 files, title distribution OK for the current pilot, and `gate_r1_ready=false`.
+- The review has 8 pilot pairs, not the 40-pair R08 acceptance sample.
+
+Validation:
+
+- `scripts/consolidate_exports.py` completed with the project `.venv`.
+- `scripts/generate_insight_v1_v2_review.py --date 2026-07-07` completed and wrote the review doc.
+- In-memory compile passed for the edited/new Python files. Direct `py_compile` still hits OneDrive/Windows `.pyc` permission friction.
+
+Decision:
+
+- MSF-R07 is in progress, not done.
+- MSF-R08 remains blocked until MSF-R07 reaches the 50 target episodes.
+- Gate R1 is not declared.
+
+Next:
+
+- Continue Codex-first v2 extraction for the remaining target episodes, then rerun `scripts/consolidate_exports.py`.
+- Re-run `scripts/generate_insight_v1_v2_review.py --date <date>` only after the v2 master can supply at least 40 comparable pairs.

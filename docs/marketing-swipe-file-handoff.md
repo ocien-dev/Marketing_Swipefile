@@ -70,10 +70,11 @@ Ja existe um MVP local operavel em arquivos:
 - Transcricao de videos e aulas VTurb Academy por MP4/Drive e HLS.
 - Ambiente Python proprio do projeto em `.venv`, com dependencias em `requirements.txt`.
 - Contrato `raw_insights_v2` e piloto Codex-first de MSF-R05/MSF-R06.
+- Consolidacao e review piloto para MSF-R07/MSF-R08, ainda sem Gate R1 declarado.
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. MSF-R05/MSF-R06 tambem estao feitos em piloto local: `mCaFyZpXJdE` e `TOW0sWhPaZw` possuem `insights_v2.json` validos e ignorados em `data/processed/**`, com 4 insights v2 cada. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2.
+Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. MSF-R05/MSF-R06 tambem estao feitos em piloto local: `mCaFyZpXJdE` e `TOW0sWhPaZw` possuem `insights_v2.json` validos e ignorados em `data/processed/**`, com 4 insights v2 cada. MSF-R07 agora gera `data/exports/insights_v2_master.json`, `insights_v2_status.json`, `insights_v2_episode_status.csv` e `insights_v2_title_distribution.csv`, mas a cobertura ainda e 2/50 episodios alvo. MSF-R08 tem uma review piloto em `docs/insight-v1-vs-v2-review-2026-07-07.md`; Gate R1 nao foi declarado. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2.
 
 ## Lote VTurb
 
@@ -200,7 +201,7 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir da remediacao local: MSF-R05/MSF-R06 ja criaram o contrato `raw_insights_v2` e um piloto Codex-first em 2 episodios. Nao escale episodios nem inicie Supabase/MCP antes dos gates R1/R2. O proximo passo e MSF-R07/MSF-R08: extrair v2 nos 50 episodios completos, consolidar `insights_v2_master.json` e comparar v1 vs v2.
+Continue a partir da remediacao local: MSF-R05/MSF-R06 ja criaram o contrato `raw_insights_v2` e um piloto Codex-first em 2 episodios. MSF-R07/MSF-R08 ja tem consolidacao v2 e review piloto, mas Gate R1 nao foi declarado porque a cobertura v2 ainda e 2/50 episodios alvo. Nao escale novos episodios nem inicie Supabase/MCP antes dos gates R1/R2. O proximo passo e extrair v2 real nos episodios alvo restantes, rodar `scripts/consolidate_exports.py`, revisar `data/exports/insights_v2_status.json` e so entao refazer a comparacao v1/v2.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
@@ -344,9 +345,10 @@ Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rod
 Prioridade imediata:
 
 1. Executar MSF-R07: rodar o fluxo v2 nos 50 episodios completos e gerar `data/exports/insights_v2_master.json`.
-2. Executar MSF-R08: comparar amostra pareada v1 vs v2 e declarar o gate R1.
-3. Depois seguir para MSF-R09/MSF-R10: avaliacao honesta e teste cego.
-4. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
+2. Reexecutar `scripts/consolidate_exports.py` e conferir `data/exports/insights_v2_status.json`; o Gate R1 so pode ser avaliado quando a cobertura chegar a 50/50.
+3. Executar MSF-R08 completo: comparar amostra pareada de 40 itens v1 vs v2 e declarar o gate R1.
+4. Depois seguir para MSF-R09/MSF-R10: avaliacao honesta e teste cego.
+5. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
 
 Segundo bloco:
 

@@ -89,6 +89,7 @@ Current local state as of 2026-07-07:
 - 7 Codex skills and 5 operational loops exist for the local file-based workflow.
 - The Session 1 remediation environment is validated with `.venv`, `requirements.txt`, JSON parsing, script syntax compilation, and the status-only batch check.
 - MSF-R05/MSF-R06 are complete as a Codex-first pilot: `schemas/insights_v2.schema.json`, `schemas/examples/insights_v2.example.json`, `scripts/validate_insights_v2.py`, `scripts/extract_transcript_insights_llm.py`, and `prompts/extraction/base_insight_extraction_v2.md` exist; 2 local processed episodes have validated ignored `insights_v2.json` pilots.
+- MSF-R07/MSF-R08 are instrumented but not complete: `scripts/consolidate_exports.py` now writes ignored local `insights_v2_master.*`, `insights_v2_status.json`, episode status, and title distribution exports; `scripts/generate_insight_v1_v2_review.py` generated a pilot review with 8 pairs at `docs/insight-v1-vs-v2-review-2026-07-07.md`. Gate R1 is not declared because v2 coverage is still 2/50 target episodes.
 
 Proof-of-value artifacts generated locally:
 
@@ -99,4 +100,4 @@ Proof-of-value artifacts generated locally:
 - `data/exports/generated_vsl_lowticket_evaluation.md`
 - `data/exports/generated_ads_lowticket_evaluation.md`
 
-Important caveat: the raw insight base is still heuristic and should not be treated as production-grade. Follow the remediation backlog next: build the v2 extraction/evaluation gates before more scale or Supabase/MCP.
+Important caveat: the raw insight base is still heuristic and should not be treated as production-grade. Continue MSF-R07 by extracting real v2 outputs for the remaining target episodes before declaring Gate R1 or moving to Supabase/MCP.
