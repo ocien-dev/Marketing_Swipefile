@@ -12,6 +12,10 @@
 
 Pending blind judgment. No v1/tie/v2 score has been computed from labels or v2 self-declared fields.
 
+## Blindness Limitation
+
+This is label-blind, not style-blind. The A/B sample hides whether each side is v1 or v2, but the v2 format can still be recognizable because it often includes richer `operational_context` fields. Treat this as a partial-blind review and keep the external judge separate from the extractor.
+
 ## Blind Judging Instructions
 
 - Fill each `judgment_*` column with `A`, `B`, or `tie` while looking only at the blind CSV.

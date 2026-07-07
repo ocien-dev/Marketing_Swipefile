@@ -624,3 +624,37 @@ Backlog status correction:
 
 - MSF-R01, MSF-R02, and MSF-R04 marked `done`.
 - MSF-R03 marked `deferred`, because data relocation outside OneDrive was not actually executed.
+
+## 2026-07-07 - MSF-R07 Codex-first batch 001
+
+Scope:
+
+- Route: Codex-first manual extraction (`route=codex_manual`), because `OPENAI_API_KEY` was missing and the `openai` package was not installed in `.venv`.
+- Batch: `mCaFyZpXJdE` chunks 001 and 002.
+- Rationale: continue in priority order and keep the first post-harness batch small enough for real review.
+
+Outputs:
+
+- Added local ignored chunk outputs:
+  - `data/processed/mCaFyZpXJdE/llm_v2_outputs/chunk_001_insights.json`
+  - `data/processed/mCaFyZpXJdE/llm_v2_outputs/chunk_002_insights.json`
+- Recombined `data/processed/mCaFyZpXJdE/insights_v2.json`.
+- `mCaFyZpXJdE` now has 9 v2 insights across 4 chunks.
+
+Validation:
+
+- `scripts/extract_transcript_insights_llm.py combine --video-id mCaFyZpXJdE --run-id mCaFyZpXJdE-r07-codex-batch-001 --generated-at 2026-07-07T13:00:00Z --max-insights-per-chunk 5` completed.
+- `scripts/validate_insights_v2.py data/processed/mCaFyZpXJdE/insights_v2.json data/processed/TOW0sWhPaZw/insights_v2.json` returned `VALID` for both.
+- New batch evidence check: 5/5 new quotes matched their source `content_segments.json` segment text, with no hits for `inscreva`, `assista tambem`, or hashtags.
+- `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 13 v2 insights, and 13 acquisition tasks.
+
+Updated R07 status:
+
+- Target episodes with any v2: 2/50.
+- Fully extracted v2 target episodes: 0/50.
+- Target chunks extracted: 6/754.
+- `gate_r1_ready=false`.
+
+Risk note:
+
+- No OneDrive lock/permisson issue appeared during this batch. If locks/permissons appear in future batches, reopen MSF-R03 before continuing extraction.

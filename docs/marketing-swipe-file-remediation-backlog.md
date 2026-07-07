@@ -292,7 +292,7 @@ Execucao parcial 2026-07-07:
   - `data/exports/insights_v2_title_distribution.csv`
 - A consolidacao preserva o master v1 e valida cada `insights_v2.json` contra `schemas/insights_v2.schema.json` antes de incluir no master v2.
 - `data/exports/insights_v2_status.json` agora mede cobertura por episodio e por chunk para impedir aceite de episodio meio-extraido.
-- Rodada local atual: 8 insights v2 validos em 2 episodios alvo (`mCaFyZpXJdE` e `TOW0sWhPaZw`), 0 arquivos v2 invalidos, 0/50 episodios totalmente extraidos em v2, 4/754 chunks alvo extraidos, nenhuma repeticao de titulo v2 acima de 5% com contagem >1.
+- Rodada local atual: 13 insights v2 validos em 2 episodios alvo (`mCaFyZpXJdE` e `TOW0sWhPaZw`), 0 arquivos v2 invalidos, 0/50 episodios totalmente extraidos em v2, 6/754 chunks alvo extraidos, nenhuma repeticao de titulo v2 acima de 5% com contagem >1.
 - `data/exports/insights_v2_status.json` registra `gate_r1_ready=false`.
 
 ### MSF-R08 - Comparacao amostral v1 vs v2
