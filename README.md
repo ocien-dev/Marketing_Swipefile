@@ -11,6 +11,8 @@ The first source is VTurb. After the VTurb backlog is processed, the planned ord
 - `docs/marketing-swipe-file-architecture.md`
 - `docs/marketing-swipe-file-mvp-backlog.md`
 - `docs/marketing-swipe-file-full-backlog.md`
+- `docs/marketing-swipe-file-remediation-backlog.md`
+- `docs/execution-log.md`
 
 ## Execution Principle
 
@@ -27,6 +29,8 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
+Current remediation guardrail: do not scale new episodes or start Supabase/MCP until the R1/R2 gates in `docs/marketing-swipe-file-remediation-backlog.md` are closed.
+
 ## Local Data Policy
 
 Raw transcripts, complementary files, member-area assets, PDFs, spreadsheets, and generated exports are ignored by Git by default. Keep source material local unless there is an explicit reason to publish it.
@@ -39,13 +43,25 @@ Tracked files should be limited to:
 - tests and fixtures
 - schemas/contracts
 - lightweight seed files such as `data/processed/taxonomy_seed.json`
+- lightweight queue files such as `data/input/academy_video_transcription_queue.csv` and `data/input/youtube_urls_academy_new.csv`
+
+## Local Python
+
+Use the project venv by default:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only
+```
+
+The old Codex bundled Python path is only a fallback. The project runtime dependencies are tracked in `requirements.txt`.
 
 ## MVP Flow
 
 1. Add candidate episodes to `data/input/youtube_urls.csv`.
 2. Collect metadata into `data/raw/youtube/{video_id}/metadata.json`.
 3. Collect YouTube automatic transcript into `data/raw/youtube/{video_id}/transcript_original.json`.
-   - If the direct caption endpoint fails but the YouTube UI exposes "Mostrar transcricao", use the Playwright snapshot fallback.
+   - If the direct caption endpoint fails but the YouTube UI exposes "Mostrar transcricao", use the Playwright DOM/snapshot fallback.
 4. Normalize transcript into `data/processed/{video_id}/content_segments.json`.
 5. Split long episodes into extraction chunks under `data/processed/{video_id}/chunks/`.
 6. Detect complementary materials into `referenced_assets.json`, `acquisition_tasks.json`, and `manual_actions.md`.
@@ -59,12 +75,27 @@ See `docs/asset-acquisition-procedure.md` for the manual procedure used when an 
 
 ## Current Execution Slice
 
-The current implementation starts with:
+Current local state as of 2026-07-07:
 
-- MSF-A01: project structure, README, `.gitignore`
-- MSF-A02: local JSON contracts
-- MSF-A03: taxonomy seed
-- MSF-A04: fixtures
-- Playwright transcript fallback for YouTube UI transcripts
-- Chapter-aware extraction chunking for long episodes
-- Batch preparation of chunk-level extraction packets
+- 160 real VTurb URLs are listed in `data/input/youtube_urls.csv`.
+- Metadata was collected for 96 listed episodes.
+- 50 episodes have usable transcripts, normalized segments, chunks, asset detection, extraction packets, transcript insights, summaries, and logs.
+- Remaining queued episodes without transcript/chunks should not be counted as fully processed yet.
+- Local exports consolidate 253 episode records, 46 registered assets, 1,406 insights, and 13 acquisition tasks.
+- The VTurb Academy layer added Drive/MP4 and HLS transcriptions through `scripts/transcribe_academy_videos.py` and `scripts/transcribe_academy_hls.py`.
+- `data/input/academy_video_transcription_queue.csv` and `data/input/youtube_urls_academy_new.csv` are lightweight tracked queues; generated Academy exports remain local under ignored `data/exports/**`.
+- `data/exports/acquisition_tasks_master.csv` contains 13 complementary-material acquisition tasks.
+- Search, strategy-pack generation, output evaluation, dedupe, taxonomy classification, summaries, and orchestration scripts exist.
+- 7 Codex skills and 5 operational loops exist for the local file-based workflow.
+- The Session 1 remediation environment is validated with `.venv`, `requirements.txt`, JSON parsing, script syntax compilation, and the status-only batch check.
+
+Proof-of-value artifacts generated locally:
+
+- `data/exports/strategy_pack_vsl.md`
+- `data/exports/strategy_pack_ads.md`
+- `data/exports/generated_vsl_lowticket.md`
+- `data/exports/generated_ads_lowticket.md`
+- `data/exports/generated_vsl_lowticket_evaluation.md`
+- `data/exports/generated_ads_lowticket_evaluation.md`
+
+Important caveat: the raw insight base is still heuristic and should not be treated as production-grade. Follow the remediation backlog next: build the v2 extraction/evaluation gates before more scale or Supabase/MCP.

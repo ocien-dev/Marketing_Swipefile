@@ -1,0 +1,100 @@
+"""Shared helpers for Marketing Swipe File local scripts."""
+
+from __future__ import annotations
+
+import json
+import re
+import unicodedata
+from pathlib import Path
+from typing import Any, Iterable
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as file:
+        json.dump(payload, file, ensure_ascii=True, indent=2)
+        file.write("\n")
+
+
+def write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
+def normalize_text(value: Any) -> str:
+    text = "" if value is None else str(value)
+    normalized = unicodedata.normalize("NFKD", text)
+    ascii_text = "".join(char for char in normalized if not unicodedata.combining(char))
+    ascii_text = ascii_text.lower()
+    return re.sub(r"\s+", " ", ascii_text).strip()
+
+
+def slugify(value: Any, max_length: int = 120) -> str:
+    normalized = normalize_text(value)
+    slug = re.sub(r"[^a-z0-9]+", "-", normalized).strip("-")
+    if max_length and len(slug) > max_length:
+        slug = slug[:max_length].rstrip("-")
+    return slug or "item"
+
+
+def tokens(value: Any) -> set[str]:
+    return set(re.findall(r"[a-z0-9]{3,}", normalize_text(value)))
+
+
+def jaccard(left: Iterable[str], right: Iterable[str]) -> float:
+    left_set = set(left)
+    right_set = set(right)
+    if not left_set or not right_set:
+        return 0.0
+    return len(left_set & right_set) / len(left_set | right_set)
+
+
+def as_list(value: Any) -> list[Any]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    return [value]
+
+
+def unique_preserve_order(values: Iterable[Any]) -> list[Any]:
+    seen: set[str] = set()
+    result: list[Any] = []
+    for value in values:
+        key = normalize_text(value)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        result.append(value)
+    return result
+
+
+def insight_text(insight: dict[str, Any], include_evidence: bool = True) -> str:
+    parts = [
+        insight.get("title"),
+        insight.get("insight_original"),
+        insight.get("insight_ptbr"),
+        insight.get("summary_ptbr"),
+        " ".join(str(item) for item in as_list(insight.get("themes"))),
+        " ".join(str(item) for item in as_list(insight.get("subthemes"))),
+        " ".join(str(item) for item in as_list(insight.get("applicability"))),
+    ]
+    if include_evidence:
+        for evidence in as_list(insight.get("evidence")):
+            if isinstance(evidence, dict):
+                parts.append(evidence.get("quote_original"))
+                parts.append(evidence.get("quote_ptbr"))
+    return " ".join(str(part) for part in parts if part)
+
+
+def first_evidence(insight: dict[str, Any]) -> dict[str, Any]:
+    evidence_items = insight.get("evidence") or []
+    if isinstance(evidence_items, list) and evidence_items and isinstance(evidence_items[0], dict):
+        return evidence_items[0]
+    return {}
+

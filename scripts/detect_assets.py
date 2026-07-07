@@ -36,6 +36,12 @@ ASSET_PATTERNS = [
         "name": "Slides mencionados no episodio",
         "expected_value": "Possivel aula, pitch, framework ou estrutura visual.",
     },
+    {
+        "asset_type_guess": "image",
+        "keywords": ["banner", "imagem", "image", "mockup", "png", "jpg", "jpeg"],
+        "name": "Imagem ou mockup mencionado no episodio",
+        "expected_value": "Possivel referencia visual, banner, mockup ou criativo complementar.",
+    },
 ]
 
 ACTION_KEYWORDS = [
@@ -71,7 +77,16 @@ PUBLIC_FILE_HINTS = {
     "doc": ["docs.google.com/document", ".doc", ".docx", "drive.google.com", "notion.site"],
     "spreadsheet": ["docs.google.com/spreadsheets", ".csv", ".xlsx", "airtable.com", "drive.google.com"],
     "slides": ["docs.google.com/presentation", ".ppt", ".pptx", "drive.google.com"],
+    "image": [".png", ".jpg", ".jpeg", ".webp", "drive.google.com", "dropbox.com"],
 }
+
+NEGATIVE_ASSET_PHRASES = [
+    "nao tem pdf",
+    "nao achei",
+    "nao encontrei",
+    "talvez tenha",
+    "sem pdf",
+]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -122,6 +137,9 @@ def is_actionable_asset_mention(mention: dict[str, Any], pattern: dict[str, Any]
     source = mention.get("source")
     asset_type_guess = pattern["asset_type_guess"]
 
+    if any(phrase in lowered for phrase in NEGATIVE_ASSET_PHRASES):
+        return False
+
     if source == "description":
         return has_public_file_link(text, asset_type_guess)
 
@@ -142,13 +160,15 @@ def is_actionable_asset_mention(mention: dict[str, Any], pattern: dict[str, Any]
 def detect_keyword_instruction(text: str, asset_type_guess: str) -> tuple[str, str]:
     lowered = normalize_text(text)
     has_description_link = "link da descricao" in lowered or "link na descricao" in lowered or "descricao" in lowered
+    if has_public_file_link(text, asset_type_guess):
+        return "download_public_file", "Baixar o material pelo link publico identificado."
     if asset_type_guess == "spreadsheet" and has_description_link:
         return "open_description_link", "Buscar a planilha no link da descricao do video."
     keyword_match = re.search(r"\bcoment(?:a|e)\s+([a-zA-Z0-9_-]{2,30})", text, re.IGNORECASE)
     if keyword_match:
         keyword = keyword_match.group(1).upper()
         return "comment_keyword", f"Comentar a palavra {keyword} conforme instrucao do episodio."
-    if "direct" in lowered or "dm" in lowered:
+    if contains_term(lowered, "direct") or contains_term(lowered, "dm"):
         return "send_direct_message", "Enviar direct conforme instrucao mencionada no episodio."
     if has_description_link:
         return "open_description_link", "Buscar o material no link da descricao do video."
@@ -170,14 +190,20 @@ def collect_mentions(metadata: dict[str, Any], segments_payload: dict[str, Any])
         )
     description = metadata.get("description")
     if description:
-        mentions.append(
-            {
-                "source": "description",
-                "text": description,
-                "start_seconds": None,
-                "end_seconds": None,
-            }
-        )
+        lines = [line.strip() for line in description.splitlines()]
+        nonempty_lines = [line for line in lines if line]
+        for index, line in enumerate(nonempty_lines):
+            context = line
+            if extract_urls(line) and index > 0 and len(nonempty_lines[index - 1]) <= 140:
+                context = f"{nonempty_lines[index - 1]}\n{line}"
+            mentions.append(
+                {
+                    "source": "description",
+                    "text": context,
+                    "start_seconds": None,
+                    "end_seconds": None,
+                }
+            )
     return mentions
 
 

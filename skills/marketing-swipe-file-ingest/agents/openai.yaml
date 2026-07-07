@@ -1,0 +1,3 @@
+interface:
+  display_name: "Marketing Swipe File Ingest"
+  short_description: "Ingest YouTube episodes into local Marketing Swipe File artifacts."

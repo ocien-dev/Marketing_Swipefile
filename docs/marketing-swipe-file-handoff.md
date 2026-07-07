@@ -39,13 +39,15 @@ Leia nesta ordem:
 2. `docs/marketing-swipe-file-prd.md`
 3. `docs/marketing-swipe-file-architecture.md`
 4. `docs/marketing-swipe-file-full-backlog.md`
-5. `docs/execution-log.md`
-6. `docs/asset-acquisition-procedure.md`
-7. `docs/insight-quality-checklist.md`
+5. `docs/marketing-swipe-file-remediation-backlog.md`
+6. `docs/execution-log.md`
+7. `docs/asset-acquisition-procedure.md`
+8. `docs/insight-quality-checklist.md`
+9. `docs/output-evaluation-rubric.md`
 
-## Estado Atual
+## Estado Atual Em 2026-07-07
 
-Ja existe uma fundacao local funcional:
+Ja existe um MVP local operavel em arquivos:
 
 - Estrutura do projeto.
 - Schemas JSON.
@@ -53,7 +55,7 @@ Ja existe uma fundacao local funcional:
 - Fixtures.
 - Coleta de metadata do YouTube.
 - Coleta direta de transcript quando o endpoint responde.
-- Fallback Playwright para transcript visivel na UI do YouTube.
+- Fallback Playwright DOM-first para transcript visivel na UI do YouTube.
 - Normalizacao de transcript em segmentos.
 - Deteccao de materiais complementares.
 - Registro e processamento de assets locais.
@@ -63,35 +65,45 @@ Ja existe uma fundacao local funcional:
 - Chunking por capitulos para episodios longos.
 - Preparacao em lote de extraction packets por chunk.
 - Auditoria local de insights.
+- Extracao heuristica de insights profundos a partir dos chunks de transcricao.
+- Dedupe local, classificacao taxonomica, resumos, master exports, busca, strategy packs e avaliacao de outputs.
+- Transcricao de videos e aulas VTurb Academy por MP4/Drive e HLS.
+- Ambiente Python proprio do projeto em `.venv`, com dependencias em `requirements.txt`.
+- 7 skills Codex locais.
+- 5 loops operacionais locais.
 
-## Primeiro Episodio Piloto
+Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2.
 
-Video:
+## Lote VTurb
 
-```text
-https://www.youtube.com/watch?v=mCaFyZpXJdE
-```
+Lista em `data/input/youtube_urls.csv`:
 
-Titulo:
+- 160 URLs VTurb listadas.
+- 96 episodios com metadata coletada.
+- 50 episodios com transcript, segmentos, chunks e insights.
+- 110 episodios ainda sem o gate completo; destes, varios tem metadata mas seguem bloqueados ou ainda nao tentados em transcript.
 
-```text
-Low Ticket: Absolutamente Tudo Para Escalar 100K/Dia! | Davi, Kaue e Slender - SDE #159
-```
+Bloqueados em transcript ja observados entre os primeiros lotes:
 
-Status local:
+- `YfI0CjI_XaE`
+- `Rz1Y7fhXGFI`
+- `0DlzYLUmKcU`
+- `wJincuVXxxc`
+- `FV-KR1eEbCw`
+- `sVUrU9gvxyk`
 
-- Metadata coletada em `data/raw/youtube/mCaFyZpXJdE/metadata.json`.
-- Endpoint direto de captions falhou/retornou vazio.
-- Transcricao coletada pela UI do YouTube usando Playwright.
-- Transcricao final salva em `data/raw/youtube/mCaFyZpXJdE/transcript_original.json`.
-- 2,706 segmentos normalizados em `data/processed/mCaFyZpXJdE/content_segments.json`.
-- 21 chunks criados em `data/processed/mCaFyZpXJdE/chunks/`.
-- 126 packets chunkados gerados em `data/processed/mCaFyZpXJdE/chunked_extraction_packets/`.
-- Nenhum material complementar acionavel foi detectado neste episodio depois da correcao contra falsos positivos.
+Artefatos de prova:
 
-Observacao importante:
+- `data/exports/strategy_pack_vsl.md`
+- `data/exports/strategy_pack_ads.md`
+- `data/exports/generated_vsl_lowticket.md`
+- `data/exports/generated_ads_lowticket.md`
+- `data/exports/generated_vsl_lowticket_evaluation.md`: 39/40, `pass`.
+- `data/exports/generated_ads_lowticket_evaluation.md`: 37/40, `pass`.
+- `data/exports/acquisition_tasks_master.csv`: 13 tarefas de materiais complementares.
 
 - `data/raw/**`, `data/processed/**`, `data/input/youtube_urls.csv` e assets locais sao ignorados pelo Git por politica de dados. Eles existem localmente nesta maquina, mas nao devem ser assumidos como versionados.
+- `data/input/academy_video_transcription_queue.csv` e `data/input/youtube_urls_academy_new.csv` sao filas leves rastreaveis; exports `vturb_academy_*` continuam locais em `data/exports/**`.
 
 ## Scripts Principais
 
@@ -100,23 +112,43 @@ Coleta e normalizacao:
 - `scripts/collect_youtube_metadata.py`
 - `scripts/collect_youtube_transcript.py`
 - `scripts/collect_youtube_transcript_from_playwright_snapshot.py`
+- `scripts/capture_youtube_transcript_with_playwright_cli.py`
+- `scripts/discover_vturb_youtube_videos.py`
 - `scripts/normalize_transcript.py`
 - `scripts/create_extraction_chunks.py`
+- `scripts/run_episode_pipeline.py`
+- `scripts/run_episode_batch.py`
+- `scripts/transcribe_academy_videos.py`
+- `scripts/transcribe_academy_hls.py`
 
 Materiais complementares:
 
 - `scripts/detect_assets.py`
 - `scripts/register_assets.py`
 - `scripts/process_asset.py`
+- `scripts/run_asset_pipeline.py`
 
 Extracao e qualidade:
 
 - `scripts/prepare_extraction_packet.py`
 - `scripts/prepare_chunked_extraction_packets.py`
+- `scripts/extract_description_insights.py`
+- `scripts/extract_transcript_insights.py`
+- `scripts/classify_taxonomy.py`
+- `scripts/dedupe_insights.py`
 - `scripts/audit_insights.py`
+- `scripts/generate_summaries.py`
+
+Busca e outputs:
+
+- `scripts/consolidate_exports.py`
+- `scripts/search_insights.py`
+- `scripts/generate_strategy_pack.py`
+- `scripts/evaluate_output.py`
 
 Helpers:
 
+- `scripts/msf_common.py`
 - `scripts/youtube_common.py`
 
 ## Prompts De Extracao
@@ -135,6 +167,28 @@ Especializados:
 - `prompts/extraction/ops_extractor.md`
 - `prompts/extraction/asset_extractor.md`
 
+Retrieval:
+
+- `prompts/retrieval/strategy_pack_retrieval.md`
+
+## Skills Codex
+
+- `skills/marketing-swipe-file-ingest/`
+- `skills/marketing-swipe-file-detect-assets/`
+- `skills/marketing-swipe-file-process-assets/`
+- `skills/marketing-swipe-file-extract-insights/`
+- `skills/marketing-swipe-file-retrieve/`
+- `skills/marketing-swipe-file-quality-review/`
+- `skills/marketing-swipe-file-scale-batch/`
+
+## Loops Operacionais
+
+- `loops/episode-processing.md`
+- `loops/asset-processing.md`
+- `loops/strategy-pack.md`
+- `loops/output-evaluation.md`
+- `loops/batch-scaling.md`
+
 ## Como Retomar No Proximo Chat
 
 Comece com este briefing:
@@ -142,13 +196,13 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir do episodio mCaFyZpXJdE. O proximo passo e extrair insights dos chunked extraction packets e consolidar os melhores insights para VSL, anuncios, oferta, funil, copy e operacao.
+Continue a partir da remediacao local: a Sessao 1 fechou o `.venv`, `requirements.txt` e a sincronizacao basica de docs. Nao escale episodios nem inicie Supabase/MCP antes dos gates R1/R2. O proximo passo e MSF-R05/MSF-R06: contrato `raw_insights_v2` e piloto de extracao LLM em 2 episodios.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+.\.venv\Scripts\python.exe
 ```
 
 Validacao rapida:
@@ -168,42 +222,72 @@ for path in script_paths:
     source = path.read_text(encoding='utf-8')
     compile(source, str(path), 'exec')
 print(f'Compiled {len(script_paths)} Python scripts in memory')
-'@ | & 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -
+'@ | & .\.venv\Scripts\python.exe -
 ```
 
-Conferir contagens do episodio piloto:
+Conferir status do lote:
 
 ```powershell
 @'
 from pathlib import Path
+import csv
 import json
-transcript = json.loads(Path('data/raw/youtube/mCaFyZpXJdE/transcript_original.json').read_text(encoding='utf-8'))
-segments = json.loads(Path('data/processed/mCaFyZpXJdE/content_segments.json').read_text(encoding='utf-8'))
-chunks = json.loads(Path('data/processed/mCaFyZpXJdE/chunks/chunk_index.json').read_text(encoding='utf-8'))
-packet_count = len(list(Path('data/processed/mCaFyZpXJdE/chunked_extraction_packets').glob('*/*.md')))
-print('transcript_segments', len(transcript['segments']))
-print('content_segments', len(segments['segments']))
-print('chunks', len(chunks['chunks']))
-print('chunk_segments', sum(chunk['segment_count'] for chunk in chunks['chunks']))
-print('largest_chunk_chars', max(chunk['char_count'] for chunk in chunks['chunks']))
-print('chunked_packets', packet_count)
-'@ | & 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -
+root = Path('.')
+rows = list(csv.DictReader((root / 'data/input/youtube_urls.csv').open(encoding='utf-8-sig')))
+processed_count = 0
+blocked = 0
+transcript_insights = 0
+for row in rows:
+    video_id = row['youtube_url'].split('v=')[-1].split('&')[0]
+    raw = root / 'data/raw/youtube' / video_id
+    processed_dir = root / 'data/processed' / video_id
+    transcript_count = 0
+    if (raw / 'transcript_original.json').exists():
+        transcript = json.loads((raw / 'transcript_original.json').read_text(encoding='utf-8'))
+        transcript_count = len(transcript.get('segments', []))
+    chunk_count = 0
+    if (processed_dir / 'chunks/chunk_index.json').exists():
+        chunks = json.loads((processed_dir / 'chunks/chunk_index.json').read_text(encoding='utf-8'))
+        chunk_count = len(chunks.get('chunks', []))
+    insight_count = 0
+    if (processed_dir / 'description_insights.json').exists():
+        insights = json.loads((processed_dir / 'description_insights.json').read_text(encoding='utf-8'))
+        insight_count = len(insights.get('insights', []))
+    transcript_insight_count = 0
+    if (processed_dir / 'insights.json').exists():
+        insights = json.loads((processed_dir / 'insights.json').read_text(encoding='utf-8'))
+        transcript_insight_count = len(insights.get('insights', []))
+    if transcript_count and chunk_count:
+        processed_count += 1
+        transcript_insights += transcript_insight_count
+    else:
+        blocked += 1
+    print(video_id, 'segments', transcript_count, 'chunks', chunk_count, 'transcript_insights', transcript_insight_count, 'description_insights', insight_count)
+print('processed_with_chunks', processed_count)
+print('blocked_or_empty', blocked)
+print('transcript_insights', transcript_insights)
+'@ | & .\.venv\Scripts\python.exe -
 ```
 
 Resultado esperado:
 
 ```text
-transcript_segments 2706
-content_segments 2706
-chunks 21
-chunk_segments 2706
-largest_chunk_chars 49947
-chunked_packets 126
+processed_with_chunks 50
+blocked_or_empty 110
+transcript_insights 1198
 ```
 
 ## Playwright Fallback Para Transcricao
 
-Quando `collect_youtube_transcript.py` gerar transcript vazio, mas a UI do YouTube tiver transcricao:
+Quando `collect_youtube_transcript.py` gerar transcript vazio, mas a UI do YouTube tiver transcricao, use primeiro o capturador automatizado:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\capture_youtube_transcript_with_playwright_cli.py --url https://www.youtube.com/watch?v=VIDEO_ID --output data\raw\youtube\VIDEO_ID\transcript_original.json
+```
+
+O capturador usa Playwright CLI via `npx`, expande a descricao, clica `Mostrar transcricao`, le os elementos DOM atuais (`transcript-segment-view-model`) e so cai para snapshot quando necessario. Em Windows, se `npx` precisar escrever no cache global do npm, rode com aprovacao fora do sandbox.
+
+Fluxo manual legado, caso seja necessario:
 
 1. Abrir o video com Playwright.
 2. Expandir a descricao.
@@ -214,100 +298,76 @@ Quando `collect_youtube_transcript.py` gerar transcript vazio, mas a UI do YouTu
 Comando de extracao a partir de snapshot ja capturado:
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\collect_youtube_transcript_from_playwright_snapshot.py --snapshot .playwright-cli\page-YYYY-MM-DDTHH-MM-SS.yml --metadata data\raw\youtube\VIDEO_ID\metadata.json --output data\raw\youtube\VIDEO_ID\transcript_original.json
+.\.venv\Scripts\python.exe scripts\collect_youtube_transcript_from_playwright_snapshot.py --snapshot .playwright-cli\page-YYYY-MM-DDTHH-MM-SS.yml --metadata data\raw\youtube\VIDEO_ID\metadata.json --output data\raw\youtube\VIDEO_ID\transcript_original.json
 ```
 
 Depois:
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\normalize_transcript.py --input data\raw\youtube\VIDEO_ID\transcript_original.json --output data\processed\VIDEO_ID\content_segments.json
+.\.venv\Scripts\python.exe scripts\normalize_transcript.py --input data\raw\youtube\VIDEO_ID\transcript_original.json --output data\processed\VIDEO_ID\content_segments.json
 ```
 
 ## Pipeline Para Novo Episodio
 
-1. Adicionar URL em `data/input/youtube_urls.csv`.
-
-2. Coletar metadata:
-
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\collect_youtube_metadata.py --csv data\input\youtube_urls.csv --output-root data\raw\youtube
+.\.venv\Scripts\python.exe scripts\run_episode_pipeline.py --url <youtube_url>
 ```
 
-3. Coletar transcricao direta:
+Processar por video_id ja coletado:
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\collect_youtube_transcript.py --metadata data\raw\youtube\VIDEO_ID\metadata.json --output-root data\raw\youtube
+.\.venv\Scripts\python.exe scripts\run_episode_pipeline.py --video-id <video_id>
 ```
 
-4. Se falhar, usar o fallback Playwright descrito acima.
-
-5. Normalizar transcript:
+Se o transcript direto falhar, usar o fallback Playwright descrito acima e depois rerodar:
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\normalize_transcript.py --input data\raw\youtube\VIDEO_ID\transcript_original.json --output data\processed\VIDEO_ID\content_segments.json
+.\.venv\Scripts\python.exe scripts\run_episode_pipeline.py --video-id VIDEO_ID --skip-metadata --skip-transcript
 ```
 
-6. Criar chunks:
+## Pipeline De Escala Em Lote
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\create_extraction_chunks.py --segments data\processed\VIDEO_ID\content_segments.json --metadata data\raw\youtube\VIDEO_ID\metadata.json --output-dir data\processed\VIDEO_ID\chunks --max-chars 50000
+.\.venv\Scripts\python.exe scripts\discover_vturb_youtube_videos.py --append --append-limit 100
+.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --use-playwright-fallback
+.\.venv\Scripts\python.exe scripts\consolidate_exports.py
 ```
 
-7. Detectar materiais complementares:
-
-```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\detect_assets.py --metadata data\raw\youtube\VIDEO_ID\metadata.json --segments data\processed\VIDEO_ID\content_segments.json --output-dir data\processed\VIDEO_ID
-```
-
-8. Gerar packets chunkados:
-
-```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\prepare_chunked_extraction_packets.py --chunk-index data\processed\VIDEO_ID\chunks\chunk_index.json --metadata data\raw\youtube\VIDEO_ID\metadata.json --extractors vsl,ads,offer,funnel,copy,ops --output-dir data\processed\VIDEO_ID\chunked_extraction_packets --insights-dir data\processed\VIDEO_ID\chunked_insights
-```
+Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rodar em ciclos controlados.
 
 ## Proximos Passos Recomendados
 
 Prioridade imediata:
 
-1. Criar um loop de extracao Codex para processar `chunked_extraction_packets`.
-2. Comecar com `vsl`, `offer`, `funnel` e `ads`, porque sao os mais ligados ao objetivo do MVP.
-3. Salvar outputs por chunk em `data/processed/mCaFyZpXJdE/chunked_insights/{extractor}/`.
-4. Criar consolidacao local dos insights por episodio.
-5. Implementar MSF-E04 deduplicacao local.
-6. Implementar MSF-E05 classificacao taxonomica.
-7. Implementar MSF-E06 resumo por episodio.
-8. Depois criar a primeira skill Codex: `marketing-swipe-file-ingest-youtube`.
+1. Executar MSF-R05: schema `raw_insights_v2` e exemplo valido.
+2. Executar MSF-R06: piloto de extracao LLM em 2 episodios ja processados.
+3. Atualizar o execution log com custo/esforco e veredito do piloto.
+4. So depois voltar a revisao humana amostral, triagem de assets e ranking de strategy packs.
 
 Segundo bloco:
 
-1. Criar mais 4 URLs piloto do VTurb para fechar MSF-B01.
-2. Rodar pipeline completo nos 5 episodios piloto.
-3. Medir qualidade dos insights e ajustar prompts.
-4. So depois disso iniciar Supabase/MCP.
+1. Retentar videos bloqueados se for importante cobrir episodios especificos.
+2. Melhorar a captura DOM para registrar automaticamente o motivo de falha por video.
 
 ## Itens Ainda Faltando
 
-Backlog aberto de maior importancia:
+Para a Release 1 completa ainda faltam:
 
-- MSF-B01: lista inicial ainda so tem 1 episodio real; faltam pelo menos 4 para o aceite original.
-- MSF-B05: logs estruturados de ingestao em `data/logs/`.
-- MSF-C04: fila geral de materiais pendentes.
-- MSF-C05: regras de valor esperado para materiais complementares.
+- Revisao humana amostral de insights de alto uso.
+- Triage/obtencao dos materiais complementares pendentes.
+- Retry posterior dos videos bloqueados, se forem estrategicamente importantes.
+- Processamento de materiais complementares reais.
 - MSF-D06: OCR/imagens com texto.
-- MSF-E04: deduplicacao local.
-- MSF-E05: classificacao taxonomica.
-- MSF-E06: resumo por episodio e asset.
-- Skills Codex ainda nao foram criadas.
-- Loops Codex ainda nao foram criados.
 - Supabase ainda nao foi criado.
 - MCP ainda nao foi criado.
 - Agentes especializados ainda nao foram criados.
 
 ## Observacoes Tecnicas
 
-- `python` nao deve ser assumido no PATH; use o Python completo listado acima.
-- `git status` falhou neste workspace com `fatal: not a git repository`, apesar de existir contexto de projeto. Nao use status Git como fonte confiavel ate isso ser resolvido.
+- `python` nao deve ser assumido no PATH; use `.\.venv\Scripts\python.exe`.
+- O Python antigo do cache do Codex e apenas fallback; o runtime oficial do projeto e o `.venv`.
 - `.playwright-cli/` esta ignorado no Git porque contem snapshots locais.
+- `.pip-tmp/`, `.tmp/`, `.codex_deps/` e `.venv/` sao artefatos locais ignorados.
 - Pacotes completos por episodio ficam grandes demais. Preferir sempre os packets chunkados.
 - Dados brutos e processados sao locais e podem conter material privado/copyrighted; manter ignorados por Git.
-
+- Se houver arquivo `transcript_fallback_needed.md` em um episodio ja processado, confira antes os arquivos `transcript_original.json`, `content_segments.json` e `chunks/chunk_index.json`; alguns marcadores antigos podem ter ficado presos por permissao do OneDrive.

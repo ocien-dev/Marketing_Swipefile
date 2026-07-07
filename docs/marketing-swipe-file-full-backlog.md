@@ -274,7 +274,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `data`
-Status: `in_progress`
+Status: `done`
 
 Escopo:
 
@@ -287,7 +287,7 @@ Aceite:
 - Pelo menos 5 episodios piloto.
 - Campos seguem contrato.
 - Ordem de processamento clara.
-- Primeiro episodio piloto real foi adicionado; ainda faltam 4 para fechar o aceite original.
+- 5 episodios piloto reais foram adicionados em `data/input/youtube_urls.csv`.
 
 Dependencias:
 
@@ -365,7 +365,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `ops`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -376,6 +376,7 @@ Aceite:
 
 - Cada processamento gera log em `data/logs/`.
 - Logs ajudam a retomar falhas.
+- `scripts/run_episode_pipeline.py` gera arquivos `.jsonl` por execucao.
 
 Dependencias:
 
@@ -454,7 +455,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -465,6 +466,7 @@ Aceite:
 
 - Lista mostra exatamente o que precisa ser obtido.
 - Tarefas possuem link para episodio, timestamp e instrucao.
+- `data/exports/acquisition_tasks_master.csv` consolida a fila atual.
 
 Dependencias:
 
@@ -474,7 +476,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `product`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -485,6 +487,7 @@ Aceite:
 
 - Fila consegue priorizar materiais mais ricos.
 - Materiais com "copy completa" ou "template" sobem na fila.
+- Existem heuristicas iniciais de valor esperado; ainda falta calibrar com mais materiais reais.
 
 Dependencias:
 
@@ -693,7 +696,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -704,6 +707,7 @@ Aceite:
 
 - Reprocessamento nao duplica insights obvios.
 - Duplicatas ficam registradas ou descartadas com log.
+- `scripts/dedupe_insights.py` implementa dedupe deterministico local.
 
 Dependencias:
 
@@ -713,7 +717,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `prompt`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -725,6 +729,7 @@ Aceite:
 
 - Insights recebem temas e subtemas.
 - Novos termos entram como sugestao, nao como verdade automatica sem log.
+- `scripts/classify_taxonomy.py` classifica temas/aplicabilidade com heuristicas; sugestao governada de novos termos ainda precisa evoluir.
 
 Dependencias:
 
@@ -734,7 +739,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -745,6 +750,7 @@ Aceite:
 
 - Resumos ajudam revisao humana.
 - Cada resumo referencia arquivos de origem.
+- `scripts/generate_summaries.py` gera resumos locais de episodios e assets.
 
 Dependencias:
 
@@ -797,7 +803,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -808,6 +814,7 @@ Aceite:
 
 - Rubrica inclui clareza, especificidade, curiosidade, mecanismo, prova, fit com avatar e forca comercial.
 - Resultado registra quais insights sustentaram melhoria.
+- `docs/output-evaluation-rubric.md` e `scripts/evaluate_output.py` foram criados e usados em VSL/anuncios.
 
 Dependencias:
 
@@ -839,7 +846,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -849,6 +856,7 @@ Aceite:
 
 - Exports incluem todos os ids necessarios.
 - Sem duplicatas obvias.
+- `scripts/consolidate_exports.py` gera os master exports locais.
 
 Dependencias:
 
@@ -858,7 +866,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -868,6 +876,7 @@ Aceite:
 
 - Consulta por VSL retorna insights de VSL.
 - Consulta por source_kind asset retorna materiais complementares.
+- `scripts/search_insights.py` aceita filtros estruturados.
 
 Dependencias:
 
@@ -877,7 +886,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -887,6 +896,7 @@ Escopo:
 Aceite:
 
 - Busca por "lead", "mecanismo", "oferta" e "quiz" retorna resultados relevantes.
+- `scripts/search_insights.py` tambem executa busca textual em insights e evidencias.
 
 Dependencias:
 
@@ -896,7 +906,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `prompt`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -907,6 +917,7 @@ Aceite:
 
 - Strategy pack inclui referencias por id.
 - Pacote diferencia video e material complementar.
+- `scripts/generate_strategy_pack.py` e `prompts/retrieval/strategy_pack_retrieval.md` geram packs locais.
 
 Dependencias:
 
@@ -918,7 +929,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -929,6 +940,8 @@ Aceite:
 - Pelo menos 75 insights.
 - Evidencia em pelo menos 90%.
 - Materiais detectados quando mencionados.
+- 4 episodios foram processados com transcript/chunks.
+- 143 insights profundos de transcricao foram gerados e auditados.
 
 Dependencias:
 
@@ -938,7 +951,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `product`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -948,7 +961,8 @@ Escopo:
 Aceite:
 
 - Lista de ajustes aplicada.
-- Pipeline pronto para lote de 20 episodios.
+- Pipeline foi usado para escalar o lote local para 21 episodios processados.
+- Ajustes de detector, exports, busca, avaliacao, fallback Playwright e extracao profunda foram aplicados.
 
 Dependencias:
 
@@ -958,7 +972,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `data`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -970,6 +984,7 @@ Aceite:
 - Pelo menos 500 insights atomicos.
 - Materiais complementares detectados e com status.
 - Exports master atualizados.
+- Gate atingido em 2026-07-04: 21 episodios com transcript/chunks, 610 insights consolidados e 11 tarefas de materiais complementares.
 
 Dependencias:
 
@@ -979,7 +994,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -991,6 +1006,7 @@ Aceite:
 
 - Output referencia insights por id.
 - Avaliacao mostra se ficou igual ou melhor que baseline sem base.
+- VSL atualizada para usar insights de transcricao e avaliada como `pass` com 39/40.
 
 Dependencias:
 
@@ -1000,7 +1016,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1011,6 +1027,7 @@ Aceite:
 
 - Cada anuncio tem justificativa estrategica.
 - Cada justificativa aponta para evidencia.
+- Pacote de anuncios atualizado para usar insights de transcricao e avaliado como `pass` com 37/40.
 
 Dependencias:
 
@@ -1022,7 +1039,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1034,6 +1051,7 @@ Aceite:
 - `SKILL.md` e enxuto.
 - Skill foi testada com 1 episodio.
 - Nao carrega documentacao desnecessaria.
+- Criada em `skills/marketing-swipe-file-ingest/`.
 
 Dependencias:
 
@@ -1043,7 +1061,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1053,6 +1071,7 @@ Aceite:
 
 - Detecta caso simulado de direct/keyword.
 - Nao inventa asset sem evidencia.
+- Criada em `skills/marketing-swipe-file-detect-assets/`.
 
 Dependencias:
 
@@ -1062,7 +1081,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1072,6 +1091,7 @@ Aceite:
 
 - Processa ao menos 1 PDF e 1 planilha fixture ou real.
 - Mantem evidencia por pagina/aba/range.
+- Criada em `skills/marketing-swipe-file-process-assets/`.
 
 Dependencias:
 
@@ -1081,7 +1101,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1091,6 +1111,7 @@ Aceite:
 
 - Roda sobre segmento de transcricao e asset.
 - Gera insights auditaveis.
+- Criada em `skills/marketing-swipe-file-extract-insights/`.
 
 Dependencias:
 
@@ -1100,7 +1121,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1110,6 +1131,7 @@ Aceite:
 
 - Retorna strategy pack para VSL e anuncios.
 - Inclui referencias e evidencias.
+- Criada em `skills/marketing-swipe-file-retrieve/`.
 
 Dependencias:
 
@@ -1119,7 +1141,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1129,6 +1151,7 @@ Aceite:
 
 - Gera relatorio de problemas.
 - Reprova insights sem evidencia.
+- Criada em `skills/marketing-swipe-file-quality-review/`.
 
 Dependencias:
 
@@ -1138,7 +1161,7 @@ Dependencias:
 
 Prioridade: `P2`
 Tipo: `skill`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -1159,7 +1182,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `loop`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -1169,6 +1192,7 @@ Aceite:
 
 - Processa 1 episodio novo com pouca reexplicacao.
 - Gera logs, insights e tarefas manuais.
+- `loops/episode-processing.md` e `scripts/run_episode_pipeline.py` existem; falta completar a extracao profunda dentro do loop.
 
 Dependencias:
 
@@ -1178,7 +1202,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `loop`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -1188,6 +1212,7 @@ Aceite:
 
 - Processa arquivo obtido.
 - Vincula insights ao episodio e asset.
+- `loops/asset-processing.md` e `scripts/run_asset_pipeline.py` existem; falta validar com material real obtido do piloto.
 
 Dependencias:
 
@@ -1197,7 +1222,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `loop`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -1206,6 +1231,7 @@ Escopo:
 Aceite:
 
 - Gera strategy pack para VSL, anuncios e quiz.
+- `loops/strategy-pack.md` foi criado e validado em VSL/anuncios.
 
 Dependencias:
 
@@ -1215,7 +1241,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `loop`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -1225,6 +1251,7 @@ Aceite:
 
 - Output final lista referencias.
 - Avaliacao fica persistida.
+- `loops/output-evaluation.md` existe e ja persistiu avaliacoes de VSL/anuncios; falta comparar contra baseline sem base em volume maior.
 
 Dependencias:
 

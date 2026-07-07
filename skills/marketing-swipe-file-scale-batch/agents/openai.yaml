@@ -1,0 +1,4 @@
+interface:
+  display_name: "MSF Scale Batch"
+  short_description: "Scale podcast extraction batches"
+  default_prompt: "Use $marketing-swipe-file-scale-batch to process VTurb podcast batches until the requested complete-video target is reached."

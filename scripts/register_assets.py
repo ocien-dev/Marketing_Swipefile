@@ -30,6 +30,7 @@ ASSET_TYPE_BY_SUFFIX = {
     ".jpg": "image",
     ".jpeg": "image",
     ".webp": "image",
+    ".gif": "image",
 }
 
 
@@ -132,4 +133,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
