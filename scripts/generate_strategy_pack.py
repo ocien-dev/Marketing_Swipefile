@@ -5,11 +5,20 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import as_list, first_evidence, load_json, normalize_text, tokens, write_json, write_text
+from msf_common import as_list, first_evidence, jaccard, load_json, normalize_text, tokens, write_json, write_text
+
+
+DEFAULT_MASTERS = {
+    "raw": Path("data/exports/insights_master.json"),
+    "v1": Path("data/exports/insights_master.json"),
+    "v2": Path("data/exports/insights_v2_master.json"),
+    "curated": Path("data/exports/curated_insights.json"),
+}
 
 
 TASK_THEMES = {
@@ -42,6 +51,12 @@ def load_insights(path: Path) -> list[dict[str, Any]]:
     return [item for item in payload.get("insights", []) if isinstance(item, dict)]
 
 
+def resolve_master_path(args: argparse.Namespace) -> Path:
+    if args.master:
+        return args.master
+    return DEFAULT_MASTERS[args.source]
+
+
 def theme_score(insight: dict[str, Any], desired_themes: list[str]) -> float:
     themes = [normalize_text(theme) for theme in as_list(insight.get("themes"))]
     desired = [normalize_text(theme) for theme in desired_themes]
@@ -69,7 +84,33 @@ def confidence_score(insight: dict[str, Any]) -> float:
     return float(confidence) if isinstance(confidence, (int, float)) else 0.0
 
 
-def rank_insights(insights: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
+def similarity_text(insight: dict[str, Any]) -> str:
+    parts = [
+        insight.get("canonical_title"),
+        insight.get("title"),
+        insight.get("specific_takeaway"),
+        insight.get("insight_ptbr"),
+        insight.get("summary_ptbr"),
+        insight.get("use_case"),
+        insight.get("when_to_use"),
+        insight.get("when_not_to_use"),
+        " ".join(str(item) for item in as_list(insight.get("themes"))),
+        " ".join(str(item) for item in as_list(insight.get("subthemes"))),
+        " ".join(str(item) for item in as_list(insight.get("applicability"))),
+        " ".join(str(item) for item in as_list(insight.get("process_tags"))),
+    ]
+    return " ".join(str(part) for part in parts if part)
+
+
+def thesis_key(insight: dict[str, Any]) -> str:
+    title = normalize_text(insight.get("canonical_title") or insight.get("title") or "")
+    marker_index = title.find(" em ")
+    if marker_index >= 24:
+        title = title[:marker_index]
+    return title or normalize_text(insight.get("specific_takeaway") or insight.get("insight_id"))
+
+
+def build_ranked_candidates(insights: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
     task_key = normalize_text(args.task or "")
     desired_themes = TASK_THEMES.get(task_key, [])
     keywords = TASK_KEYWORDS.get(task_key, [])
@@ -91,8 +132,87 @@ def rank_insights(insights: list[dict[str, Any]], args: argparse.Namespace) -> l
             score += len(query_terms & insight_terms) * 4
         if score <= 0:
             continue
-        ranked.append({"strategy_score": round(score, 4), **insight})
-    return sorted(ranked, key=lambda item: (-float(item.get("strategy_score", 0)), str(item.get("insight_id") or "")))[: args.limit]
+        ranked.append(
+            {
+                "base_strategy_score": round(score, 4),
+                "similarity_tokens": sorted(tokens(similarity_text(insight))),
+                "thesis_key": thesis_key(insight),
+                **insight,
+            }
+        )
+    return sorted(ranked, key=lambda item: (-float(item.get("base_strategy_score", 0)), str(item.get("insight_id") or "")))
+
+
+def select_diverse_top_n(candidates: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
+    if not candidates or args.limit <= 0:
+        return []
+
+    weight = max(0.0, min(1.0, float(args.diversity_weight)))
+    max_relevance = max(float(item.get("base_strategy_score") or 0.0) for item in candidates) or 1.0
+    selected: list[dict[str, Any]] = []
+    remaining = list(candidates)
+    episode_counts: Counter[str] = Counter()
+    thesis_counts: Counter[str] = Counter()
+    thesis_cap_scope = min(10, args.limit)
+
+    while remaining and len(selected) < args.limit:
+        best_index: int | None = None
+        best_key: tuple[float, float, float, str] | None = None
+        best_similarity = 0.0
+
+        for index, candidate in enumerate(remaining):
+            episode_id = str(candidate.get("episode_video_id") or "unknown")
+            if args.episode_cap > 0 and episode_counts[episode_id] >= args.episode_cap:
+                continue
+            candidate_thesis_key = str(candidate.get("thesis_key") or "")
+            if (
+                args.thesis_cap > 0
+                and len(selected) < thesis_cap_scope
+                and candidate_thesis_key
+                and thesis_counts[candidate_thesis_key] >= args.thesis_cap
+            ):
+                continue
+
+            candidate_tokens = candidate.get("similarity_tokens") or []
+            max_similarity = 0.0
+            if selected:
+                max_similarity = max(
+                    jaccard(candidate_tokens, item.get("similarity_tokens") or [])
+                    for item in selected
+                )
+            normalized_relevance = float(candidate.get("base_strategy_score") or 0.0) / max_relevance
+            selection_score = ((1.0 - weight) * normalized_relevance) - (weight * max_similarity)
+            key = (
+                selection_score,
+                normalized_relevance,
+                -max_similarity,
+                str(candidate.get("insight_id") or ""),
+            )
+            if best_key is None or key > best_key:
+                best_index = index
+                best_key = key
+                best_similarity = max_similarity
+
+        if best_index is None:
+            break
+
+        chosen = remaining.pop(best_index)
+        episode_id = str(chosen.get("episode_video_id") or "unknown")
+        episode_counts[episode_id] += 1
+        if chosen.get("thesis_key"):
+            thesis_counts[str(chosen["thesis_key"])] += 1
+        chosen["strategy_score"] = chosen.get("base_strategy_score")
+        chosen["selection_score"] = round(best_key[0], 6) if best_key else None
+        chosen["similarity_to_selected"] = round(best_similarity, 6)
+        selected.append(chosen)
+
+    for item in selected:
+        item.pop("similarity_tokens", None)
+    return selected
+
+
+def rank_insights(insights: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
+    return select_diverse_top_n(build_ranked_candidates(insights, args), args)
 
 
 def group_pack_items(insights: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
@@ -118,6 +238,12 @@ def group_pack_items(insights: list[dict[str, Any]]) -> dict[str, list[dict[str,
             "episode_title": insight.get("episode_title"),
             "asset_id": insight.get("asset_id"),
             "strategy_score": insight.get("strategy_score"),
+            "base_strategy_score": insight.get("base_strategy_score"),
+            "selection_score": insight.get("selection_score"),
+            "similarity_to_selected": insight.get("similarity_to_selected"),
+            "cluster_id": insight.get("cluster_id"),
+            "thesis_key": insight.get("thesis_key"),
+            "process_tags": insight.get("process_tags"),
             "evidence_quote": evidence.get("quote_original"),
             "evidence_start_seconds": evidence.get("start_seconds"),
         }
@@ -153,11 +279,23 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
         open_questions.append("Nenhum material complementar apareceu entre os principais resultados; usar apenas transcricoes ou obter assets pendentes.")
     if len(selected) < min(args.limit, 10):
         open_questions.append("Poucos insights relevantes encontrados; expandir episodios ou baixar o limite de confianca pode ajudar.")
+    if len(selected) < args.limit:
+        open_questions.append("A diversidade/cap por episodio reduziu o top-N; revisar se o limite ou o cap devem ser ajustados.")
 
     return {
         "schema_version": "1.0",
         "generated_at": utc_now(),
         "task": args.task,
+        "source": args.source,
+        "source_path": str(resolve_master_path(args)),
+        "diversity": {
+            "method": "mmr_jaccard",
+            "diversity_weight": args.diversity_weight,
+            "episode_cap": args.episode_cap,
+            "thesis_cap": args.thesis_cap,
+            "thesis_cap_scope": "top_10",
+            "episode_cap_scope": "selected_top_n",
+        },
         "briefing": {
             "product": args.product,
             "avatar": args.avatar,
@@ -195,6 +333,7 @@ def render_markdown(pack: dict[str, Any]) -> str:
                 f"- Level/type: {item.get('level')} / {item.get('insight_type')}",
                 f"- Episode: {item.get('episode_video_id')} - {item.get('episode_title')}",
                 f"- Confidence: {item.get('confidence_score')}",
+                f"- Strategy score: {item.get('strategy_score')} | Selection score: {item.get('selection_score')} | Similarity: {item.get('similarity_to_selected')}",
                 "",
                 str(item.get("insight_ptbr") or ""),
                 "",
@@ -217,7 +356,8 @@ def render_markdown(pack: dict[str, Any]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--master", default=Path("data/exports/insights_master.json"), type=Path)
+    parser.add_argument("--master", type=Path, help="Override the source master path.")
+    parser.add_argument("--source", choices=sorted(DEFAULT_MASTERS), default="raw", help="Source layer to use when --master is omitted.")
     parser.add_argument("--task", required=True, help="Task type, e.g. vsl, anuncios, oferta, quiz")
     parser.add_argument("--product", help="Product or offer")
     parser.add_argument("--avatar", help="Target avatar")
@@ -227,11 +367,14 @@ def main() -> int:
     parser.add_argument("--constraints", help="Free-form constraints")
     parser.add_argument("--min-confidence", default=0.0, type=float)
     parser.add_argument("--limit", default=20, type=int)
+    parser.add_argument("--diversity-weight", default=0.3, type=float, help="MMR Jaccard diversity penalty, 0.0 to 1.0.")
+    parser.add_argument("--episode-cap", default=3, type=int, help="Maximum selected insights per episode in the top-N; use 0 to disable.")
+    parser.add_argument("--thesis-cap", default=1, type=int, help="Maximum selected insights with the same title-derived thesis key in the top 10; use 0 to disable.")
     parser.add_argument("--output-json", type=Path, help="Path to write strategy pack JSON")
     parser.add_argument("--output-md", type=Path, help="Path to write strategy pack markdown")
     args = parser.parse_args()
 
-    insights = load_insights(args.master)
+    insights = load_insights(resolve_master_path(args))
     pack = build_pack(args, insights)
     markdown = render_markdown(pack)
     if args.output_json:
@@ -244,4 +387,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

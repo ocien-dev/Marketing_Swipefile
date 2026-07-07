@@ -975,3 +975,49 @@ Updates:
 - Updated `docs/output-r10-blind-review-2026-07-07.md`, `docs/output-evaluation-review-2026-07-07.md`, the remediation backlog, README, and handoff.
 - MSF-R09 remains `done`; MSF-R10 is now `done`.
 - Next session: EPIC R3 with MSF-R11 diversity in ranking, MSF-R12 first curated_insights lot, and MSF-R13 regenerated packs.
+
+## 2026-07-07 - EPIC R3 retrieval and curation prepare
+
+MSF-R11:
+
+- Updated `scripts/generate_strategy_pack.py` with MMR-style Jaccard diversity using `--diversity-weight` default `0.3`.
+- Added `--episode-cap` default `3` so top-N packs are not dominated by one source episode.
+- Added `--thesis-cap` default `1` for the top-10 so title-derived near-thesis duplicates do not occupy the decisive block.
+- Added `--source curated` to read `data/exports/curated_insights.json`.
+- Added `tests/fixtures/strategy_pack_diversity_fixture.json` and `tests/test_strategy_pack_diversity.py`.
+- Test result with `python -B`: `VALID strategy_pack_diversity_fixture`.
+
+MSF-R12:
+
+- Added `scripts/generate_curated_insights.py`.
+- Generated local ignored `data/exports/curated_insights.json` from 207 v2 insights.
+- Curated lot count: 125 items; 113 clusters; 0 items below score floor 50 included.
+- Score distribution: min 90, max 100, average 96.67.
+- Process tags: 125/125 have at least 1 valid `process-*` tag and at least 1 first-wave priority process tag.
+- Owner review sample: `data/exports/curated_insights_owner_review_sample_2026-07-07.csv` with 30 rows.
+- Report: `docs/curated-insights-r12-review-2026-07-07.md`.
+
+MSF-R13:
+
+- Regenerated curated packs:
+  - `data/exports/strategy_pack_curated_vsl_lowticket_2026-07-07.json`
+  - `data/exports/strategy_pack_curated_ads_lowticket_2026-07-07.json`
+- Compared curated packs against old v2 packs in `docs/strategy-pack-r13-comparison-2026-07-07.md`.
+- VSL pack: top-20 max episode count changed from 5 to 3; top-10 average Jaccard changed from 0.1099 to 0.1025; honest evaluator score 33/40 `pass`, citation fidelity `pass`.
+- Ads pack: top-20 max episode count changed from 10 to 3; top-10 average Jaccard changed from 0.4912 to 0.0800; honest evaluator score 35/40 `pass`, citation fidelity `pass`; no repeated title-derived thesis remained in the top-10.
+
+Decision state:
+
+- MSF-R11 is `done`.
+- MSF-R12 is `ready_for_owner_review`.
+- MSF-R13 is `ready_for_external_review`.
+- Gate R3 was not declared. External review remains required before MSF-S, MSF-R14 backfill, Supabase, or MCP work.
+
+Validation:
+
+- All commands used `.\.venv\Scripts\python.exe -B`.
+- Reran the R11 fixture test.
+- Reran in-memory syntax compilation for edited Python scripts.
+- Reran non-ASCII scans on tracked changed files and R12 sample/report.
+- Reran `scripts/audit_insights_v2_text.py`.
+- Reran `git diff --check`.

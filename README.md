@@ -93,6 +93,9 @@ Current local state as of 2026-07-07:
 - MSF-R07/MSF-R08 are complete for the amended Gate R1: 15 complete v2 episodes, 246 chunks, external blind judgment, batch 006 remediation, and formal Gate R1 approval are recorded in `docs/insight-v1-vs-v2-review-2026-07-07.md` and `docs/execution-log.md`.
 - MSF-R09 is complete: `scripts/evaluate_output.py` keeps the old keyword score only as `keyword_presence_check`, and the honest Codex-first rubric evaluation validates JSON against `schemas/output_evaluation.schema.json`.
 - MSF-R10 is complete: external blind judgment scored `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, so Gate R2 is formally approved. The sample limitation is 1 briefing x 2 artifacts; MSF-S09 still needs varied-briefing validation.
+- MSF-R11 is complete: `scripts/generate_strategy_pack.py` now supports MMR/Jaccard diversity with `--diversity-weight`, `--episode-cap`, and `--source curated`; fixture test coverage exists.
+- MSF-R12 is ready for owner review: local ignored `data/exports/curated_insights.json` has 125 curated v2 items and `data/exports/curated_insights_owner_review_sample_2026-07-07.csv` has the 30-item sample.
+- MSF-R13 is ready for external review: curated VSL/ads packs were regenerated and evaluated as support artifacts; Gate R3 is not declared.
 
 Proof-of-value artifacts generated locally:
 
@@ -102,5 +105,7 @@ Proof-of-value artifacts generated locally:
 - `data/exports/generated_ads_lowticket.md`
 - `data/exports/generated_vsl_lowticket_evaluation.md`: honest rubric score 30/40, `needs_revision`; old 39/40 was only a keyword proxy.
 - `data/exports/generated_ads_lowticket_evaluation.md`: honest rubric score 30/40, `needs_revision`; old 37/40 was only a keyword proxy.
+- `docs/curated-insights-r12-review-2026-07-07.md`: R12 curated lot summary.
+- `docs/strategy-pack-r13-comparison-2026-07-07.md`: R13 pack comparison and evaluator result.
 
-Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R2 is approved by the blind R10 result, and the next remediation session is EPIC R3 before MSF-S, MSF-R14 backfill, Supabase, or MCP.
+Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R2 is approved by the blind R10 result, R3 is ready for external review but not declared, and MSF-S/MSF-R14/Supabase/MCP remain blocked until Gate R3 closes.

@@ -67,6 +67,7 @@ MSF-R11, MSF-R12, MSF-R13.
 Gate de saida R3:
 
 - Strategy packs regenerados a partir de `curated_insights` sem duplicacao dominante no top-N.
+- Status em 2026-07-07: R11 implementado, R12 pronto para revisao humana amostral, R13 pronto para revisao externa. Gate R3 ainda nao declarado.
 
 ### Bloco R4 - Escala e proximas camadas (somente apos gates R1-R3)
 
@@ -476,7 +477,7 @@ Execucao 2026-07-07 - julgamento cego pontuado:
 
 Prioridade: `P1`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -489,6 +490,14 @@ Aceite:
 - Strategy pack regenerado nao contem dois itens com a mesma tese no top-10.
 - Teste com fixture demonstrando que duplicatas proximas sao suprimidas.
 
+Execucao 2026-07-07:
+
+- `scripts/generate_strategy_pack.py` passou a usar selecao estilo MMR por Jaccard com `--diversity-weight` default `0.3`.
+- Adicionado cap `--episode-cap` default `3`, aplicado ao top-N do pack.
+- Adicionado cap `--thesis-cap` default `1` no top-10 para evitar duas teses de titulo equivalentes no bloco decisivo.
+- Adicionada flag `--source curated` para ler `data/exports/curated_insights.json`.
+- Fixture `tests/fixtures/strategy_pack_diversity_fixture.json` e teste `tests/test_strategy_pack_diversity.py` demonstram supressao de duplicatas proximas e cap de 3 por episodio.
+
 Dependencias:
 
 - MSF-R07 (para rodar sobre a v2; a implementacao pode comecar antes usando v1).
@@ -497,7 +506,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `data`
-Status: `not_started`
+Status: `ready_for_owner_review`
 
 Escopo:
 
@@ -514,6 +523,16 @@ Aceite:
 - Cada item curado tem pelo menos 1 `process_tag` valida e referenciada no `taxonomy_seed.json`.
 - Distribuicao de `editorial_score` registrada; itens abaixo de 50 nao entram.
 
+Execucao 2026-07-07:
+
+- Adicionado `scripts/generate_curated_insights.py`.
+- Gerado lote local ignorado `data/exports/curated_insights.json` com 125 itens a partir de 207 insights v2.
+- Todos os 125 itens tem pelo menos uma `process_tag` valida; 125/125 tem pelo menos uma tag da primeira leva (`process-construcao-oferta`, `process-copy-vsl`, `process-copy-anuncios`, `process-produto-low-ticket`, `process-quiz`, `process-mecanismo-big-idea`, `process-prova-depoimentos`).
+- Clusterizacao Jaccard registrada: 113 clusters no lote curado.
+- `editorial_score`: minimo 90, maximo 100, media 96.67; 0 itens abaixo do piso 50 entraram.
+- Amostra de 30 itens para revisao humana do owner gerada em `data/exports/curated_insights_owner_review_sample_2026-07-07.csv`.
+- Relatorio: `docs/curated-insights-r12-review-2026-07-07.md`.
+
 Dependencias:
 
 - MSF-R08.
@@ -522,7 +541,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `qa`
-Status: `not_started`
+Status: `ready_for_external_review`
 
 Escopo:
 
@@ -534,6 +553,18 @@ Aceite:
 
 - Packs novos gerados e avaliados com o avaliador de MSF-R09.
 - Decisao registrada: curated vira fonte default dos packs ou nao.
+
+Execucao 2026-07-07:
+
+- Packs curated gerados localmente:
+  - `data/exports/strategy_pack_curated_vsl_lowticket_2026-07-07.json`
+  - `data/exports/strategy_pack_curated_ads_lowticket_2026-07-07.json`
+- Comparacao lado a lado registrada em `docs/strategy-pack-r13-comparison-2026-07-07.md`.
+- Avaliador honesto MSF-R09 aplicado aos packs como artefatos de suporte:
+  - VSL curated pack: 33/40, `pass`, citation fidelity `pass`.
+  - Ads curated pack: 35/40, `pass`, citation fidelity `pass`.
+- Resultado de diversidade: VSL top-20 maximo 3 itens por episodio; ads top-20 maximo 3 itens por episodio. Ads reduziu Jaccard medio top-10 de 0.4912 para 0.0800 e nao manteve duas teses de hook no top-10.
+- Decisao formal sobre Gate R3 e fonte default permanece pendente de revisao externa.
 
 Dependencias:
 
@@ -622,7 +653,7 @@ Ordem de ataque sugerida, em sessoes:
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
 3. Sessao 3: MSF-R07 e MSF-R08 done; Gate R1 aprovado em 2026-07-07 apos julgamento cego externo e verificacao independente da remediacao do batch 006.
 4. Sessao 4: MSF-R09 e MSF-R10 done; Gate R2 aprovado em 2026-07-07 apos julgamento cego externo.
-5. Proxima sessao: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
+5. Sessao 5: MSF-R11 implementado; MSF-R12 pronto para revisao humana amostral; MSF-R13 pronto para revisao externa. Nao declarar Gate R3 ate a revisao externa.
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.
 
 Regras permanentes durante a remediacao:

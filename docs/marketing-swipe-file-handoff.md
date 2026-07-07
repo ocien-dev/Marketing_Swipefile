@@ -75,7 +75,7 @@ Ja existe um MVP local operavel em arquivos:
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: Gate R1 e Gate R2 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. Nao iniciar MSF-S, backfill MSF-R14, Supabase ou MCP antes de fechar R3 conforme o backlog de remediacao.
+Importante: Gate R1 e Gate R2 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. MSF-R11 foi implementado; MSF-R12 esta pronto para revisao humana amostral; MSF-R13 esta pronto para revisao externa. Gate R3 ainda nao foi declarado. Nao iniciar MSF-S, backfill MSF-R14, Supabase ou MCP antes de fechar R3 conforme o backlog de remediacao.
 
 ## Lote VTurb
 
@@ -107,6 +107,11 @@ Artefatos de prova:
 - `data/exports/output_r10_blind_key_2026-07-07.json`: chave local ignorada do R10.
 - `data/exports/output_r10_blind_sample_2026-07-07_judged.csv`: julgamento externo concluido.
 - `docs/output-r10-blind-review-2026-07-07.md`: Gate R2 aprovado.
+- `data/exports/curated_insights.json`: lote local R12 com 125 itens curados.
+- `data/exports/curated_insights_owner_review_sample_2026-07-07.csv`: amostra de 30 itens para revisao humana do owner.
+- `docs/curated-insights-r12-review-2026-07-07.md`: relatorio R12.
+- `data/exports/strategy_pack_curated_vsl_lowticket_2026-07-07.json` e `data/exports/strategy_pack_curated_ads_lowticket_2026-07-07.json`: packs R13 a partir de curated.
+- `docs/strategy-pack-r13-comparison-2026-07-07.md`: comparacao R13 e avaliacao honesta dos packs.
 - `data/exports/acquisition_tasks_master.csv`: 13 tarefas de materiais complementares.
 
 - `data/raw/**`, `data/processed/**`, `data/input/youtube_urls.csv` e assets locais sao ignorados pelo Git por politica de dados. Eles existem localmente nesta maquina, mas nao devem ser assumidos como versionados.
@@ -206,7 +211,7 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir da remediacao local: Gates R1 e R2 estao aprovados; MSF-R07, MSF-R08, MSF-R09 e MSF-R10 estao done. O proximo passo e EPIC R3: MSF-R11 diversidade no ranking, MSF-R12 primeiro lote de `curated_insights` priorizando as tags da primeira leva, e MSF-R13 packs regenerados. Nao inicie MSF-S, MSF-R14 backfill, Supabase ou MCP antes de R3; antes do backfill MSF-R14, reabra MSF-R03.
+Continue a partir da remediacao local: Gates R1 e R2 estao aprovados; MSF-R07, MSF-R08, MSF-R09, MSF-R10 e MSF-R11 estao done. MSF-R12 esta pronto para revisao humana amostral com `data/exports/curated_insights_owner_review_sample_2026-07-07.csv`; MSF-R13 esta pronto para revisao externa com `docs/strategy-pack-r13-comparison-2026-07-07.md`. Gate R3 ainda nao foi declarado. Nao inicie MSF-S, MSF-R14 backfill, Supabase ou MCP antes de R3; antes do backfill MSF-R14, reabra MSF-R03.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
@@ -349,8 +354,8 @@ Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rod
 
 Prioridade imediata:
 
-1. Executar EPIC R3: MSF-R11/MSF-R12/MSF-R13 para diversidade, curadoria e packs a partir de `curated_insights`.
-2. Declarar Gate R3 somente apos packs novos avaliados.
+1. Submeter a amostra R12 de 30 itens e a comparacao R13 para revisao externa.
+2. Declarar Gate R3 somente se a revisao externa aprovar.
 3. So depois destravar o EPIC MSF-S em `docs/marketing-swipe-file-skills-backlog.md`.
 4. Antes do backfill MSF-R14 dos 508 chunks restantes, reabrir MSF-R03 como combinado.
 5. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
@@ -372,7 +377,7 @@ Para a Release 1 completa ainda faltam:
 - Supabase ainda nao foi criado.
 - MCP ainda nao foi criado.
 - Agentes especializados ainda nao foram criados.
-- Nenhuma tarefa MSF-S foi iniciada; skills de processo continuam bloqueadas por R2/R3.
+- Nenhuma tarefa MSF-S foi iniciada; skills de processo continuam bloqueadas por R3.
 
 ## Observacoes Tecnicas
 
