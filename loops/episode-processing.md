@@ -44,6 +44,7 @@ For MSF-R07, the owner decision is Route B: Codex-first, no API. A session is an
 
 Session rules:
 
+- Run project Python commands with `.\.venv\Scripts\python.exe -B` or `PYTHONDONTWRITEBYTECODE=1` to avoid OneDrive `.pyc` permission errors.
 - Process whole episodes, one at a time.
 - Minimum session target: 20 chunks processed.
 - Start with already initiated episodes and strategy-pack-relevant material, especially VSL/ads: `mCaFyZpXJdE`, then `TOW0sWhPaZw`.

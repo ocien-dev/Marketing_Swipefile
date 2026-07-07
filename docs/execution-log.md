@@ -700,3 +700,38 @@ Calibration:
 - Current amended gate progress: 2/15 minimum complete episodes; 41 chunks extracted.
 - Remaining to the lower bound is roughly 184 chunks and 13 complete episodes.
 - At the observed throughput of 35 chunks per session, estimate 6 more sessions to reach the 15-episode lower bound and 8 sessions to reach the 20-episode upper bound, depending on next-episode chunk counts.
+
+## 2026-07-07 - MSF-R07 Codex-first batch 004
+
+External review:
+
+- The previous 42-insight lot was approved externally: 42/42 unique titles, distributed `claim_risk`, and amended gate instrumentation accepted.
+- Owner adjustment: use `.\.venv\Scripts\python.exe -B` or `PYTHONDONTWRITEBYTECODE=1` in R07 sessions to avoid OneDrive `.pyc` permission errors.
+- Owner reminder: reopen MSF-R03 between Gate R1 and the backfill of the remaining chunks.
+
+Scope:
+
+- Route: Codex-first manual extraction (`route=codex_manual`), no API.
+- Session protocol: whole episodes, one at a time, minimum 20 chunks.
+- Episodes processed:
+  - `yyoGeQp5yzM`: 16/16 chunks, 12 insights v2.
+  - `aSFAve1klsc`: 11/11 chunks, 10 insights v2.
+
+Validation:
+
+- Commands were run with `python -B`; no `.pyc` permission error occurred.
+- `scripts/validate_insights_v2.py data/processed/yyoGeQp5yzM/insights_v2.json data/processed/aSFAve1klsc/insights_v2.json` returned `VALID` for both files.
+- New evidence quote check: 22/22 new evidence quotes matched their source transcript segment exactly.
+- New evidence quote-noise check: 0 hits for promo CTAs, `inscreva`, `assista tambem`, hashtags, `primeiro link`, or description boilerplate.
+- `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 64 v2 insights, and 13 acquisition tasks.
+- Status after consolidation: 4/50 target episodes fully extracted in v2, 68/754 target chunks extracted, `gate_r1_ready=false`.
+- Title uniqueness: 64/64 unique v2 titles.
+- `claim_risk` distribution: `low=25`, `medium=35`, `high=4`.
+- In-memory compile passed for `scripts/extract_transcript_insights_llm.py` and `scripts/consolidate_exports.py` with `python -B`.
+
+Throughput and calibration:
+
+- New session throughput: 27 chunks processed, 22 insights added, 2 episodes closed by chunk. API cost: `$0`.
+- Current amended gate progress: 4/15 minimum complete episodes; 68 chunks extracted.
+- Remaining to the lower bound is roughly 157 chunks and 11 complete episodes.
+- At the observed recent throughput range of 27-35 chunks per session, estimate 5-6 more sessions to reach the 15-episode lower bound and 7-9 sessions to reach the 20-episode upper bound, depending on next-episode chunk counts.

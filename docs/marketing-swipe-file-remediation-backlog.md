@@ -307,6 +307,16 @@ Execucao 2026-07-07 - emenda Rota B e lote de calibracao:
 - Rodada local apos consolidacao: 42 insights v2 validos em 2 episodios alvo, 0 arquivos v2 invalidos, 2/50 episodios totalmente extraidos em v2, 41/754 chunks alvo extraidos, `gate_r1_ready=false`.
 - Throughput real da sessao: 35 chunks novos processados, 29 insights novos adicionados, 2 episodios fechados por chunk. Estimativa calibrada ate o gate emendado: mais 6-8 sessoes nesse ritmo para atingir 15-20 episodios completos, variando conforme tamanho dos episodios.
 
+Execucao 2026-07-07 - lote seguinte Rota B:
+
+- Revisao externa aprovou o lote anterior: 42/42 titulos unicos, `claim_risk` distribuido e gate emendado instrumentado.
+- Protocolo ajustado: sessoes R07 devem usar `.\.venv\Scripts\python.exe -B` ou `PYTHONDONTWRITEBYTECODE=1` para eliminar erro de permissao de `.pyc` do OneDrive.
+- `yyoGeQp5yzM` completado em v2: 16/16 chunks, 12 insights v2.
+- `aSFAve1klsc` completado em v2: 11/11 chunks, 10 insights v2.
+- Rodada local apos consolidacao: 64 insights v2 validos, 64/64 titulos unicos, `claim_risk` distribuido (`low=25`, `medium=35`, `high=4`), 0 arquivos v2 invalidos, 4/50 episodios totalmente extraidos em v2, 68/754 chunks alvo extraidos, `gate_r1_ready=false`.
+- Throughput real da sessao: 27 chunks novos processados, 22 insights novos adicionados, 2 episodios fechados por chunk. Estimativa calibrada ate o gate emendado: mais 5-7 sessoes para atingir 15-20 episodios completos, variando conforme tamanho dos proximos episodios.
+- Lembrete operacional registrado pelo owner: reabrir MSF-R03 entre o Gate R1 e o backfill dos chunks restantes.
+
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
 Prioridade: `P0`
@@ -464,6 +474,7 @@ Escopo:
 
 - Somente apos gates R1 e R2 aprovados.
 - Absorver a cobertura continua dos 50 episodios completos que deixou de ser requisito bloqueante do Gate R1 pela emenda de aceite do MSF-R07 em 2026-07-07.
+- Antes do backfill pos-gate dos chunks restantes, reabrir MSF-R03 para reduzir risco de locks/permissoes do OneDrive.
 - Processar os 110 episodios VTurb restantes com o pipeline v2 (metadata, transcript com fallback Playwright, chunks, extracao LLM).
 - Retentar os 6 videos bloqueados conhecidos (`YfI0CjI_XaE`, `Rz1Y7fhXGFI`, `0DlzYLUmKcU`, `wJincuVXxxc`, `FV-KR1eEbCw`, `sVUrU9gvxyk`); se o transcript da UI continuar indisponivel, avaliar transcricao de audio local (base ja existe em `scripts/transcribe_academy_hls.py`).
 - Registrar motivo de falha por video automaticamente (item ja recomendado no handoff).
