@@ -1006,7 +1006,7 @@ Aceite:
 
 - Output referencia insights por id.
 - Avaliacao mostra se ficou igual ou melhor que baseline sem base.
-- VSL atualizada para usar insights de transcricao e avaliada como `pass` com 39/40.
+- VSL atualizada para usar insights de transcricao. O score antigo `pass` com 39/40 foi reclassificado em MSF-R09 como `keyword_presence_check` apenas; a avaliacao honesta posterior deu 30/40, `needs_revision`.
 
 Dependencias:
 
@@ -1027,7 +1027,7 @@ Aceite:
 
 - Cada anuncio tem justificativa estrategica.
 - Cada justificativa aponta para evidencia.
-- Pacote de anuncios atualizado para usar insights de transcricao e avaliado como `pass` com 37/40.
+- Pacote de anuncios atualizado para usar insights de transcricao. O score antigo `pass` com 37/40 foi reclassificado em MSF-R09 como `keyword_presence_check` apenas; a avaliacao honesta posterior deu 30/40, `needs_revision`.
 
 Dependencias:
 

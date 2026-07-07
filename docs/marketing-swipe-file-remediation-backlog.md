@@ -405,7 +405,7 @@ Execucao 2026-07-07 - decisao formal Gate R1:
 
 Prioridade: `P0`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -424,11 +424,19 @@ Dependencias:
 
 - MSF-R01. Pode rodar em paralelo com EPIC R1.
 
+Execucao 2026-07-07:
+
+- `scripts/evaluate_output.py` foi atualizado para manter a antiga nota por keywords apenas como `keyword_presence_check`, proxy secundario e nunca nota final.
+- Adicionado `schemas/output_evaluation.schema.json` para validar relatorios finais do avaliador honesto.
+- Avaliador Codex-first aplicado em passada separada a `generated_vsl_lowticket.md` e `generated_ads_lowticket.md`, recebendo output, briefing, `insight_id` citados e evidencias dos masters locais.
+- Resultado honesto: VSL 30/40, `needs_revision`, contra 39/40 antigo; ads 30/40, `needs_revision`, contra 37/40 antigo.
+- Diferenca registrada em `docs/output-evaluation-review-2026-07-07.md`; os scores antigos ficam explicitamente rebaixados a proxy de keywords, sem valor como prova.
+
 ### MSF-R10 - Teste cego contra baseline sem base
 
 Prioridade: `P1`
 Tipo: `qa`
-Status: `not_started`
+Status: `in_progress`
 
 Escopo:
 
@@ -444,6 +452,14 @@ Aceite:
 Dependencias:
 
 - MSF-R08, MSF-R09.
+
+Execucao 2026-07-07 - prepare only:
+
+- Gerados quatro outputs locais para o mesmo briefing low ticket: VSL/ads com strategy pack v2 e VSL/ads baseline sem base.
+- Preparado pacote cego em `data/exports/output_r10_blind_sample_2026-07-07.csv` com ordem A/B randomizada e sem `insight_id` ou rotulos de fonte no CSV cego.
+- Chave local ignorada criada em `data/exports/output_r10_blind_key_2026-07-07.json`.
+- Relatorio pendente criado em `docs/output-r10-blind-review-2026-07-07.md`.
+- Julgamento e score R10 nao foram executados; Gate R2 nao foi declarado e depende de juiz externo.
 
 ## EPIC R3 - Retrieval e curadoria
 
@@ -596,7 +612,7 @@ Ordem de ataque sugerida, em sessoes:
 1. Sessao 1: MSF-R01, MSF-R02, MSF-R04 (estabilizacao; R03 se sobrar tempo).
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
 3. Sessao 3: MSF-R07 e MSF-R08 done; Gate R1 aprovado em 2026-07-07 apos julgamento cego externo e verificacao independente da remediacao do batch 006.
-4. Sessao 4: MSF-R09, MSF-R10 (avaliacao honesta + teste cego; declarar gate R2).
+4. Sessao 4: MSF-R09 done; MSF-R10 preparado e pendente de julgamento externo antes de declarar Gate R2.
 5. Sessao 5: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.
 

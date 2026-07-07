@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/output_evaluation.schema.json",
+  "title": "Marketing Swipe File honest output evaluation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "evaluation_route",
+    "artifact_type",
+    "artifact_path",
+    "briefing",
+    "rubric_path",
+    "keyword_presence_check",
+    "referenced_insight_ids",
+    "cited_insights",
+    "citation_fidelity",
+    "criteria_scores",
+    "total_score",
+    "max_score",
+    "decision",
+    "comparison_to_legacy_keyword_score"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2.0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "evaluation_route": {
+      "const": "codex_manual_no_api"
+    },
+    "judge": {
+      "type": "string"
+    },
+    "artifact_type": {
+      "enum": [
+        "vsl",
+        "ads"
+      ]
+    },
+    "artifact_path": {
+      "type": "string"
+    },
+    "briefing": {
+      "type": "object"
+    },
+    "rubric_path": {
+      "type": "string"
+    },
+    "strategy_pack_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "keyword_presence_check": {
+      "type": "object",
+      "required": [
+        "check_type",
+        "total_score",
+        "max_score",
+        "decision",
+        "scores"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string"
+        },
+        "check_type": {
+          "const": "keyword_presence_check"
+        },
+        "artifact_type": {
+          "enum": [
+            "vsl",
+            "ads"
+          ]
+        },
+        "total_score": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_score": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "decision": {
+          "enum": [
+            "pass",
+            "needs_revision",
+            "fail"
+          ]
+        },
+        "referenced_insight_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "matched_strategy_pack_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unreferenced_strategy_pack_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scores": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "criterion",
+              "score",
+              "keywords",
+              "keyword_hit_count",
+              "is_proxy"
+            ],
+            "properties": {
+              "criterion": {
+                "type": "string"
+              },
+              "score": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "keywords": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "keyword_hit_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "is_proxy": {
+                "const": true
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "warning": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "referenced_insight_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cited_insights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "insight_id",
+          "found",
+          "output_mentions"
+        ],
+        "properties": {
+          "insight_id": {
+            "type": "string"
+          },
+          "found": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "takeaway": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "claim_risk": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "confidence_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "evidence": {
+            "type": "array"
+          },
+          "output_mentions": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "citation_fidelity": {
+      "type": "object",
+      "required": [
+        "status",
+        "checked_insight_ids",
+        "supported_claims",
+        "unsupported_or_overextended_claims",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "needs_revision",
+            "fail"
+          ]
+        },
+        "checked_insight_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supported_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsupported_or_overextended_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "criteria_scores": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "criterion",
+          "score",
+          "justification"
+        ],
+        "properties": {
+          "criterion": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "justification": {
+            "type": "string"
+          },
+          "citation_notes": {
+            "type": "string"
+          },
+          "revision_notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "total_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 40
+    },
+    "max_score": {
+      "const": 40
+    },
+    "decision": {
+      "enum": [
+        "pass",
+        "needs_revision",
+        "fail"
+      ]
+    },
+    "comparison_to_legacy_keyword_score": {
+      "type": "object",
+      "required": [
+        "legacy_score",
+        "legacy_max_score",
+        "legacy_decision",
+        "honest_score",
+        "honest_decision",
+        "delta",
+        "interpretation"
+      ],
+      "properties": {
+        "legacy_score": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "legacy_max_score": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "legacy_decision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "honest_score": {
+          "type": "integer"
+        },
+        "honest_decision": {
+          "enum": [
+            "pass",
+            "needs_revision",
+            "fail"
+          ]
+        },
+        "delta": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "interpretation": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "overall_notes": {
+      "type": "string"
+    }
+  }
+}

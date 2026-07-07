@@ -30,7 +30,7 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
-Current remediation guardrail: do not scale new episodes or start Supabase/MCP until the R1/R2 gates in `docs/marketing-swipe-file-remediation-backlog.md` are closed. The skills backlog in `docs/marketing-swipe-file-skills-backlog.md` is blocked behind R2 and R3: finish MSF-R09/MSF-R10, then MSF-R11/MSF-R12/MSF-R13, before starting any MSF-S task.
+Current remediation guardrail: Gate R1 is approved, but do not run the MSF-R14 backfill or start Supabase/MCP before the R2/R3 gates in `docs/marketing-swipe-file-remediation-backlog.md` are closed. The skills backlog in `docs/marketing-swipe-file-skills-backlog.md` is blocked behind R2 and R3.
 
 ## Local Data Policy
 
@@ -90,7 +90,9 @@ Current local state as of 2026-07-07:
 - 7 Codex skills and 5 operational loops exist for the local file-based workflow.
 - The Session 1 remediation environment is validated with `.venv`, `requirements.txt`, JSON parsing, script syntax compilation, and the status-only batch check.
 - MSF-R05/MSF-R06 are complete as a Codex-first pilot: `schemas/insights_v2.schema.json`, `schemas/examples/insights_v2.example.json`, `scripts/validate_insights_v2.py`, `scripts/extract_transcript_insights_llm.py`, and `prompts/extraction/base_insight_extraction_v2.md` exist; 2 local processed episodes have validated ignored `insights_v2.json` pilots.
-- MSF-R07/MSF-R08 are instrumented but not complete: `scripts/consolidate_exports.py` now writes ignored local `insights_v2_master.*`, `insights_v2_status.json`, episode status, title distribution, and chunk-coverage exports; `scripts/generate_insight_v1_v2_review.py` now prepares a blind A/B sample plus local key before scoring. `docs/insight-v1-vs-v2-review-2026-07-07.md` is pending blind judgment, not a v2 win. Gate R1 is not declared because v2 coverage is still partial: 2/50 target episodes have any v2, 0/50 are fully extracted by chunk.
+- MSF-R07/MSF-R08 are complete for the amended Gate R1: 15 complete v2 episodes, 246 chunks, external blind judgment, batch 006 remediation, and formal Gate R1 approval are recorded in `docs/insight-v1-vs-v2-review-2026-07-07.md` and `docs/execution-log.md`.
+- MSF-R09 is complete: `scripts/evaluate_output.py` keeps the old keyword score only as `keyword_presence_check`, and the honest Codex-first rubric evaluation validates JSON against `schemas/output_evaluation.schema.json`.
+- MSF-R10 is prepared but not judged: local ignored blind package `data/exports/output_r10_blind_sample_2026-07-07.csv` and key `data/exports/output_r10_blind_key_2026-07-07.json` await external blind judgment.
 
 Proof-of-value artifacts generated locally:
 
@@ -98,7 +100,7 @@ Proof-of-value artifacts generated locally:
 - `data/exports/strategy_pack_ads.md`
 - `data/exports/generated_vsl_lowticket.md`
 - `data/exports/generated_ads_lowticket.md`
-- `data/exports/generated_vsl_lowticket_evaluation.md`
-- `data/exports/generated_ads_lowticket_evaluation.md`
+- `data/exports/generated_vsl_lowticket_evaluation.md`: honest rubric score 30/40, `needs_revision`; old 39/40 was only a keyword proxy.
+- `data/exports/generated_ads_lowticket_evaluation.md`: honest rubric score 30/40, `needs_revision`; old 37/40 was only a keyword proxy.
 
-Important caveat: the raw insight base is still heuristic and should not be treated as production-grade. Continue MSF-R07 by extracting real v2 outputs for the remaining target episodes before declaring Gate R1 or moving to Supabase/MCP.
+Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R2 remains pending the external R10 blind judgment; do not start MSF-S, MSF-R14 backfill, or Supabase/MCP before the agreed gates.

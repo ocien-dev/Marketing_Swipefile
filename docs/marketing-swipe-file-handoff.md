@@ -71,11 +71,11 @@ Ja existe um MVP local operavel em arquivos:
 - Transcricao de videos e aulas VTurb Academy por MP4/Drive e HLS.
 - Ambiente Python proprio do projeto em `.venv`, com dependencias em `requirements.txt`.
 - Contrato `raw_insights_v2` e piloto Codex-first de MSF-R05/MSF-R06.
-- Consolidacao e review piloto para MSF-R07/MSF-R08, ainda sem Gate R1 declarado.
+- Consolidacao e review de MSF-R07/MSF-R08 com Gate R1 aprovado formalmente.
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. MSF-R05/MSF-R06 tambem estao feitos em piloto local: `mCaFyZpXJdE` e `TOW0sWhPaZw` possuem `insights_v2.json` validos e ignorados em `data/processed/**`; `mCaFyZpXJdE` tem 9 insights v2 em 4 chunks e `TOW0sWhPaZw` tem 4 insights v2 em 2 chunks. MSF-R07 agora gera `data/exports/insights_v2_master.json`, `insights_v2_status.json`, `insights_v2_episode_status.csv` e `insights_v2_title_distribution.csv`; o status tambem mede cobertura por chunk. A cobertura ainda e parcial: 2/50 episodios alvo tem algum v2, 0/50 estao totalmente extraidos por chunk e 6/754 chunks alvo foram extraidos. MSF-R08 tem amostra A/B cega local e `docs/insight-v1-vs-v2-review-2026-07-07.md` esta pendente de julgamento; Gate R1 nao foi declarado. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2. O EPIC MSF-S de skills de processo existe em `docs/marketing-swipe-file-skills-backlog.md`, mas todas as 13 tarefas estao bloqueadas: a ordem continua sendo EPIC R2 (MSF-R09/MSF-R10), depois R3 (MSF-R11/MSF-R12/MSF-R13), e so entao MSF-S.
+Importante: Gate R1 esta aprovado e registrado. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi preparado, nao julgado: `data/exports/output_r10_blind_sample_2026-07-07.csv` e `data/exports/output_r10_blind_key_2026-07-07.json` aguardam juiz externo. Nao iniciar MSF-S, backfill MSF-R14, Supabase ou MCP antes de fechar R2/R3 conforme o backlog de remediacao.
 
 ## Lote VTurb
 
@@ -101,8 +101,10 @@ Artefatos de prova:
 - `data/exports/strategy_pack_ads.md`
 - `data/exports/generated_vsl_lowticket.md`
 - `data/exports/generated_ads_lowticket.md`
-- `data/exports/generated_vsl_lowticket_evaluation.md`: 39/40, `pass`.
-- `data/exports/generated_ads_lowticket_evaluation.md`: 37/40, `pass`.
+- `data/exports/generated_vsl_lowticket_evaluation.md`: score honesto 30/40, `needs_revision`; o 39/40 antigo era apenas proxy de keywords.
+- `data/exports/generated_ads_lowticket_evaluation.md`: score honesto 30/40, `needs_revision`; o 37/40 antigo era apenas proxy de keywords.
+- `data/exports/output_r10_blind_sample_2026-07-07.csv`: pacote cego R10 preparado, sem julgamento.
+- `data/exports/output_r10_blind_key_2026-07-07.json`: chave local ignorada do R10.
 - `data/exports/acquisition_tasks_master.csv`: 13 tarefas de materiais complementares.
 
 - `data/raw/**`, `data/processed/**`, `data/input/youtube_urls.csv` e assets locais sao ignorados pelo Git por politica de dados. Eles existem localmente nesta maquina, mas nao devem ser assumidos como versionados.
@@ -202,7 +204,7 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir da remediacao local: MSF-R05/MSF-R06 ja criaram o contrato `raw_insights_v2` e um piloto Codex-first em 2 episodios. MSF-R07/MSF-R08 ja tem consolidacao v2, cobertura por chunk e amostra cega A/B, mas Gate R1 nao foi declarado porque a cobertura v2 ainda e parcial: 2/50 episodios alvo tem algum v2, 0/50 estao totalmente extraidos por chunk e 6/754 chunks alvo foram extraidos. Nao escale novos episodios nem inicie Supabase/MCP antes dos gates R1/R2. O proximo passo e extrair v2 real nos chunks alvo restantes, rodar `scripts/consolidate_exports.py`, revisar `data/exports/insights_v2_status.json` e so entao fazer julgamento cego + `--mode score`.
+Continue a partir da remediacao local: Gate R1 esta aprovado; MSF-R07 e MSF-R08 estao done. MSF-R09 tambem esta done: o avaliador honesto usa julgamento Codex-first validado em JSON, e o score antigo por keywords virou apenas `keyword_presence_check`. MSF-R10 esta preparado, mas ainda sem julgamento externo: usar `data/exports/output_r10_blind_sample_2026-07-07.csv` para o juiz e preservar a chave local `data/exports/output_r10_blind_key_2026-07-07.json`. Nao rode score nem declare Gate R2 ate o julgamento externo. Nao inicie MSF-S, MSF-R14 backfill, Supabase ou MCP antes de R2/R3.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
@@ -345,13 +347,12 @@ Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rod
 
 Prioridade imediata:
 
-1. Executar MSF-R07: rodar o fluxo v2 nos 50 episodios completos e gerar `data/exports/insights_v2_master.json`.
-2. Reexecutar `scripts/consolidate_exports.py` e conferir `data/exports/insights_v2_status.json`; o Gate R1 so pode ser avaliado quando a cobertura chegar a 50/50 episodios e 100% dos chunks alvo.
-3. Executar MSF-R08 completo: gerar amostra A/B cega, julgar 40 pares sem rotulos, rodar `scripts/generate_insight_v1_v2_review.py --mode score` e so entao declarar o gate R1.
-4. Depois seguir para MSF-R09/MSF-R10: avaliacao honesta e teste cego.
-5. Em seguida executar R3: MSF-R11/MSF-R12/MSF-R13 para diversidade, curadoria e packs a partir de `curated_insights`.
-6. So depois destravar o EPIC MSF-S em `docs/marketing-swipe-file-skills-backlog.md`.
-7. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
+1. Aguardar julgamento externo do pacote cego R10 e so depois de-anonimizar/pontuar.
+2. Se R10 aprovar, declarar Gate R2; se nao aprovar, iterar prompt/curadoria antes de escala.
+3. Em seguida executar R3: MSF-R11/MSF-R12/MSF-R13 para diversidade, curadoria e packs a partir de `curated_insights`.
+4. So depois destravar o EPIC MSF-S em `docs/marketing-swipe-file-skills-backlog.md`.
+5. Antes do backfill MSF-R14 dos 508 chunks restantes, reabrir MSF-R03 como combinado.
+6. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
 
 Segundo bloco:
 

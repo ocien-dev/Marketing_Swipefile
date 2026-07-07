@@ -914,3 +914,42 @@ Next session:
 - Start EPIC R2 with MSF-R09: evaluator LLM with rubric plus citation-fidelity verification.
 - Then run MSF-R10: blind test against a no-base baseline using v2 as the source. The R10 blind judgment remains external.
 - Reminder remains active: reopen MSF-R03 before any MSF-R14 backfill of the remaining 508 chunks.
+
+## 2026-07-07 - MSF-R09 honest output evaluator and R10 blind prepare
+
+Start guardrail:
+
+- Pushed `main` to `origin/main` before any other work, bringing the remote up to commit `5609130`.
+- Read `docs/marketing-swipe-file-handoff.md`, the EPIC R2 block in `docs/marketing-swipe-file-remediation-backlog.md`, and `docs/output-evaluation-rubric.md`.
+
+MSF-R09 implementation:
+
+- Updated `scripts/evaluate_output.py` so the previous keyword score is now `keyword_presence_check`, explicitly marked as a secondary proxy and never the final score.
+- Added `schemas/output_evaluation.schema.json` for honest output evaluation reports.
+- The honest evaluator route is Codex-first/no API: Codex writes a separate judgment JSON, then the script validates, attaches citation context from local masters/strategy packs, computes the rubric score, and renders JSON/Markdown reports.
+- Updated `loops/output-evaluation.md` with the new protocol and the R10 blind prepare workflow.
+
+MSF-R09 results:
+
+- Re-evaluated `data/exports/generated_vsl_lowticket.md`: old keyword proxy 39/40 `pass`; honest rubric score 30/40 `needs_revision`; delta -9.
+- Re-evaluated `data/exports/generated_ads_lowticket.md`: old keyword proxy 37/40 `pass`; honest rubric score 30/40 `needs_revision`; delta -7.
+- Both reports passed `schemas/output_evaluation.schema.json`.
+- Recorded the result in `docs/output-evaluation-review-2026-07-07.md`; README, handoff, and backlog no longer cite 39/40 or 37/40 as proof of value.
+
+MSF-R10 prepare only:
+
+- Generated v2 strategy packs locally from `data/exports/insights_v2_master.json` for the same low-ticket briefing.
+- Generated local ignored R10 outputs:
+  - with-base v2 VSL/ads: `data/exports/r10_with_base_vsl_lowticket_2026-07-07.md`, `data/exports/r10_with_base_ads_lowticket_2026-07-07.md`
+  - no-base baseline VSL/ads: `data/exports/r10_baseline_vsl_lowticket_2026-07-07.md`, `data/exports/r10_baseline_ads_lowticket_2026-07-07.md`
+- Added `scripts/generate_output_blind_review.py` and prepared `data/exports/output_r10_blind_sample_2026-07-07.csv` plus local ignored key `data/exports/output_r10_blind_key_2026-07-07.json`.
+- Wrote pending report `docs/output-r10-blind-review-2026-07-07.md`.
+- Verified the blind CSV has 2 pairs and no `insight_id`, `with_base`, or `baseline` leakage.
+- Stopped before judgment: no R10 score was run and Gate R2 remains pending external judge.
+
+Validation:
+
+- Used `.\.venv\Scripts\python.exe -B` throughout.
+- Reran non-ASCII scan on tracked changed files before commit.
+- Reran `scripts/audit_insights_v2_text.py` for the v2 editorial/audit protocol.
+- Reran `git diff --check`.
