@@ -469,6 +469,7 @@ Escopo:
 
 - Clusterizar a base v2 por similaridade (Jaccard sobre tokens como primeiro corte; embeddings ficam para MSF-R16).
 - Gerar o primeiro lote de 100-150 `curated_insights` priorizando temas de VSL e anuncios (os que alimentam os strategy packs), conforme recomendado na quality review.
+- Para servir a primeira leva do EPIC MSF-S, priorizar explicitamente as tags `process-construcao-oferta`, `process-copy-vsl`, `process-copy-anuncios`, `process-produto-low-ticket` e `process-quiz`, mais os modulos transversais `process-mecanismo-big-idea` e `process-prova-depoimentos`.
 - Preencher os campos editoriais do schema v2: `canonical_title`, `when_to_use`, `when_not_to_use`, `claim_risk`, `editorial_score` com a regua 0-100 da review (evidencia 25, especificidade 25, aplicabilidade 20, portabilidade 15, novidade 10, limpeza 5).
 - Preencher `process_tags` em todo `curated_insight` com ids validos `process-*` da taxonomia de processos; minimo 1 tag valida por insight curado, sem tag generica de fallback.
 - Curadoria pode ser LLM-assistida, mas o lote inicial passa por revisao humana amostral (minimo 30 itens).

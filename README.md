@@ -12,6 +12,7 @@ The first source is VTurb. After the VTurb backlog is processed, the planned ord
 - `docs/marketing-swipe-file-mvp-backlog.md`
 - `docs/marketing-swipe-file-full-backlog.md`
 - `docs/marketing-swipe-file-remediation-backlog.md`
+- `docs/marketing-swipe-file-skills-backlog.md`
 - `docs/execution-log.md`
 
 ## Execution Principle
@@ -29,7 +30,7 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
-Current remediation guardrail: do not scale new episodes or start Supabase/MCP until the R1/R2 gates in `docs/marketing-swipe-file-remediation-backlog.md` are closed.
+Current remediation guardrail: do not scale new episodes or start Supabase/MCP until the R1/R2 gates in `docs/marketing-swipe-file-remediation-backlog.md` are closed. The skills backlog in `docs/marketing-swipe-file-skills-backlog.md` is blocked behind R2 and R3: finish MSF-R09/MSF-R10, then MSF-R11/MSF-R12/MSF-R13, before starting any MSF-S task.
 
 ## Local Data Policy
 

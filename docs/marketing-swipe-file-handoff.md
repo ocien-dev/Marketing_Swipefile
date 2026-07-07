@@ -40,10 +40,11 @@ Leia nesta ordem:
 3. `docs/marketing-swipe-file-architecture.md`
 4. `docs/marketing-swipe-file-full-backlog.md`
 5. `docs/marketing-swipe-file-remediation-backlog.md`
-6. `docs/execution-log.md`
-7. `docs/asset-acquisition-procedure.md`
-8. `docs/insight-quality-checklist.md`
-9. `docs/output-evaluation-rubric.md`
+6. `docs/marketing-swipe-file-skills-backlog.md`
+7. `docs/execution-log.md`
+8. `docs/asset-acquisition-procedure.md`
+9. `docs/insight-quality-checklist.md`
+10. `docs/output-evaluation-rubric.md`
 
 ## Estado Atual Em 2026-07-07
 
@@ -74,7 +75,7 @@ Ja existe um MVP local operavel em arquivos:
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. MSF-R05/MSF-R06 tambem estao feitos em piloto local: `mCaFyZpXJdE` e `TOW0sWhPaZw` possuem `insights_v2.json` validos e ignorados em `data/processed/**`; `mCaFyZpXJdE` tem 9 insights v2 em 4 chunks e `TOW0sWhPaZw` tem 4 insights v2 em 2 chunks. MSF-R07 agora gera `data/exports/insights_v2_master.json`, `insights_v2_status.json`, `insights_v2_episode_status.csv` e `insights_v2_title_distribution.csv`; o status tambem mede cobertura por chunk. A cobertura ainda e parcial: 2/50 episodios alvo tem algum v2, 0/50 estao totalmente extraidos por chunk e 6/754 chunks alvo foram extraidos. MSF-R08 tem amostra A/B cega local e `docs/insight-v1-vs-v2-review-2026-07-07.md` esta pendente de julgamento; Gate R1 nao foi declarado. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2.
+Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. MSF-R05/MSF-R06 tambem estao feitos em piloto local: `mCaFyZpXJdE` e `TOW0sWhPaZw` possuem `insights_v2.json` validos e ignorados em `data/processed/**`; `mCaFyZpXJdE` tem 9 insights v2 em 4 chunks e `TOW0sWhPaZw` tem 4 insights v2 em 2 chunks. MSF-R07 agora gera `data/exports/insights_v2_master.json`, `insights_v2_status.json`, `insights_v2_episode_status.csv` e `insights_v2_title_distribution.csv`; o status tambem mede cobertura por chunk. A cobertura ainda e parcial: 2/50 episodios alvo tem algum v2, 0/50 estao totalmente extraidos por chunk e 6/754 chunks alvo foram extraidos. MSF-R08 tem amostra A/B cega local e `docs/insight-v1-vs-v2-review-2026-07-07.md` esta pendente de julgamento; Gate R1 nao foi declarado. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2. O EPIC MSF-S de skills de processo existe em `docs/marketing-swipe-file-skills-backlog.md`, mas todas as 13 tarefas estao bloqueadas: a ordem continua sendo EPIC R2 (MSF-R09/MSF-R10), depois R3 (MSF-R11/MSF-R12/MSF-R13), e so entao MSF-S.
 
 ## Lote VTurb
 
@@ -348,7 +349,9 @@ Prioridade imediata:
 2. Reexecutar `scripts/consolidate_exports.py` e conferir `data/exports/insights_v2_status.json`; o Gate R1 so pode ser avaliado quando a cobertura chegar a 50/50 episodios e 100% dos chunks alvo.
 3. Executar MSF-R08 completo: gerar amostra A/B cega, julgar 40 pares sem rotulos, rodar `scripts/generate_insight_v1_v2_review.py --mode score` e so entao declarar o gate R1.
 4. Depois seguir para MSF-R09/MSF-R10: avaliacao honesta e teste cego.
-5. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
+5. Em seguida executar R3: MSF-R11/MSF-R12/MSF-R13 para diversidade, curadoria e packs a partir de `curated_insights`.
+6. So depois destravar o EPIC MSF-S em `docs/marketing-swipe-file-skills-backlog.md`.
+7. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
 
 Segundo bloco:
 
@@ -367,6 +370,7 @@ Para a Release 1 completa ainda faltam:
 - Supabase ainda nao foi criado.
 - MCP ainda nao foi criado.
 - Agentes especializados ainda nao foram criados.
+- Nenhuma tarefa MSF-S foi iniciada; skills de processo continuam bloqueadas por R2/R3.
 
 ## Observacoes Tecnicas
 
