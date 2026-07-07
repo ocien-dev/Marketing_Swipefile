@@ -506,3 +506,45 @@ Notes:
 
 - `data/input/academy_video_transcription_queue.csv` and `data/input/youtube_urls_academy_new.csv` are lightweight queue files and can be tracked. Raw transcripts, processed outputs, generated exports, private assets, and media remain ignored by Git.
 - Next remediation work should stay inside R1/R2: start with MSF-R05 and MSF-R06 rather than scaling more episodes or creating Supabase/MCP.
+
+## 2026-07-07 - MSF-R05/MSF-R06 raw_insights_v2 pilot
+
+Completed:
+
+- MSF-R05: created `schemas/insights_v2.schema.json` for `raw_insights_v2` and future `curated_insights`.
+- Added `schemas/examples/insights_v2.example.json`.
+- Added `jsonschema` to `requirements.txt` and installed it in the project `.venv`.
+- Added `scripts/validate_insights_v2.py` for formal schema validation.
+- MSF-R06: implemented the Codex-first route instead of API extraction for this pilot.
+- Added `prompts/extraction/base_insight_extraction_v2.md` with the quality rules from the remediation backlog.
+- Added `scripts/extract_transcript_insights_llm.py` to prepare v2 packets, merge chunk outputs, validate final payloads, and write `data/processed/{video_id}/insights_v2.json`.
+- Updated `loops/episode-processing.md` and `skills/marketing-swipe-file-extract-insights/SKILL.md` with the v2 workflow.
+
+Pilot outputs:
+
+- `data/processed/mCaFyZpXJdE/insights_v2.json`: 4 v2 insights across 2 chunks.
+- `data/processed/TOW0sWhPaZw/insights_v2.json`: 4 v2 insights across 2 chunks.
+- These files are local generated artifacts under ignored `data/processed/**`; they are not versioned.
+
+Validation:
+
+- `scripts/validate_insights_v2.py schemas/examples/insights_v2.example.json` returned `VALID`.
+- `scripts/validate_insights_v2.py data/processed/mCaFyZpXJdE/insights_v2.json data/processed/TOW0sWhPaZw/insights_v2.json` returned `VALID` for both pilot files.
+- Pilot titles were unique within each episode and avoided the broad v1 templates.
+- Re-running `scripts/extract_transcript_insights_llm.py combine` with fixed `run_id` and `generated_at` kept the same file hashes:
+  - `mCaFyZpXJdE`: `9A40ABC79A1930F65770217152E59426ABF1B1C10361E35DA4E36669435DAC34`
+  - `TOW0sWhPaZw`: `82394D8A8814A8566E64C3C96577C9A7AA38BE13DFE0E7584B66193F2076A5A5`
+- Evidence quote check passed: 8/8 pilot quotes matched their source transcript segments.
+- `.\.venv\Scripts\python.exe -m pip check` returned no broken requirements.
+- In-memory script compilation passed for 31 Python scripts.
+
+Cost and effort:
+
+- Route: Codex-first manual extraction (`route=codex_manual`).
+- External API cost: `$0`.
+- Pilot effort: 2 processed episodes, 4 chunks, 8 manually reviewed v2 insights.
+
+Next:
+
+- MSF-R07: run v2 extraction over the 50 complete episodes and update consolidation to produce `data/exports/insights_v2_master.json`.
+- MSF-R08: compare a paired v1/v2 sample before declaring the R1 gate.

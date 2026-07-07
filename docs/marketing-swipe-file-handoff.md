@@ -69,10 +69,11 @@ Ja existe um MVP local operavel em arquivos:
 - Dedupe local, classificacao taxonomica, resumos, master exports, busca, strategy packs e avaliacao de outputs.
 - Transcricao de videos e aulas VTurb Academy por MP4/Drive e HLS.
 - Ambiente Python proprio do projeto em `.venv`, com dependencias em `requirements.txt`.
+- Contrato `raw_insights_v2` e piloto Codex-first de MSF-R05/MSF-R06.
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2.
+Importante: a base ja saiu do nivel de candidatos de descricao e atingiu o gate local de escala solicitado. Em 2026-07-07, `.\.venv\Scripts\python.exe scripts\run_episode_batch.py --target-complete 50 --status-only` valida 160 URLs listadas, 50 videos completos, 50 com transcript e 50 com chunks. Os exports consolidados atuais tem 253 registros de episodios, 46 assets, 1.406 insights e 13 tarefas de aquisicao. MSF-R05/MSF-R06 tambem estao feitos em piloto local: `mCaFyZpXJdE` e `TOW0sWhPaZw` possuem `insights_v2.json` validos e ignorados em `data/processed/**`, com 4 insights v2 cada. Antes de usar como base final de producao, siga o backlog de remediacao: nao escalar novos episodios nem iniciar Supabase/MCP antes dos gates R1 e R2.
 
 ## Lote VTurb
 
@@ -134,6 +135,8 @@ Extracao e qualidade:
 - `scripts/prepare_chunked_extraction_packets.py`
 - `scripts/extract_description_insights.py`
 - `scripts/extract_transcript_insights.py`
+- `scripts/extract_transcript_insights_llm.py`
+- `scripts/validate_insights_v2.py`
 - `scripts/classify_taxonomy.py`
 - `scripts/dedupe_insights.py`
 - `scripts/audit_insights.py`
@@ -166,6 +169,7 @@ Especializados:
 - `prompts/extraction/copy_extractor.md`
 - `prompts/extraction/ops_extractor.md`
 - `prompts/extraction/asset_extractor.md`
+- `prompts/extraction/base_insight_extraction_v2.md`
 
 Retrieval:
 
@@ -196,7 +200,7 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir da remediacao local: a Sessao 1 fechou o `.venv`, `requirements.txt` e a sincronizacao basica de docs. Nao escale episodios nem inicie Supabase/MCP antes dos gates R1/R2. O proximo passo e MSF-R05/MSF-R06: contrato `raw_insights_v2` e piloto de extracao LLM em 2 episodios.
+Continue a partir da remediacao local: MSF-R05/MSF-R06 ja criaram o contrato `raw_insights_v2` e um piloto Codex-first em 2 episodios. Nao escale episodios nem inicie Supabase/MCP antes dos gates R1/R2. O proximo passo e MSF-R07/MSF-R08: extrair v2 nos 50 episodios completos, consolidar `insights_v2_master.json` e comparar v1 vs v2.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
@@ -339,10 +343,10 @@ Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rod
 
 Prioridade imediata:
 
-1. Executar MSF-R05: schema `raw_insights_v2` e exemplo valido.
-2. Executar MSF-R06: piloto de extracao LLM em 2 episodios ja processados.
-3. Atualizar o execution log com custo/esforco e veredito do piloto.
-4. So depois voltar a revisao humana amostral, triagem de assets e ranking de strategy packs.
+1. Executar MSF-R07: rodar o fluxo v2 nos 50 episodios completos e gerar `data/exports/insights_v2_master.json`.
+2. Executar MSF-R08: comparar amostra pareada v1 vs v2 e declarar o gate R1.
+3. Depois seguir para MSF-R09/MSF-R10: avaliacao honesta e teste cego.
+4. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
 
 Segundo bloco:
 

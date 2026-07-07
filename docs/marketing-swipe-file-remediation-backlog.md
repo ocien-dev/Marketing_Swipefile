@@ -165,7 +165,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `data`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -181,6 +181,14 @@ Aceite:
 - Schema parseia, exemplo valida contra o schema.
 - Base v1 permanece intocada e utilizavel durante a transicao.
 
+Execucao 2026-07-07:
+
+- Criado `schemas/insights_v2.schema.json` para `raw_insights_v2` e `curated_insights`.
+- Criado `schemas/examples/insights_v2.example.json`.
+- Criado `scripts/validate_insights_v2.py` e adicionada dependencia `jsonschema` em `requirements.txt`.
+- Validacao executada: `scripts/validate_insights_v2.py schemas/examples/insights_v2.example.json` retornou `VALID`.
+- Base v1 ficou intacta; os pilotos v2 foram gravados em `data/processed/**`, que continua ignorado pelo Git.
+
 Dependencias:
 
 - MSF-R01.
@@ -189,7 +197,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -210,6 +218,16 @@ Aceite:
 - Rodar em 2 episodios piloto ja processados gera `insights_v2.json` valido, com titulos especificos e sem os templates da v1.
 - Reprocessar o mesmo episodio nao duplica insights (idempotencia).
 - Custo/esforco por episodio registrado no execution log.
+
+Execucao 2026-07-07:
+
+- Escolhida Rota B (Codex-first), sem API externa e sem custo de API.
+- Criado `prompts/extraction/base_insight_extraction_v2.md`.
+- Criado `scripts/extract_transcript_insights_llm.py` para preparar packets Codex, combinar outputs por chunk e validar o `insights_v2.json` final.
+- Atualizados `loops/episode-processing.md` e `skills/marketing-swipe-file-extract-insights/SKILL.md` com o fluxo v2.
+- Piloto executado em `mCaFyZpXJdE` e `TOW0sWhPaZw`: 4 insights v2 validos por episodio, 8 no total, cobrindo 4 chunks.
+- Reprocessamento com `run_id` e `generated_at` fixos preservou os mesmos hashes dos arquivos finais, provando que o combine sobrescreve sem duplicar.
+- Quotes do piloto foram conferidas contra os segmentos locais: 8/8 evidencias bateram com os textos de origem.
 
 Dependencias:
 
@@ -445,8 +463,8 @@ Dependencias:
 Ordem de ataque sugerida, em sessoes:
 
 1. Sessao 1: MSF-R01, MSF-R02, MSF-R04 (estabilizacao; R03 se sobrar tempo).
-2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios).
-3. Sessao 3: MSF-R07, MSF-R08 (extracao v2 nos 50 + comparacao; declarar gate R1).
+2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
+3. Sessao 3: MSF-R07, MSF-R08 (extracao v2 nos 50 + comparacao; declarar gate R1) - proximo.
 4. Sessao 4: MSF-R09, MSF-R10 (avaliacao honesta + teste cego; declarar gate R2).
 5. Sessao 5: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.

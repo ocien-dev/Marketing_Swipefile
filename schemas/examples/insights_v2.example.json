@@ -1,0 +1,87 @@
+{
+  "schema_version": "2.0",
+  "insight_layer": "raw_insights_v2",
+  "episode_video_id": "fixture001",
+  "asset_id": null,
+  "extraction_run": {
+    "run_id": "fixture001-r06-example",
+    "extraction_method": "llm_v2",
+    "route": "codex_manual",
+    "model": "codex",
+    "prompt_version": "msf-r06-2026-07-07",
+    "generated_at": "2026-07-07T00:00:00Z",
+    "max_insights_per_chunk": 5,
+    "chunk_count": 1,
+    "input_chunk_ids": ["fixture001-chunk-0001"],
+    "cost": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "estimated_usd": 0,
+      "notes": "Codex-first manual pilot; no external API billing."
+    }
+  },
+  "insights": [
+    {
+      "insight_id": "fixture001-v2-0001",
+      "source_kind": "transcript",
+      "extraction_method": "llm_v2",
+      "canonical_title": "Lead promete descoberta sem revelar todo o mecanismo",
+      "title": "Lead promete descoberta sem revelar todo o mecanismo",
+      "specific_takeaway": "A abertura da VSL deve criar curiosidade sobre a descoberta, mas segurar a explicacao completa do mecanismo para manter tensao.",
+      "insight_ptbr": "Um lead de VSL fica mais forte quando promete uma descoberta especifica e evita explicar todo o mecanismo logo na primeira tela.",
+      "summary_ptbr": "Prometa a descoberta; segure a explicacao completa.",
+      "use_case": "Reescrever aberturas de VSL que entregam o mecanismo cedo demais.",
+      "when_to_use": "Use quando a oferta depende de curiosidade, descoberta ou nova oportunidade.",
+      "when_not_to_use": "Nao use quando o publico precisa primeiro de prova tecnica ou compliance rigoroso.",
+      "claim_risk": "low",
+      "evidence_cleanliness": "clean",
+      "cluster_id": "vsl-lead-curiosidade-mecanismo",
+      "supporting_insight_ids": [],
+      "editorial_score": 83,
+      "level": "tactical",
+      "insight_type": "principle",
+      "themes": ["VSL", "copy", "hooks"],
+      "subthemes": ["lead", "mecanismo"],
+      "applicability": ["copywriter de VSLs", "copy strategist"],
+      "niches": ["infoprodutos"],
+      "funnel_stages": ["conversion"],
+      "confidence_score": 0.86,
+      "review_status": "needs_review",
+      "source_agent": "codex_manual_llm_v2",
+      "dedupe_key": "fixture001-lead-descoberta-sem-revelar-mecanismo",
+      "source_chunk": {
+        "chunk_id": "fixture001-chunk-0001",
+        "chunk_index": 0,
+        "chunk_title": "Lead",
+        "chunk_file": "tests/fixtures/transcripts/fixture001_content_segments.json",
+        "start_seconds": 120,
+        "end_seconds": 180
+      },
+      "evidence": [
+        {
+          "evidence_id": "fixture001-v2-evidence-0001",
+          "segment_id": "fixture001-transcript-0001",
+          "episode_video_id": "fixture001",
+          "asset_id": null,
+          "chunk_id": "fixture001-chunk-0001",
+          "start_seconds": 120,
+          "end_seconds": 180,
+          "page_number": null,
+          "sheet_name": null,
+          "cell_range": null,
+          "slide_number": null,
+          "quote_original": "O lead da VSL precisa abrir uma tensao clara e prometer uma descoberta sem entregar todo o mecanismo.",
+          "quote_ptbr": null,
+          "evidence_strength": "strong",
+          "locator": {
+            "kind": "segment",
+            "value": "fixture001-transcript-0001"
+          }
+        }
+      ],
+      "relations": [],
+      "reviewed_by": null,
+      "reviewed_at": null
+    }
+  ]
+}

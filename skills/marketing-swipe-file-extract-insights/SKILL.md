@@ -22,6 +22,21 @@ Use this skill when turning content segments or extraction packets into `insight
    `scripts/audit_insights.py --input <insights.json>`
 5. Consolidate accepted outputs with `scripts/consolidate_exports.py`.
 
+## raw_insights_v2 Remediation Workflow
+
+Use this path for MSF-R05/MSF-R06 and later R1 remediation. It does not replace v1 until the review gate says so.
+
+1. Confirm the v2 schema and example validate:
+   `scripts/validate_insights_v2.py schemas/examples/insights_v2.example.json`
+2. Prepare Codex-first packets from existing chunks:
+   `scripts/extract_transcript_insights_llm.py prepare --video-id <video_id> --chunks <chunk_numbers>`
+3. Read each packet from `data/processed/{video_id}/llm_v2_packets/`.
+4. Extract at most 5 specific insights per chunk using `prompts/extraction/base_insight_extraction_v2.md`.
+5. Save chunk-level JSON to `data/processed/{video_id}/llm_v2_outputs/chunk_###_insights.json`.
+6. Merge and validate:
+   `scripts/extract_transcript_insights_llm.py combine --video-id <video_id>`
+   `scripts/validate_insights_v2.py data/processed/{video_id}/insights_v2.json`
+
 ## Rules
 
 - Every insight must be atomic, actionable, and supported by evidence.
@@ -29,6 +44,8 @@ Use this skill when turning content segments or extraction packets into `insight
 - Use `confidence_score < 0.75` and `review_status=needs_review` for weak or inferential insights.
 - Do not use insights without evidence in strategy packs or final outputs.
 - Use stable `dedupe_key` values that survive reprocessing.
+- In v2, titles must be specific to the chunk. Reject generic templates such as "Expert real aumenta autoridade" unless the title names the actual mechanism or condition.
+- In v2, reject evidence contaminated by "inscreva-se", "assista tambem", hashtags, episode-link lists, sponsor boilerplate, or unrelated description links.
 
 ## Extractor Focus
 
