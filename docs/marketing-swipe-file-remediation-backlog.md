@@ -47,6 +47,7 @@ Gate de saida R1:
 
 - Amostra pareada v1 vs v2 revisada mostra v2 superior em especificidade e fidelidade a evidencia.
 - Menos de 10% dos insights v2 com titulo repetido 5+ vezes.
+- Emenda de aceite do MSF-R07, registrada em 2026-07-07: para a Rota B Codex-first sem API, Gate R1 exige 15-20 episodios completos por chunk, aproximadamente 225-300 chunks, priorizando episodios cujos insights alimentam os strategy packs de VSL/ads e os episodios ja iniciados (`TOW0sWhPaZw`, `mCaFyZpXJdE`). A cobertura dos 50 episodios passa a ser trabalho continuo pos-gate em MSF-R14. Motivo: decisao do owner de nao usar API; gate por amostra representativa em vez de cobertura total.
 
 ### Bloco R2 - Avaliacao honesta
 
@@ -274,7 +275,9 @@ Escopo:
 
 Aceite:
 
-- 50 episodios com `insights_v2.json` valido.
+- Emenda de aceite 2026-07-07: Gate R1 passa a exigir 15-20 episodios completos por chunk (~225-300 chunks), com prioridade para episodios que alimentam os strategy packs de VSL/ads e para os ja iniciados (`TOW0sWhPaZw`, `mCaFyZpXJdE`).
+- Cobertura dos 50 episodios completos deixa de ser bloqueio do Gate R1 e vira trabalho continuo pos-gate em MSF-R14.
+- Motivo da emenda: decisao do owner de permanecer na Rota B Codex-first, sem API; gate por amostra representativa em vez de cobertura total.
 - `insights_v2_master.json` consolidado.
 - Nenhum titulo com mais de 5% de repeticao na base v2 (na v1, um unico titulo tinha 135 ocorrencias).
 
@@ -294,6 +297,15 @@ Execucao parcial 2026-07-07:
 - `data/exports/insights_v2_status.json` agora mede cobertura por episodio e por chunk para impedir aceite de episodio meio-extraido.
 - Rodada local atual: 13 insights v2 validos em 2 episodios alvo (`mCaFyZpXJdE` e `TOW0sWhPaZw`), 0 arquivos v2 invalidos, 0/50 episodios totalmente extraidos em v2, 6/754 chunks alvo extraidos, nenhuma repeticao de titulo v2 acima de 5% com contagem >1.
 - `data/exports/insights_v2_status.json` registra `gate_r1_ready=false`.
+
+Execucao 2026-07-07 - emenda Rota B e lote de calibracao:
+
+- Emenda de aceite registrada: Gate R1 por amostra representativa de 15-20 episodios completos por chunk (~225-300 chunks), nao mais cobertura total dos 50 episodios.
+- `scripts/consolidate_exports.py` agora separa o alvo continuo de 50 episodios da cobertura minima do gate emendado (`r07_gate_min_complete_episodes=15`, `r07_gate_max_complete_episodes=20`, `r07_gate_route=codex_manual_no_api`).
+- `mCaFyZpXJdE` completado em v2: 21/21 chunks, 24 insights v2.
+- `TOW0sWhPaZw` completado em v2: 20/20 chunks, 18 insights v2.
+- Rodada local apos consolidacao: 42 insights v2 validos em 2 episodios alvo, 0 arquivos v2 invalidos, 2/50 episodios totalmente extraidos em v2, 41/754 chunks alvo extraidos, `gate_r1_ready=false`.
+- Throughput real da sessao: 35 chunks novos processados, 29 insights novos adicionados, 2 episodios fechados por chunk. Estimativa calibrada ate o gate emendado: mais 6-8 sessoes nesse ritmo para atingir 15-20 episodios completos, variando conforme tamanho dos episodios.
 
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
@@ -325,7 +337,8 @@ Execucao parcial 2026-07-07:
 - O julgamento deve preencher `judgment_*` com `A`, `B` ou `tie` sem acesso aos rotulos; depois `--mode score` desanonimiza e computa v1/tie/v2.
 - A limpeza de quote usa o mesmo detector de ruido para ambos os lados, sem aceitar `evidence_strength` ou `evidence_cleanliness` como prova a favor do v2.
 - Gerado `docs/insight-v1-vs-v2-review-2026-07-07.md` como pendente de julgamento cego, com 8 pares piloto a partir dos 2 episodios v2 existentes.
-- Gate R1 nao foi declarado; R08 completo continua bloqueado por MSF-R07 ate haver cobertura v2 nos 50 episodios alvo, cobertura completa de chunks e amostra de 40 pares comparaveis julgada as cegas.
+- Gate R1 nao foi declarado; R08 completo continua bloqueado por MSF-R07 ate haver cobertura v2 na amostra emendada, cobertura completa de chunks nos episodios escolhidos e amostra de 40 pares comparaveis preparada para julgamento cego externo.
+- Emenda 2026-07-07: quando a cobertura emendada do MSF-R07 for atingida, gerar a amostra cega de 40 pares com `--mode prepare` e parar. O julgamento cego permanece externo ao Codex.
 
 ## EPIC R2 - Avaliacao honesta de outputs
 
@@ -450,6 +463,7 @@ Status: `blocked`
 Escopo:
 
 - Somente apos gates R1 e R2 aprovados.
+- Absorver a cobertura continua dos 50 episodios completos que deixou de ser requisito bloqueante do Gate R1 pela emenda de aceite do MSF-R07 em 2026-07-07.
 - Processar os 110 episodios VTurb restantes com o pipeline v2 (metadata, transcript com fallback Playwright, chunks, extracao LLM).
 - Retentar os 6 videos bloqueados conhecidos (`YfI0CjI_XaE`, `Rz1Y7fhXGFI`, `0DlzYLUmKcU`, `wJincuVXxxc`, `FV-KR1eEbCw`, `sVUrU9gvxyk`); se o transcript da UI continuar indisponivel, avaliar transcricao de audio local (base ja existe em `scripts/transcribe_academy_hls.py`).
 - Registrar motivo de falha por video automaticamente (item ja recomendado no handoff).

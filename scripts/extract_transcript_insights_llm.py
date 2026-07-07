@@ -125,6 +125,23 @@ def load_chunk_output(path: Path) -> list[dict[str, Any]]:
     return insights
 
 
+def chunk_id_from_output_path(path: Path, chunk_index: dict[str, Any]) -> str | None:
+    payload = load_json(path)
+    chunk_id = payload.get("chunk_id")
+    if isinstance(chunk_id, str) and chunk_id:
+        return chunk_id
+    stem = path.stem.replace("_insights", "")
+    if stem.startswith("chunk_"):
+        suffix = stem.replace("chunk_", "", 1)
+        if suffix.isdigit():
+            chunk_number = int(suffix)
+            for chunk in chunk_index.get("chunks", []):
+                if int(chunk.get("chunk_index", -1)) + 1 == chunk_number:
+                    candidate = chunk.get("chunk_id")
+                    return str(candidate) if candidate else None
+    return None
+
+
 def source_chunk_sort_key(insight: dict[str, Any]) -> tuple[int, str]:
     source_chunk = insight.get("source_chunk") or {}
     chunk_index = source_chunk.get("chunk_index")
@@ -144,7 +161,11 @@ def combine_outputs(args: argparse.Namespace) -> int:
     merged: list[dict[str, Any]] = []
     seen_dedupe_keys: set[str] = set()
     seen_ids: set[str] = set()
+    processed_chunk_ids: set[str] = set()
     for path in files:
+        output_chunk_id = chunk_id_from_output_path(path, chunk_index)
+        if output_chunk_id:
+            processed_chunk_ids.add(output_chunk_id)
         for insight in load_chunk_output(path):
             dedupe_key = str(insight.get("dedupe_key", ""))
             insight_id = str(insight.get("insight_id", ""))
@@ -156,7 +177,8 @@ def combine_outputs(args: argparse.Namespace) -> int:
 
     merged.sort(key=source_chunk_sort_key)
     input_chunk_ids = sorted(
-        {
+        processed_chunk_ids
+        | {
             str((insight.get("source_chunk") or {}).get("chunk_id"))
             for insight in merged
             if (insight.get("source_chunk") or {}).get("chunk_id")

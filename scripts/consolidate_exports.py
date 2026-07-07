@@ -17,6 +17,8 @@ from youtube_common import extract_video_id
 
 INSIGHTS_V2_SCHEMA_PATH = Path("schemas/insights_v2.schema.json")
 R07_TARGET_EPISODE_COUNT = 50
+R07_GATE_MIN_COMPLETE_EPISODES = 15
+R07_GATE_MAX_COMPLETE_EPISODES = 20
 
 
 def utc_now() -> str:
@@ -498,6 +500,8 @@ def build_insights_v2_status(
     chunk_ready_episodes: dict[str, dict[str, Any]],
     r07_target_episodes: dict[str, dict[str, Any]],
     r07_target_episode_count: int,
+    r07_gate_min_complete_episodes: int,
+    r07_gate_max_complete_episodes: int,
     insights_v2: list[dict[str, Any]],
     runs: list[dict[str, Any]],
     validation_errors: list[dict[str, Any]],
@@ -522,6 +526,7 @@ def build_insights_v2_status(
         and target_chunk_count
         and extracted_target_chunk_count >= target_chunk_count
     )
+    amended_gate_coverage_ready = bool(fully_extracted_episode_count >= r07_gate_min_complete_episodes)
     title_distribution_ok = not repeated_over_5
     validation_ok = not validation_errors
     return {
@@ -529,6 +534,10 @@ def build_insights_v2_status(
         "generated_at": generated_at,
         "target": "MSF-R07",
         "r07_target_episode_count": r07_target_episode_count,
+        "r07_gate_route": "codex_manual_no_api",
+        "r07_gate_min_complete_episodes": r07_gate_min_complete_episodes,
+        "r07_gate_max_complete_episodes": r07_gate_max_complete_episodes,
+        "r07_gate_expected_chunk_range": "225-300",
         "chunk_ready_episode_count": len(chunk_ready_episodes),
         "target_v1_complete_episode_count": len(r07_target_episodes),
         "valid_v2_episode_count": len(v2_episode_ids),
@@ -550,11 +559,12 @@ def build_insights_v2_status(
             "episode_coverage_complete": fully_extracted_episode_count >= r07_target_episode_count,
             "chunk_coverage_complete": bool(target_chunk_count and extracted_target_chunk_count >= target_chunk_count),
             "coverage_complete": coverage_complete,
+            "amended_gate_coverage_ready": amended_gate_coverage_ready,
             "consolidated_master_available": True,
             "title_distribution_ok": title_distribution_ok,
             "validation_ok": validation_ok,
         },
-        "gate_r1_ready": bool(coverage_complete and title_distribution_ok and validation_ok),
+        "gate_r1_ready": bool(amended_gate_coverage_ready and title_distribution_ok and validation_ok),
     }
 
 
@@ -658,6 +668,8 @@ def main() -> int:
     parser.add_argument("--output-dir", default=Path("data/exports"), type=Path)
     parser.add_argument("--target-episode-csv", default=Path("data/input/youtube_urls.csv"), type=Path)
     parser.add_argument("--r07-target-episode-count", default=R07_TARGET_EPISODE_COUNT, type=int)
+    parser.add_argument("--r07-gate-min-complete-episodes", default=R07_GATE_MIN_COMPLETE_EPISODES, type=int)
+    parser.add_argument("--r07-gate-max-complete-episodes", default=R07_GATE_MAX_COMPLETE_EPISODES, type=int)
     parser.add_argument("--include-fixtures", action="store_true", help="Include local fixture episode ids in exports")
     args = parser.parse_args()
 
@@ -687,6 +699,8 @@ def main() -> int:
         chunk_ready_episodes,
         r07_target_episodes,
         args.r07_target_episode_count,
+        args.r07_gate_min_complete_episodes,
+        args.r07_gate_max_complete_episodes,
         insights_v2,
         insights_v2_runs,
         insights_v2_validation_errors,

@@ -658,3 +658,45 @@ Updated R07 status:
 Risk note:
 
 - No OneDrive lock/permisson issue appeared during this batch. If locks/permissons appear in future batches, reopen MSF-R03 before continuing extraction.
+
+## 2026-07-07 - MSF-R07 Route B amendment and extraction session
+
+Decision registered:
+
+- MSF-R07 remains on Route B: Codex-first, no API.
+- Gate R1 is amended to require 15-20 complete episodes by chunk, roughly 225-300 chunks, prioritizing VSL/ads strategy-pack material and the already initiated episodes `mCaFyZpXJdE` and `TOW0sWhPaZw`.
+- The original 50-episode coverage target is moved to continuous post-gate work under MSF-R14.
+- Rule unchanged: when amended coverage is reached, generate a blind 40-pair sample with `scripts/generate_insight_v1_v2_review.py --mode prepare` and stop. Blind judgment remains external to Codex.
+
+Completed:
+
+- Updated `docs/marketing-swipe-file-remediation-backlog.md` with the MSF-R07 acceptance amendment, reason, gate scope, and MSF-R14 absorption of the 50-episode continuation.
+- Updated `loops/episode-processing.md` with the R07 extraction session protocol: whole episodes, one at a time, minimum 20 chunks per session, no canonical-doc reread during extraction, schema validation per chunk/final file, quote-noise check, consolidation, execution-log throughput, and commit at session close.
+- Updated `scripts/extract_transcript_insights_llm.py` so processed chunk output files count toward `input_chunk_ids` even when `insights` is empty. This lets the Codex-first route honestly mark weak or promo-contaminated chunks as processed without forcing generic insights.
+- Updated `scripts/consolidate_exports.py` to separate the continuous 50-episode tracking target from the amended gate fields:
+  - `r07_gate_route=codex_manual_no_api`
+  - `r07_gate_min_complete_episodes=15`
+  - `r07_gate_max_complete_episodes=20`
+  - `r07_gate_expected_chunk_range=225-300`
+
+Extraction outputs:
+
+- Completed `mCaFyZpXJdE` in v2: 21/21 chunks, 24 insights v2.
+- Completed `TOW0sWhPaZw` in v2: 20/20 chunks, 18 insights v2.
+- New session throughput: 35 new chunks processed, 29 new insights added, 2 episodes closed by chunk.
+- Local timestamp window for repo writes and validation artifacts: 13:13-13:19 America/Sao_Paulo. API cost: `$0`.
+
+Validation:
+
+- `scripts/validate_insights_v2.py data/processed/mCaFyZpXJdE/insights_v2.json data/processed/TOW0sWhPaZw/insights_v2.json` returned `VALID` for both files.
+- New evidence quote check: 29/29 new evidence quotes matched their source transcript segment exactly.
+- New evidence quote-noise check: 0 hits for promo CTAs, `inscreva`, `assista tambem`, hashtags, or description boilerplate.
+- `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 42 v2 insights, and 13 acquisition tasks.
+- Updated R07 status: 2/50 target episodes have v2 and are fully extracted, 41/754 target chunks extracted, `gate_r1_ready=false`.
+- In-memory compile passed for `scripts/extract_transcript_insights_llm.py` and `scripts/consolidate_exports.py`. Direct `py_compile` still hits OneDrive/Windows `.pyc` permission friction.
+
+Calibration:
+
+- Current amended gate progress: 2/15 minimum complete episodes; 41 chunks extracted.
+- Remaining to the lower bound is roughly 184 chunks and 13 complete episodes.
+- At the observed throughput of 35 chunks per session, estimate 6 more sessions to reach the 15-episode lower bound and 8 sessions to reach the 20-episode upper bound, depending on next-episode chunk counts.
