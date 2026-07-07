@@ -1,20 +1,38 @@
 #!/usr/bin/env python
-"""Generate a paired v1/v2 insight quality review.
+"""Prepare and score blind paired v1/v2 insight reviews.
 
-The generated report intentionally avoids copying raw transcript quotes into
-tracked docs. It references insight ids, titles, chunks, and evidence locators.
+The default `prepare` mode creates a randomized A/B CSV plus a local key file.
+The judged CSV can later be passed to `score` to de-anonymize and compute the
+v1/tie/v2 result. No automatic winner is inferred from v2 self-declared fields.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
+import json
+import random
 import re
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import first_evidence, insight_text, jaccard, load_json, normalize_text, tokens, write_text
+from msf_common import first_evidence, insight_text, jaccard, load_json, normalize_text, tokens, write_json, write_text
+
+
+CRITERIA = ["specificity", "evidence_fidelity", "applicability", "quote_cleanliness"]
+NOISE_PATTERNS = [
+    ("subscribe_cta", re.compile(r"\b(inscreva|inscreva-se|se inscreva|inscrito|sininho)\b")),
+    ("engagement_cta", re.compile(r"\b(like|curte|curtir|compartilha|comenta|comentario|segue)\b")),
+    ("description_cta", re.compile(r"\b(link na descricao|descricao do video|acesse o link)\b")),
+    ("watch_next", re.compile(r"\b(assista tambem|proximo video|video recomendado|continua assistindo)\b")),
+    ("hashtag", re.compile(r"#[a-z0-9_]+")),
+]
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def utc_date() -> str:
@@ -54,9 +72,7 @@ def load_insights(path: Path) -> list[dict[str, Any]]:
 
 
 def insight_similarity(left: dict[str, Any], right: dict[str, Any]) -> float:
-    left_text = insight_text(left)
-    right_text = insight_text(right)
-    return jaccard(tokens(left_text), tokens(right_text))
+    return jaccard(tokens(insight_text(left)), tokens(insight_text(right)))
 
 
 def pair_insights(v1_insights: list[dict[str, Any]], v2_insights: list[dict[str, Any]], sample_size: int) -> list[dict[str, Any]]:
@@ -90,32 +106,161 @@ def pair_insights(v1_insights: list[dict[str, Any]], v2_insights: list[dict[str,
     return pairs[:sample_size]
 
 
-def repeated_v1_title_counts(v1_insights: list[dict[str, Any]]) -> Counter[str]:
-    return Counter(normalize_text(strip_chunk_suffix(insight.get("title"))) for insight in v1_insights if insight.get("title"))
+def collect_episode_titles(insights: list[dict[str, Any]]) -> dict[str, str]:
+    titles: dict[str, str] = {}
+    for insight in insights:
+        episode_id = str(insight.get("episode_video_id") or "")
+        title = str(insight.get("episode_title") or "")
+        if episode_id and title:
+            titles.setdefault(episode_id, title)
+    return titles
 
 
-def criterion_winners(pair: dict[str, Any], v1_title_counts: Counter[str]) -> dict[str, str]:
-    v1 = pair["v1"]
-    v2 = pair["v2"]
-    v1_title_key = normalize_text(strip_chunk_suffix(v1.get("title")))
-    v2_title = str(v2.get("canonical_title") or v2.get("title") or "")
-    v2_has_operational_fields = all(v2.get(field) for field in ["specific_takeaway", "use_case", "when_to_use", "when_not_to_use"])
-    v2_evidence = first_evidence(v2)
-    v2_locator = v2_evidence.get("locator") if isinstance(v2_evidence.get("locator"), dict) else {}
-    cleanliness = v2.get("evidence_cleanliness")
+def noise_flags(quote: Any, episode_id: str, episode_titles: dict[str, str]) -> list[str]:
+    normalized = normalize_text(quote)
+    flags = [name for name, pattern in NOISE_PATTERNS if pattern.search(normalized)]
+    for other_episode_id, title in episode_titles.items():
+        if other_episode_id == episode_id:
+            continue
+        normalized_title = normalize_text(title)
+        if len(normalized_title) >= 30 and normalized_title in normalized:
+            flags.append("other_episode_title")
+            break
+    return sorted(set(flags))
+
+
+def list_value(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return " | ".join(str(item) for item in value)
+    return str(value)
+
+
+def evidence_locator(evidence: dict[str, Any]) -> str:
+    locator = evidence.get("locator") if isinstance(evidence.get("locator"), dict) else {}
+    if locator.get("value"):
+        return str(locator.get("value"))
+    if evidence.get("segment_id"):
+        return str(evidence.get("segment_id"))
+    start = evidence.get("start_seconds")
+    end = evidence.get("end_seconds")
+    if start is not None or end is not None:
+        return f"{start}-{end}"
+    return ""
+
+
+def blind_item(insight: dict[str, Any], episode_titles: dict[str, str]) -> dict[str, Any]:
+    evidence = first_evidence(insight)
+    episode_id = str(insight.get("episode_video_id") or evidence.get("episode_video_id") or "")
+    quote = evidence.get("quote_original") or ""
+    flags = noise_flags(quote, episode_id, episode_titles)
+    operational_context = " | ".join(
+        value
+        for value in [
+            str(insight.get("use_case") or ""),
+            str(insight.get("when_to_use") or ""),
+            str(insight.get("when_not_to_use") or ""),
+            list_value(insight.get("applicability")),
+            list_value(insight.get("funnel_stages")),
+        ]
+        if value
+    )
     return {
-        "specificity": "v2" if v1_title_counts.get(v1_title_key, 0) >= 5 or len(tokens(v2_title)) >= len(tokens(v1.get("title"))) else "tie",
-        "evidence_fidelity": "v2" if v2_locator.get("value") and v2_evidence.get("evidence_strength") in {"medium", "strong"} else "tie",
-        "applicability": "v2" if v2_has_operational_fields else "tie",
-        "quote_cleanliness": "v2" if cleanliness in {"clean", "minor_noise"} else "tie",
+        "title": strip_chunk_suffix(insight.get("canonical_title") or insight.get("title")),
+        "takeaway": insight.get("specific_takeaway") or insight.get("insight_ptbr") or insight.get("summary_ptbr") or "",
+        "operational_context": operational_context,
+        "themes": list_value(insight.get("themes")),
+        "evidence_quote": quote,
+        "evidence_locator": evidence_locator(evidence),
+        "quote_noise_count": len(flags),
+        "quote_noise_flags": "|".join(flags),
     }
 
 
-def truncate(value: Any, limit: int = 84) -> str:
-    text = str(value or "").replace("\n", " ").strip()
-    if len(text) <= limit:
-        return text
-    return text[: limit - 3].rstrip() + "..."
+def side_fieldnames(side: str) -> list[str]:
+    return [
+        f"{side}_title",
+        f"{side}_takeaway",
+        f"{side}_operational_context",
+        f"{side}_themes",
+        f"{side}_evidence_quote",
+        f"{side}_evidence_locator",
+        f"{side}_quote_noise_count",
+        f"{side}_quote_noise_flags",
+    ]
+
+
+def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8-sig", newline="") as file:
+        return list(csv.DictReader(file))
+
+
+def prepare_blind_sample(args: argparse.Namespace) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    v1_insights = load_insights(args.v1_master)
+    v2_insights = load_insights(args.v2_master)
+    pairs = pair_insights(v1_insights, v2_insights, args.sample_size)
+    episode_titles = {**collect_episode_titles(v1_insights), **collect_episode_titles(v2_insights)}
+    rng = random.Random(str(args.seed or args.date))
+    rows: list[dict[str, Any]] = []
+    key_pairs: list[dict[str, Any]] = []
+
+    for index, pair in enumerate(pairs, start=1):
+        pair_id = f"pair_{index:03d}"
+        side_versions = [("v1", pair["v1"]), ("v2", pair["v2"])]
+        rng.shuffle(side_versions)
+        row: dict[str, Any] = {
+            "pair_id": pair_id,
+            "episode_video_id": pair.get("episode_video_id"),
+            "chunk": f"chunk_{int(pair['chunk_number']):03d}" if isinstance(pair.get("chunk_number"), int) else "",
+            "similarity": pair.get("similarity"),
+        }
+        sides: dict[str, dict[str, Any]] = {}
+        for side_name, (version, insight) in zip(["a", "b"], side_versions):
+            item = blind_item(insight, episode_titles)
+            for field, value in item.items():
+                row[f"{side_name}_{field}"] = value
+            sides[side_name.upper()] = {
+                "version": version,
+                "insight_id": insight.get("insight_id"),
+                "source_file": insight.get("source_file"),
+                "episode_video_id": insight.get("episode_video_id"),
+                "chunk_number": v1_chunk_number(insight) if version == "v1" else v2_chunk_number(insight),
+            }
+        for criterion in CRITERIA:
+            row[f"judgment_{criterion}"] = ""
+        row["judge_notes"] = ""
+        rows.append(row)
+        key_pairs.append(
+            {
+                "pair_id": pair_id,
+                "episode_video_id": pair.get("episode_video_id"),
+                "chunk_number": pair.get("chunk_number"),
+                "similarity": pair.get("similarity"),
+                "sides": sides,
+            }
+        )
+
+    key = {
+        "schema_version": "1.0",
+        "generated_at": utc_now(),
+        "date": args.date,
+        "seed": str(args.seed or args.date),
+        "v1_master": str(args.v1_master),
+        "v2_master": str(args.v2_master),
+        "criteria": CRITERIA,
+        "pairs": key_pairs,
+    }
+    return rows, key
 
 
 def markdown_table(headers: list[str], rows: list[list[Any]]) -> str:
@@ -129,47 +274,123 @@ def markdown_table(headers: list[str], rows: list[list[Any]]) -> str:
     return "\n".join(lines)
 
 
-def render_report(args: argparse.Namespace, v1_insights: list[dict[str, Any]], v2_insights: list[dict[str, Any]], pairs: list[dict[str, Any]]) -> str:
-    v1_title_counts = repeated_v1_title_counts(v1_insights)
-    criterion_counts: dict[str, Counter[str]] = {
-        "specificity": Counter(),
-        "evidence_fidelity": Counter(),
-        "applicability": Counter(),
-        "quote_cleanliness": Counter(),
-    }
+def render_pending_report(args: argparse.Namespace, pair_count: int) -> str:
+    return "\n".join(
+        [
+            f"# Insight v1 vs v2 Review - {args.date}",
+            "",
+            "## Scope",
+            "",
+            f"- Blind sample: `{args.blind_output}`",
+            f"- Local de-anonymization key: `{args.key_output}`",
+            f"- Paired sample generated: {pair_count} pair(s).",
+            f"- R08 target: {args.target_pairs} comparable pair(s) after R07 reaches {args.target_episodes} fully extracted v2 episode(s).",
+            "- Raw transcript quotes are kept only in ignored local CSV exports, not copied into this tracked report.",
+            "",
+            "## Verdict",
+            "",
+            "Pending blind judgment. No v1/tie/v2 score has been computed from labels or v2 self-declared fields.",
+            "",
+            "## Blind Judging Instructions",
+            "",
+            "- Fill each `judgment_*` column with `A`, `B`, or `tie` while looking only at the blind CSV.",
+            "- Judge quote cleanliness using the detector columns for both sides plus the quote text itself.",
+            "- After judging, run `scripts/generate_insight_v1_v2_review.py --mode score --judgments <filled_csv>` to de-anonymize and compute the score.",
+            "",
+            "## Decision",
+            "",
+            "- Continue MSF-R07 only after this harness correction is committed.",
+            "- Do not declare Gate R1 until R07 coverage is complete by episode and by chunk, and the blind 40-pair review has been scored.",
+            "",
+        ]
+    )
+
+
+def normalize_choice(value: Any) -> str:
+    choice = normalize_text(value)
+    if not choice:
+        return ""
+    if choice in {"a", "item a", "side a"}:
+        return "A"
+    if choice in {"b", "item b", "side b"}:
+        return "B"
+    if choice in {"tie", "empate", "equal", "igual"}:
+        return "tie"
+    raise SystemExit(f"Invalid judgment choice: {value!r}. Use A, B, tie, or blank.")
+
+
+def load_key(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as file:
+        payload = json.load(file)
+    if not isinstance(payload.get("pairs"), list):
+        raise SystemExit(f"Invalid blind key file: {path}")
+    return payload
+
+
+def score_judgments(rows: list[dict[str, str]], key: dict[str, Any]) -> tuple[dict[str, Counter[str]], list[list[Any]], int]:
+    key_by_pair = {str(pair.get("pair_id")): pair for pair in key.get("pairs", [])}
+    counts: dict[str, Counter[str]] = {criterion: Counter() for criterion in CRITERIA}
     pair_rows: list[list[Any]] = []
-    for pair in pairs:
-        v1 = pair["v1"]
-        v2 = pair["v2"]
-        winners = criterion_winners(pair, v1_title_counts)
-        for criterion, winner in winners.items():
-            criterion_counts[criterion][winner] += 1
-        evidence = first_evidence(v2)
-        locator = evidence.get("locator") if isinstance(evidence.get("locator"), dict) else {}
+    pending = 0
+
+    for row in rows:
+        pair_id = str(row.get("pair_id") or "")
+        pair = key_by_pair.get(pair_id)
+        if not pair:
+            raise SystemExit(f"Judgment row has no matching key pair: {pair_id}")
+        winners: list[str] = []
+        for criterion in CRITERIA:
+            choice = normalize_choice(row.get(f"judgment_{criterion}"))
+            if not choice:
+                pending += 1
+                winners.append(f"{criterion}=pending")
+                continue
+            if choice == "tie":
+                counts[criterion]["tie"] += 1
+                winners.append(f"{criterion}=tie")
+                continue
+            side = (pair.get("sides") or {}).get(choice)
+            if not isinstance(side, dict):
+                raise SystemExit(f"Missing side {choice} for {pair_id}")
+            version = str(side.get("version"))
+            if version not in {"v1", "v2"}:
+                raise SystemExit(f"Invalid side version in key: {version}")
+            counts[criterion][version] += 1
+            winners.append(f"{criterion}={version}")
         pair_rows.append(
             [
+                pair_id,
                 pair.get("episode_video_id"),
                 f"chunk_{int(pair['chunk_number']):03d}" if isinstance(pair.get("chunk_number"), int) else "",
-                v1.get("insight_id"),
-                truncate(v1.get("title")),
-                v1_title_counts.get(normalize_text(strip_chunk_suffix(v1.get("title"))), 0),
-                v2.get("insight_id"),
-                truncate(v2.get("canonical_title") or v2.get("title")),
-                ", ".join(f"{key}=v2" for key, value in winners.items() if value == "v2") or "tie",
-                locator.get("value") or "",
+                (pair.get("sides") or {}).get("A", {}).get("version"),
+                (pair.get("sides") or {}).get("A", {}).get("insight_id"),
+                (pair.get("sides") or {}).get("B", {}).get("version"),
+                (pair.get("sides") or {}).get("B", {}).get("insight_id"),
+                ", ".join(winners),
             ]
         )
+    return counts, pair_rows, pending
 
+
+def render_scored_report(args: argparse.Namespace, key: dict[str, Any], counts: dict[str, Counter[str]], pair_rows: list[list[Any]], pending: int) -> str:
     score_rows = []
-    for criterion in ["specificity", "evidence_fidelity", "applicability", "quote_cleanliness"]:
-        counts = criterion_counts[criterion]
-        score_rows.append([criterion, counts.get("v2", 0), counts.get("tie", 0), counts.get("v1", 0)])
+    for criterion in CRITERIA:
+        criterion_counts = counts[criterion]
+        score_rows.append([criterion, criterion_counts.get("v2", 0), criterion_counts.get("tie", 0), criterion_counts.get("v1", 0)])
 
-    target_reached = len(pairs) >= args.target_pairs and len({pair["episode_video_id"] for pair in pairs}) >= args.target_episodes
-    verdict = "Gate R1 not declared: this is a pilot review, because R07 coverage is still below the 50 episode target."
-    pilot_verdict = "Pilot verdict: v2 is directionally stronger than v1 on specificity, evidence locators, and operational fields."
-    if target_reached:
-        verdict = "Gate R1 can be reviewed manually against the acceptance checklist; automated coverage targets were met."
+    total_v2 = sum(counts[criterion].get("v2", 0) for criterion in CRITERIA)
+    total_v1 = sum(counts[criterion].get("v1", 0) for criterion in CRITERIA)
+    target_reached = len(pair_rows) >= args.target_pairs
+    if pending:
+        verdict = f"Pending judgment: {pending} criterion cell(s) are blank."
+    elif not target_reached:
+        verdict = "Pilot scored, but Gate R1 is not declared because the 40-pair R08 target is not met."
+    elif total_v2 > total_v1:
+        verdict = "Gate R1 candidate: v2 wins more judged criteria than v1, pending R07 chunk coverage and manual acceptance."
+    elif total_v1 > total_v2:
+        verdict = "Gate R1 failed: v1 wins more judged criteria than v2."
+    else:
+        verdict = "Gate R1 inconclusive: v1 and v2 are tied across judged criteria."
 
     return "\n".join(
         [
@@ -177,15 +398,13 @@ def render_report(args: argparse.Namespace, v1_insights: list[dict[str, Any]], v
             "",
             "## Scope",
             "",
-            f"- v1 source: `{args.v1_master}`",
-            f"- v2 source: `{args.v2_master}`",
-            f"- Paired sample generated: {len(pairs)} pair(s).",
-            f"- R08 target: {args.target_pairs} comparable pair(s) after R07 reaches {args.target_episodes} v2 episode(s).",
-            "- Raw transcript quotes are not copied into this tracked report; use evidence locators in local exports for inspection.",
+            f"- Judgments: `{args.judgments}`",
+            f"- Local de-anonymization key: `{args.key_output}`",
+            f"- Paired sample scored: {len(pair_rows)} pair(s).",
+            f"- R08 target: {args.target_pairs} comparable pair(s) after R07 reaches {args.target_episodes} fully extracted v2 episode(s).",
+            "- Raw transcript quotes are not copied into this tracked report.",
             "",
             "## Verdict",
-            "",
-            pilot_verdict,
             "",
             verdict,
             "",
@@ -193,52 +412,73 @@ def render_report(args: argparse.Namespace, v1_insights: list[dict[str, Any]], v
             "",
             markdown_table(["criterion", "v2_wins", "ties", "v1_wins"], score_rows),
             "",
-            "## Pair Sample",
+            "## De-Anonymized Pair Results",
             "",
-            markdown_table(
-                [
-                    "episode",
-                    "chunk",
-                    "v1_id",
-                    "v1_title",
-                    "v1_title_count",
-                    "v2_id",
-                    "v2_title",
-                    "v2_winning_criteria",
-                    "v2_locator",
-                ],
-                pair_rows,
-            ),
+            markdown_table(["pair", "episode", "chunk", "A_version", "A_id", "B_version", "B_id", "judged_winners"], pair_rows),
             "",
             "## Decision",
             "",
-            "- Continue MSF-R07 before declaring Gate R1.",
-            "- Use `data/exports/insights_v2_status.json` to track coverage and title repetition.",
-            "- Re-run this report when the v2 master has at least 40 comparable pairs across the 50 target episodes.",
+            "- Use this scored report only after confirming R07 episode and chunk coverage in `data/exports/insights_v2_status.json`.",
+            "- Gate R1 remains undeclared unless both coverage and blind-review criteria are satisfied.",
             "",
         ]
     )
 
 
+def prepare_mode(args: argparse.Namespace) -> int:
+    rows, key = prepare_blind_sample(args)
+    fieldnames = (
+        ["pair_id", "episode_video_id", "chunk", "similarity"]
+        + side_fieldnames("a")
+        + side_fieldnames("b")
+        + [f"judgment_{criterion}" for criterion in CRITERIA]
+        + ["judge_notes"]
+    )
+    write_csv(args.blind_output, rows, fieldnames)
+    write_json(args.key_output, key)
+    write_text(args.output, render_pending_report(args, len(rows)))
+    print(f"wrote_blind_sample={args.blind_output}")
+    print(f"wrote_key={args.key_output}")
+    print(f"wrote_report={args.output}")
+    print(f"pairs={len(rows)}")
+    return 0
+
+
+def score_mode(args: argparse.Namespace) -> int:
+    rows = read_csv(args.judgments)
+    key = load_key(args.key_output)
+    counts, pair_rows, pending = score_judgments(rows, key)
+    write_text(args.output, render_scored_report(args, key, counts, pair_rows, pending))
+    print(f"wrote_report={args.output}")
+    print(f"pairs={len(pair_rows)}")
+    print(f"pending_cells={pending}")
+    return 0 if pending == 0 else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=["prepare", "score"], default="prepare")
     parser.add_argument("--v1-master", type=Path, default=Path("data/exports/insights_master.json"))
     parser.add_argument("--v2-master", type=Path, default=Path("data/exports/insights_v2_master.json"))
     parser.add_argument("--date", default=utc_date())
-    parser.add_argument("--output", type=Path)
     parser.add_argument("--sample-size", type=int, default=40)
     parser.add_argument("--target-pairs", type=int, default=40)
     parser.add_argument("--target-episodes", type=int, default=50)
+    parser.add_argument("--seed", default=None)
+    parser.add_argument("--blind-output", type=Path)
+    parser.add_argument("--key-output", type=Path)
+    parser.add_argument("--judgments", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
-    output = args.output or Path("docs") / f"insight-v1-vs-v2-review-{args.date}.md"
-    v1_insights = load_insights(args.v1_master)
-    v2_insights = load_insights(args.v2_master)
-    pairs = pair_insights(v1_insights, v2_insights, args.sample_size)
-    write_text(output, render_report(args, v1_insights, v2_insights, pairs))
-    print(f"wrote={output}")
-    print(f"pairs={len(pairs)}")
-    return 0
+    args.blind_output = args.blind_output or Path("data/exports") / f"insight_v1_v2_blind_sample_{args.date}.csv"
+    args.key_output = args.key_output or Path("data/exports") / f"insight_v1_v2_blind_key_{args.date}.json"
+    args.judgments = args.judgments or args.blind_output
+    args.output = args.output or Path("docs") / f"insight-v1-vs-v2-review-{args.date}.md"
+
+    if args.mode == "prepare":
+        return prepare_mode(args)
+    return score_mode(args)
 
 
 if __name__ == "__main__":

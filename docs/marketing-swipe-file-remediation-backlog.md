@@ -77,7 +77,7 @@ MSF-R14, MSF-R15, MSF-R16.
 
 Prioridade: `P0`
 Tipo: `ops`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -95,11 +95,18 @@ Dependencias:
 
 - Nenhuma.
 
+Execucao 2026-07-07:
+
+- Trabalho pendente da Sessao 1 revisado e commitado em blocos logicos.
+- Politica de dados reforcada em `.gitignore`; `data/raw/**`, `data/processed/**`, `data/exports/**`, assets privados e midias seguem fora do Git.
+- Filas leves da Academy foram mantidas como rastreaveis quando aplicavel.
+- Validado `git status` limpo apos os commits, exceto dados locais intencionalmente ignorados.
+
 ### MSF-R02 - Criar ambiente Python proprio do projeto
 
 Prioridade: `P0`
 Tipo: `ops`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -117,11 +124,18 @@ Dependencias:
 
 - MSF-R01.
 
+Execucao 2026-07-07:
+
+- Criado e validado `.venv` do projeto com Python local.
+- `requirements.txt` atualizado com dependencias reais do pipeline, incluindo processamento de PDF/DOCX/XLSX/PPTX, transcricao e validacao JSON.
+- `.venv/` e `.pip-tmp/` mantidos ignorados pelo Git.
+- `pip check`, imports principais, pipeline smoke e validacoes de JSON/scripts rodaram com o venv do projeto.
+
 ### MSF-R03 - Tirar dados do alcance do sync do OneDrive
 
 Prioridade: `P1`
 Tipo: `ops`
-Status: `not_started`
+Status: `deferred`
 
 Escopo:
 
@@ -139,11 +153,18 @@ Dependencias:
 
 - MSF-R02.
 
+Execucao 2026-07-07:
+
+- A migracao real de `data/raw/`, `data/processed/` e `data/exports/` para fora do OneDrive nao foi executada.
+- Risco permanece documentado: o workspace e o Git estao funcionais, mas OneDrive ainda pode causar locks/permissoes em `.git`, `.pyc`, temp e milhares de JSONs pequenos.
+- Mitigacao aplicada nesta etapa: manter dados e exports ignorados pelo Git e usar validacao em memoria quando `py_compile`/`.pyc` bater em permissao.
+- Reabrir antes de escala pesada ou automacao longa.
+
 ### MSF-R04 - Sincronizar documentacao com o estado real
 
 Prioridade: `P0`
 Tipo: `ops`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -158,6 +179,12 @@ Aceite:
 Dependencias:
 
 - MSF-R01.
+
+Execucao 2026-07-07:
+
+- README, handoff e execution log atualizados com `.venv`, comandos de retomada, backlog de remediacao, scripts da Academy e guardrails R1/R2.
+- Handoff registra o estado real de 50 episodios completos, exports locais, Academy, MSF-R05/MSF-R06 e a sequencia de retomada.
+- `docs/execution-log.md` passou a registrar a auditoria de 2026-07-06 e a pausa de escala/Supabase ate os gates R1/R2.
 
 ## EPIC R1 - Extracao LLM real (v2)
 
@@ -264,8 +291,9 @@ Execucao parcial 2026-07-07:
   - `data/exports/insights_v2_episode_status.csv`
   - `data/exports/insights_v2_title_distribution.csv`
 - A consolidacao preserva o master v1 e valida cada `insights_v2.json` contra `schemas/insights_v2.schema.json` antes de incluir no master v2.
-- Rodada local atual: 8 insights v2 validos em 2 episodios (`mCaFyZpXJdE` e `TOW0sWhPaZw`), 0 arquivos v2 invalidos, nenhuma repeticao de titulo v2 acima de 5% com contagem >1.
-- `data/exports/insights_v2_status.json` registra `gate_r1_ready=false`, porque a cobertura segue 2/50 episodios alvo.
+- `data/exports/insights_v2_status.json` agora mede cobertura por episodio e por chunk para impedir aceite de episodio meio-extraido.
+- Rodada local atual: 8 insights v2 validos em 2 episodios alvo (`mCaFyZpXJdE` e `TOW0sWhPaZw`), 0 arquivos v2 invalidos, 0/50 episodios totalmente extraidos em v2, 4/754 chunks alvo extraidos, nenhuma repeticao de titulo v2 acima de 5% com contagem >1.
+- `data/exports/insights_v2_status.json` registra `gate_r1_ready=false`.
 
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
@@ -292,9 +320,12 @@ Dependencias:
 Execucao parcial 2026-07-07:
 
 - Criado `scripts/generate_insight_v1_v2_review.py` para gerar uma review pareada v1/v2 sem copiar quotes brutas para docs versionados.
-- Gerado `docs/insight-v1-vs-v2-review-2026-07-07.md` com 8 pares piloto a partir dos 2 episodios v2 existentes.
-- Resultado piloto: v2 e direcionalmente superior em especificidade, locators de evidencia e campos operacionais.
-- Gate R1 nao foi declarado; R08 completo continua bloqueado por MSF-R07 ate haver cobertura v2 nos 50 episodios alvo e amostra de 40 pares comparaveis.
+- Corrigido em 2026-07-07: o primeiro harness automatico era tautologico, porque `criterion_winners` so podia retornar `v2` ou `tie` e usava campos auto-declarados do v2.
+- O script agora prepara `data/exports/insight_v1_v2_blind_sample_<data>.csv` com ordem A/B randomizada e `data/exports/insight_v1_v2_blind_key_<data>.json` para desanonimizacao local posterior.
+- O julgamento deve preencher `judgment_*` com `A`, `B` ou `tie` sem acesso aos rotulos; depois `--mode score` desanonimiza e computa v1/tie/v2.
+- A limpeza de quote usa o mesmo detector de ruido para ambos os lados, sem aceitar `evidence_strength` ou `evidence_cleanliness` como prova a favor do v2.
+- Gerado `docs/insight-v1-vs-v2-review-2026-07-07.md` como pendente de julgamento cego, com 8 pares piloto a partir dos 2 episodios v2 existentes.
+- Gate R1 nao foi declarado; R08 completo continua bloqueado por MSF-R07 ate haver cobertura v2 nos 50 episodios alvo, cobertura completa de chunks e amostra de 40 pares comparaveis julgada as cegas.
 
 ## EPIC R2 - Avaliacao honesta de outputs
 

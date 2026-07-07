@@ -89,7 +89,7 @@ Current local state as of 2026-07-07:
 - 7 Codex skills and 5 operational loops exist for the local file-based workflow.
 - The Session 1 remediation environment is validated with `.venv`, `requirements.txt`, JSON parsing, script syntax compilation, and the status-only batch check.
 - MSF-R05/MSF-R06 are complete as a Codex-first pilot: `schemas/insights_v2.schema.json`, `schemas/examples/insights_v2.example.json`, `scripts/validate_insights_v2.py`, `scripts/extract_transcript_insights_llm.py`, and `prompts/extraction/base_insight_extraction_v2.md` exist; 2 local processed episodes have validated ignored `insights_v2.json` pilots.
-- MSF-R07/MSF-R08 are instrumented but not complete: `scripts/consolidate_exports.py` now writes ignored local `insights_v2_master.*`, `insights_v2_status.json`, episode status, and title distribution exports; `scripts/generate_insight_v1_v2_review.py` generated a pilot review with 8 pairs at `docs/insight-v1-vs-v2-review-2026-07-07.md`. Gate R1 is not declared because v2 coverage is still 2/50 target episodes.
+- MSF-R07/MSF-R08 are instrumented but not complete: `scripts/consolidate_exports.py` now writes ignored local `insights_v2_master.*`, `insights_v2_status.json`, episode status, title distribution, and chunk-coverage exports; `scripts/generate_insight_v1_v2_review.py` now prepares a blind A/B sample plus local key before scoring. `docs/insight-v1-vs-v2-review-2026-07-07.md` is pending blind judgment, not a v2 win. Gate R1 is not declared because v2 coverage is still partial: 2/50 target episodes have any v2, 0/50 are fully extracted by chunk.
 
 Proof-of-value artifacts generated locally:
 

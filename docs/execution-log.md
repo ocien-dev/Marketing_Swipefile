@@ -586,3 +586,41 @@ Next:
 
 - Continue Codex-first v2 extraction for the remaining target episodes, then rerun `scripts/consolidate_exports.py`.
 - Re-run `scripts/generate_insight_v1_v2_review.py --date <date>` only after the v2 master can supply at least 40 comparable pairs.
+
+## 2026-07-07 - Correction to MSF-R07/MSF-R08 gate harness
+
+Problem found:
+
+- The first `scripts/generate_insight_v1_v2_review.py` scoring path was not acceptable for Gate R1.
+- `criterion_winners` could only return `v2` or `tie`, so the 8/8 pilot result was tautological.
+- The previous quote-cleanliness check used v2 self-declared fields such as `evidence_strength` and `evidence_cleanliness`, which cannot count as proof in a v1/v2 comparison.
+
+Corrected:
+
+- Rewrote `scripts/generate_insight_v1_v2_review.py` as a two-step blind workflow:
+  - `--mode prepare` writes `data/exports/insight_v1_v2_blind_sample_<date>.csv` with randomized A/B order and blank `judgment_*` columns.
+  - It also writes `data/exports/insight_v1_v2_blind_key_<date>.json` as a local ignored de-anonymization key.
+  - `--mode score --judgments <filled_csv>` de-anonymizes and computes v1/tie/v2 counts only after blind judgment.
+- The script now runs the same quote-noise detector on both sides for subscribe CTAs, engagement CTAs, description CTAs, watch-next language, hashtags, and other episode titles.
+- Regenerated `docs/insight-v1-vs-v2-review-2026-07-07.md` as pending blind judgment. It no longer declares a pilot v2 win.
+- Updated `scripts/consolidate_exports.py` so `data/exports/insights_v2_status.json` reports chunk coverage as well as episode coverage.
+
+Current corrected status:
+
+- R07 target set: 50 complete v1 episodes from `data/input/youtube_urls.csv`.
+- Current v2 coverage: 2/50 target episodes have any v2.
+- Current full-episode v2 coverage: 0/50 target episodes are fully extracted by chunk.
+- Current chunk coverage: 4/754 target chunks extracted.
+- `gate_r1_ready=false`.
+
+Validation:
+
+- In-memory compile passed for `scripts/consolidate_exports.py` and `scripts/generate_insight_v1_v2_review.py`.
+- `scripts/consolidate_exports.py` completed and printed `R07 v2 coverage: 2/50 target episode(s) with v2, 0/50 fully extracted, 4/754 target chunk(s), gate_r1_ready=False.`
+- `scripts/generate_insight_v1_v2_review.py --date 2026-07-07 --seed 20260707` completed and wrote the blind sample, local key, and pending report.
+- `scripts/generate_insight_v1_v2_review.py --mode score` was smoke-tested against the blank blind CSV and correctly reported 32 pending criterion cells instead of producing a false score.
+
+Backlog status correction:
+
+- MSF-R01, MSF-R02, and MSF-R04 marked `done`.
+- MSF-R03 marked `deferred`, because data relocation outside OneDrive was not actually executed.

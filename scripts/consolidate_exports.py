@@ -12,6 +12,7 @@ from typing import Any
 
 from msf_common import first_evidence, insight_text, load_json, normalize_text, slugify, write_json
 from validate_insights_v2 import validate_payload
+from youtube_common import extract_video_id
 
 
 INSIGHTS_V2_SCHEMA_PATH = Path("schemas/insights_v2.schema.json")
@@ -88,12 +89,84 @@ def collect_chunk_ready_episodes(processed_root: Path, include_fixtures: bool) -
             continue
         payload = load_json(path)
         chunks = payload.get("chunks")
+        chunk_ids = []
+        if isinstance(chunks, list):
+            for index, chunk in enumerate(chunks, start=1):
+                if isinstance(chunk, dict):
+                    chunk_ids.append(str(chunk.get("chunk_id") or f"{video_id}-chunk-{index:04d}"))
         episodes[video_id] = {
             "episode_video_id": video_id,
             "chunk_count": len(chunks) if isinstance(chunks, list) else 0,
+            "chunk_ids": chunk_ids,
             "chunk_index_path": str(path),
         }
     return episodes
+
+
+def count_items(path: Path, key: str) -> int:
+    if not path.exists():
+        return 0
+    try:
+        payload = load_json(path)
+    except Exception:
+        return 0
+    items = payload.get(key)
+    return len(items) if isinstance(items, list) else 0
+
+
+def csv_rows(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8-sig", newline="") as file:
+        return list(csv.DictReader(file))
+
+
+def priority_value(row: dict[str, str]) -> int:
+    try:
+        return int(row.get("episode_priority") or 0)
+    except ValueError:
+        return 0
+
+
+def collect_r07_target_episodes(
+    csv_path: Path,
+    raw_youtube_root: Path,
+    processed_root: Path,
+    chunk_ready_episodes: dict[str, dict[str, Any]],
+    target_count: int,
+    include_fixtures: bool,
+) -> dict[str, dict[str, Any]]:
+    if not csv_path.exists():
+        return {}
+
+    targets: dict[str, dict[str, Any]] = {}
+    for row in sorted(csv_rows(csv_path), key=priority_value):
+        url = (row.get("youtube_url") or "").strip()
+        if not url:
+            continue
+        video_id = extract_video_id(url)
+        if is_fixture_id(video_id) and not include_fixtures:
+            continue
+        raw_dir = raw_youtube_root / video_id
+        processed_dir = processed_root / video_id
+        chunk_info = chunk_ready_episodes.get(video_id)
+        if not chunk_info:
+            continue
+        is_complete_v1 = bool(
+            (raw_dir / "metadata.json").exists()
+            and count_items(raw_dir / "transcript_original.json", "segments")
+            and count_items(processed_dir / "content_segments.json", "segments")
+            and chunk_info.get("chunk_count", 0)
+            and count_items(processed_dir / "insights.json", "insights")
+        )
+        if not is_complete_v1:
+            continue
+        targets[video_id] = {
+            **chunk_info,
+            "episode_priority": priority_value(row),
+            "youtube_url": url,
+        }
+        if len(targets) >= target_count:
+            break
+    return targets
 
 
 def insight_key(insight: dict[str, Any]) -> str:
@@ -327,27 +400,83 @@ def title_distribution_rows(insights: list[dict[str, Any]]) -> list[dict[str, An
     return rows
 
 
+def v2_chunk_ids_by_episode(insights_v2: list[dict[str, Any]], runs: list[dict[str, Any]]) -> dict[str, set[str]]:
+    chunks_by_episode: dict[str, set[str]] = {}
+    for run in runs:
+        episode_id = str(run.get("episode_video_id") or "")
+        if not episode_id:
+            continue
+        input_chunk_ids = run.get("input_chunk_ids") or []
+        if isinstance(input_chunk_ids, list):
+            chunks_by_episode.setdefault(episode_id, set()).update(str(chunk_id) for chunk_id in input_chunk_ids if chunk_id)
+    for insight in insights_v2:
+        episode_id = str(insight.get("episode_video_id") or "")
+        if not episode_id:
+            continue
+        source_chunk = insight.get("source_chunk") if isinstance(insight.get("source_chunk"), dict) else {}
+        chunk_id = source_chunk.get("chunk_id") or insight.get("source_chunk_id")
+        if chunk_id:
+            chunks_by_episode.setdefault(episode_id, set()).add(str(chunk_id))
+    return chunks_by_episode
+
+
+def chunk_coverage_rows(
+    target_episodes: dict[str, dict[str, Any]],
+    insights_v2: list[dict[str, Any]],
+    runs: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    chunks_by_episode = v2_chunk_ids_by_episode(insights_v2, runs)
+    rows: list[dict[str, Any]] = []
+    for video_id, target in sorted(target_episodes.items(), key=lambda item: int(item[1].get("episode_priority") or 999999)):
+        expected_chunks = {str(chunk_id) for chunk_id in target.get("chunk_ids", []) if chunk_id}
+        extracted_chunks = chunks_by_episode.get(video_id, set())
+        known_extracted_chunks = expected_chunks & extracted_chunks if expected_chunks else extracted_chunks
+        missing_chunks = sorted(expected_chunks - extracted_chunks)
+        expected_count = len(expected_chunks) if expected_chunks else int(target.get("chunk_count") or 0)
+        extracted_count = len(known_extracted_chunks)
+        rows.append(
+            {
+                "episode_video_id": video_id,
+                "episode_priority": target.get("episode_priority"),
+                "expected_chunk_count": expected_count,
+                "extracted_v2_chunk_count": extracted_count,
+                "missing_v2_chunk_count": max(expected_count - extracted_count, 0),
+                "is_fully_extracted_v2": bool(expected_count and extracted_count >= expected_count),
+                "missing_v2_chunk_ids": missing_chunks,
+            }
+        )
+    return rows
+
+
 def insights_v2_episode_status_rows(
     chunk_ready_episodes: dict[str, dict[str, Any]],
+    r07_target_episodes: dict[str, dict[str, Any]],
     episodes: dict[str, dict[str, Any]],
     insights_v2: list[dict[str, Any]],
     runs: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     insight_counts: Counter[str] = Counter(str(item.get("episode_video_id") or "") for item in insights_v2)
     run_by_episode = {str(run.get("episode_video_id") or ""): run for run in runs}
+    chunk_coverage_by_episode = {row["episode_video_id"]: row for row in chunk_coverage_rows(r07_target_episodes, insights_v2, runs)}
     rows: list[dict[str, Any]] = []
     for video_id in sorted(set(chunk_ready_episodes) | {key for key in insight_counts if key}):
         episode = episodes.get(video_id, {})
         chunk_ready = chunk_ready_episodes.get(video_id, {})
         run = run_by_episode.get(video_id, {})
         cost = run.get("cost") if isinstance(run.get("cost"), dict) else {}
+        chunk_coverage = chunk_coverage_by_episode.get(video_id, {})
         rows.append(
             {
                 "episode_video_id": video_id,
                 "episode_title": episode.get("title"),
                 "channel_name": episode.get("channel_name"),
+                "target_for_r07": video_id in r07_target_episodes,
                 "has_chunks": video_id in chunk_ready_episodes,
                 "chunk_count": chunk_ready.get("chunk_count"),
+                "expected_v2_chunk_count": chunk_coverage.get("expected_chunk_count"),
+                "extracted_v2_chunk_count": chunk_coverage.get("extracted_v2_chunk_count"),
+                "missing_v2_chunk_count": chunk_coverage.get("missing_v2_chunk_count"),
+                "is_fully_extracted_v2": chunk_coverage.get("is_fully_extracted_v2"),
                 "has_valid_insights_v2": insight_counts.get(video_id, 0) > 0,
                 "insights_v2_count": insight_counts.get(video_id, 0),
                 "run_id": run.get("run_id"),
@@ -367,30 +496,59 @@ def insights_v2_episode_status_rows(
 def build_insights_v2_status(
     generated_at: str,
     chunk_ready_episodes: dict[str, dict[str, Any]],
+    r07_target_episodes: dict[str, dict[str, Any]],
+    r07_target_episode_count: int,
     insights_v2: list[dict[str, Any]],
     runs: list[dict[str, Any]],
     validation_errors: list[dict[str, Any]],
 ) -> dict[str, Any]:
     v2_episode_ids = {str(insight.get("episode_video_id") or "") for insight in insights_v2 if insight.get("episode_video_id")}
+    target_v2_episode_ids = v2_episode_ids & set(r07_target_episodes)
+    chunk_coverage = chunk_coverage_rows(r07_target_episodes, insights_v2, runs)
+    target_chunk_count = sum(int(row["expected_chunk_count"] or 0) for row in chunk_coverage)
+    extracted_target_chunk_count = sum(int(row["extracted_v2_chunk_count"] or 0) for row in chunk_coverage)
+    fully_extracted_episode_count = sum(1 for row in chunk_coverage if row["is_fully_extracted_v2"])
+    partial_episode_count = sum(
+        1
+        for row in chunk_coverage
+        if int(row["extracted_v2_chunk_count"] or 0) > 0 and not row["is_fully_extracted_v2"]
+    )
+    target_chunk_coverage_percent = round(extracted_target_chunk_count / target_chunk_count * 100, 2) if target_chunk_count else 0.0
     title_distribution = title_distribution_rows(insights_v2)
     repeated_over_5 = [row for row in title_distribution if row["is_repeated_over_5_percent"]]
-    coverage_complete = len(v2_episode_ids) >= R07_TARGET_EPISODE_COUNT
+    coverage_complete = bool(
+        len(r07_target_episodes) >= r07_target_episode_count
+        and fully_extracted_episode_count >= r07_target_episode_count
+        and target_chunk_count
+        and extracted_target_chunk_count >= target_chunk_count
+    )
     title_distribution_ok = not repeated_over_5
     validation_ok = not validation_errors
     return {
         "schema_version": "1.0",
         "generated_at": generated_at,
         "target": "MSF-R07",
-        "r07_target_episode_count": R07_TARGET_EPISODE_COUNT,
+        "r07_target_episode_count": r07_target_episode_count,
         "chunk_ready_episode_count": len(chunk_ready_episodes),
+        "target_v1_complete_episode_count": len(r07_target_episodes),
         "valid_v2_episode_count": len(v2_episode_ids),
+        "target_valid_v2_episode_count": len(target_v2_episode_ids),
+        "fully_extracted_v2_episode_count": fully_extracted_episode_count,
+        "partial_v2_episode_count": partial_episode_count,
         "valid_v2_insight_count": len(insights_v2),
         "valid_v2_file_count": len(runs),
         "invalid_v2_file_count": len(validation_errors),
+        "target_expected_chunk_count": target_chunk_count,
+        "target_extracted_v2_chunk_count": extracted_target_chunk_count,
+        "target_missing_v2_chunk_count": max(target_chunk_count - extracted_target_chunk_count, 0),
+        "target_chunk_coverage_percent": target_chunk_coverage_percent,
+        "chunk_coverage_by_episode": chunk_coverage,
         "title_distribution": title_distribution,
         "title_repetition_over_5_percent": repeated_over_5,
         "validation_errors": validation_errors,
         "r07_acceptance": {
+            "episode_coverage_complete": fully_extracted_episode_count >= r07_target_episode_count,
+            "chunk_coverage_complete": bool(target_chunk_count and extracted_target_chunk_count >= target_chunk_count),
             "coverage_complete": coverage_complete,
             "consolidated_master_available": True,
             "title_distribution_ok": title_distribution_ok,
@@ -498,12 +656,22 @@ def main() -> int:
     parser.add_argument("--raw-assets-root", default=Path("data/raw/assets"), type=Path)
     parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
     parser.add_argument("--output-dir", default=Path("data/exports"), type=Path)
+    parser.add_argument("--target-episode-csv", default=Path("data/input/youtube_urls.csv"), type=Path)
+    parser.add_argument("--r07-target-episode-count", default=R07_TARGET_EPISODE_COUNT, type=int)
     parser.add_argument("--include-fixtures", action="store_true", help="Include local fixture episode ids in exports")
     args = parser.parse_args()
 
     episodes = collect_episodes(args.raw_youtube_root, args.include_fixtures)
     assets = collect_assets(args.raw_assets_root, args.include_fixtures)
     chunk_ready_episodes = collect_chunk_ready_episodes(args.processed_root, args.include_fixtures)
+    r07_target_episodes = collect_r07_target_episodes(
+        args.target_episode_csv,
+        args.raw_youtube_root,
+        args.processed_root,
+        chunk_ready_episodes,
+        args.r07_target_episode_count,
+        args.include_fixtures,
+    )
     insights = collect_insights(args.processed_root, episodes, assets, args.include_fixtures)
     insights_v2, insights_v2_runs, insights_v2_validation_errors = collect_insights_v2(
         args.processed_root,
@@ -517,6 +685,8 @@ def main() -> int:
     insights_v2_status = build_insights_v2_status(
         generated_at,
         chunk_ready_episodes,
+        r07_target_episodes,
+        args.r07_target_episode_count,
         insights_v2,
         insights_v2_runs,
         insights_v2_validation_errors,
@@ -636,13 +806,18 @@ def main() -> int:
     )
     write_csv(
         args.output_dir / "insights_v2_episode_status.csv",
-        insights_v2_episode_status_rows(chunk_ready_episodes, episodes, insights_v2, insights_v2_runs),
+        insights_v2_episode_status_rows(chunk_ready_episodes, r07_target_episodes, episodes, insights_v2, insights_v2_runs),
         [
             "episode_video_id",
             "episode_title",
             "channel_name",
+            "target_for_r07",
             "has_chunks",
             "chunk_count",
+            "expected_v2_chunk_count",
+            "extracted_v2_chunk_count",
+            "missing_v2_chunk_count",
+            "is_fully_extracted_v2",
             "has_valid_insights_v2",
             "insights_v2_count",
             "run_id",
@@ -693,7 +868,9 @@ def main() -> int:
         print(f"warning_invalid_insights_v2_files={len(insights_v2_validation_errors)}")
     print(
         "R07 v2 coverage: "
-        f"{insights_v2_status['valid_v2_episode_count']}/{R07_TARGET_EPISODE_COUNT} target episode(s), "
+        f"{insights_v2_status['target_valid_v2_episode_count']}/{args.r07_target_episode_count} target episode(s) with v2, "
+        f"{insights_v2_status['fully_extracted_v2_episode_count']}/{args.r07_target_episode_count} fully extracted, "
+        f"{insights_v2_status['target_extracted_v2_chunk_count']}/{insights_v2_status['target_expected_chunk_count']} target chunk(s), "
         f"gate_r1_ready={insights_v2_status['gate_r1_ready']}."
     )
     return 0
