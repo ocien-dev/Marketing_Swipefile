@@ -13,7 +13,7 @@ Diagnostico resumido da auditoria:
 3. O ranking de `scripts/generate_strategy_pack.py` nao penaliza redundancia. Com 656 insights vindos de titulos 100+ vezes repetidos, o top-N tende a repetir o mesmo template.
 4. Riscos operacionais: ~41 arquivos sem commit, projeto dentro do OneDrive com locks ja observados, dependencia do Python do cache do Codex, docs em drift (scripts academy fora do handoff).
 
-Regra de execucao deste backlog: nao processar novos episodios em lote e nao iniciar Supabase/MCP antes de fechar os gates R1 e R2 abaixo.
+Regra de execucao deste backlog apos Gate R1: nao processar o backfill MSF-R14 antes de reabrir MSF-R03 e concluir R2; nao iniciar Supabase/MCP antes de fechar R3.
 
 Este documento complementa:
 
@@ -48,6 +48,7 @@ Gate de saida R1:
 - Amostra pareada v1 vs v2 revisada mostra v2 superior em especificidade e fidelidade a evidencia.
 - Menos de 10% dos insights v2 com titulo repetido 5+ vezes.
 - Emenda de aceite do MSF-R07, registrada em 2026-07-07: para a Rota B Codex-first sem API, Gate R1 exige 15-20 episodios completos por chunk, aproximadamente 225-300 chunks, priorizando episodios cujos insights alimentam os strategy packs de VSL/ads e os episodios ja iniciados (`TOW0sWhPaZw`, `mCaFyZpXJdE`). A cobertura dos 50 episodios passa a ser trabalho continuo pos-gate em MSF-R14. Motivo: decisao do owner de nao usar API; gate por amostra representativa em vez de cobertura total.
+- Gate R1 declarado APROVADO em 2026-07-07 pelo juiz externo, apos verificacao independente da remediacao do batch 006.
 
 ### Bloco R2 - Avaliacao honesta
 
@@ -337,12 +338,13 @@ Execucao 2026-07-07 - cobertura emendada atingida:
 - Cobertura emendada do MSF-R07 atingida: 15 episodios completos e 246 chunks, dentro da faixa esperada de 225-300 chunks.
 - Throughput real da sessao: 148 chunks novos processados, 121 insights novos adicionados, 9 episodios fechados por chunk. API cost: `$0`; tempo operacional: 1 sessao Codex autonoma.
 - Extracao R07 deve parar aqui ate o julgamento cego externo. A cobertura continua dos 50 episodios permanece em MSF-R14, com MSF-R03 a reabrir antes do backfill pos-gate.
+- Decisao formal 2026-07-07: MSF-R07 fechado como `done` apos Gate R1 aprovado pelo juiz externo; cobertura restante passa a MSF-R14, com MSF-R03 a reabrir antes do backfill dos 508 chunks restantes.
 
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `in_progress`
+Status: `done`
 
 Escopo:
 
@@ -388,7 +390,14 @@ Execucao 2026-07-07 - julgamento cego pontuado e remediacao pre-gate:
 - Batch 006 remediado nos `llm_v2_outputs` de origem e recombinado: Bbh/JF2 tiveram janelas de evidencia alargadas ou limpas, `qohJceyapS0-v2-0002` foi removido como pitch, `qj04cUeaRAw-v2-0001` foi reancorado em evidencia substantiva, e os takeaways repetidos restantes foram diferenciados.
 - `scripts/audit_insights_v2_text.py` agora falha em `specific_takeaway` duplicado normalizado, alem de non-ASCII e `?` orfao; `scripts/generate_insight_v1_v2_review.py` ganhou padroes de ruido para pitch de imersao/treinamento, intro e `espero que voces gostem`.
 - Validacao final: 15/15 arquivos v2 validos, `scripts/audit_insights_v2_text.py` passou em 261 arquivos, quote check passou em 207/207 evidencias com 0 noise hits, consolidacao reportou 207 insights v2 e 246 chunks completos.
-- Gate R1 permanece nao declarado; proxima acao e decisao formal do owner sobre o score e as remediacoes pre-gate.
+- Gate R1 permaneceu nao declarado nessa etapa ate decisao formal do owner/juiz externo sobre o score e as remediacoes pre-gate.
+
+Execucao 2026-07-07 - decisao formal Gate R1:
+
+- Gate R1 declarado APROVADO pelo juiz externo em 2026-07-07, apos verificacao independente da remediacao do batch 006.
+- Verificacao independente confirmou 0 `specific_takeaway` duplicados normalizados e janelas de evidencia corrigidas.
+- Ressalvas do parecer registradas no relatorio: `quote_cleanliness` venceu para v1 no snapshot julgado e a causa foi remediada depois; `applicability` deve ser lida com desconto estrutural; placar e piso sao pre-remediacao; v1 venceu 11 celulas de fidelidade, sinal de instrumento honesto.
+- MSF-R07 e MSF-R08 ficam `done`. Proxima sessao: EPIC R2 com MSF-R09 (avaliador LLM com rubrica e verificacao de fidelidade de citacoes), depois MSF-R10 (teste cego contra baseline sem base usando v2 como fonte; julgamento externo).
 
 ## EPIC R2 - Avaliacao honesta de outputs
 
@@ -586,14 +595,14 @@ Ordem de ataque sugerida, em sessoes:
 
 1. Sessao 1: MSF-R01, MSF-R02, MSF-R04 (estabilizacao; R03 se sobrar tempo).
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
-3. Sessao 3: MSF-R07 atingiu a cobertura emendada e MSF-R08 tem julgamento cego pontuado, com remediacoes pre-gate aplicadas; proximo passo e decisao formal do owner sobre Gate R1.
+3. Sessao 3: MSF-R07 e MSF-R08 done; Gate R1 aprovado em 2026-07-07 apos julgamento cego externo e verificacao independente da remediacao do batch 006.
 4. Sessao 4: MSF-R09, MSF-R10 (avaliacao honesta + teste cego; declarar gate R2).
 5. Sessao 5: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.
 
 Regras permanentes durante a remediacao:
 
-- Nao escalar novos episodios antes do gate R1.
+- Nao iniciar o backfill MSF-R14 dos 508 chunks restantes antes de reabrir MSF-R03 e concluir a sequencia R2 acordada.
 - Nao citar os scores antigos 39/40 e 37/40 como prova de valor.
 - Toda saida LLM validada contra schema antes de entrar na base.
 - Atualizar `docs/execution-log.md` ao fim de cada sessao, como ja e pratica do projeto.

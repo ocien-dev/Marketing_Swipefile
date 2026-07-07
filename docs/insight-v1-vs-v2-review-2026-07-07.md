@@ -10,7 +10,9 @@
 
 ## Verdict
 
-Blind review scored: v2 wins more judged criteria than v1. Gate R1 is not declared by this report.
+Gate R1 is formally APPROVED as of 2026-07-07 by the external judge, after independent verification that batch 006 remediation removed the duplicate-takeaway cluster and corrected evidence windows.
+
+Blind review scored: v2 wins more judged criteria than v1. The decision accepts the judged snapshot as a pre-remediation floor, not as the final post-remediation ceiling.
 
 ## Criteria Counts
 
@@ -23,9 +25,11 @@ Blind review scored: v2 wins more judged criteria than v1. Gate R1 is not declar
 
 ## Interpretation Notes
 
+- Quote_cleanliness favored v1 in the judged snapshot (`v1=18`, `v2=4`, `tie=18`). The root cause was remediated after scoring through the batch 006 duplicate-takeaway, evidence-window, and quote-noise fixes.
 - Applicability should be read with discount: before de-anonymization, blind sides split A=21, B=18, tie=1. The side with richer operational fields can win by structure, so specificity and evidence_fidelity are the decisive criteria.
-- This report records the external blind judgment only; remediation findings discovered during score review must be resolved before any gate declaration.
-- De-anonymized pair rows reference the sample as judged; batch 006 duplicate-takeaway and evidence-window remediation can change current v2 insight IDs or quotes after scoring.
+- The score and threshold are a pre-remediation floor. Independent post-remediation verification confirmed 0 duplicate normalized `specific_takeaway` values and corrected evidence windows.
+- v1 won 11 evidence_fidelity cells. This is a positive control for the instrument: the blind judge surfaced real v2 weaknesses instead of rubber-stamping the new extraction route.
+- De-anonymized pair rows reference the sample as judged; batch 006 remediation can change current v2 insight IDs or quotes after scoring.
 
 ## De-Anonymized Pair Results
 
@@ -74,5 +78,7 @@ Blind review scored: v2 wins more judged criteria than v1. Gate R1 is not declar
 
 ## Decision
 
-- Use this scored report only after confirming R07 episode and chunk coverage in `data/exports/insights_v2_status.json`.
-- Gate R1 remains undeclared unless both coverage and blind-review criteria are satisfied.
+- Gate R1 is formally approved as of 2026-07-07.
+- MSF-R07 and MSF-R08 can be closed as `done`.
+- Proceed next to EPIC R2: MSF-R09 evaluator LLM with rubric and citation-fidelity verification, then MSF-R10 blind test against a no-base baseline using v2 as the source. The R10 blind judgment remains external.
+- Before any MSF-R14 backfill of the remaining 508 chunks, reopen MSF-R03 as scheduled.

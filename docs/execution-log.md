@@ -886,3 +886,31 @@ Classification run:
 - Rebuilt exports with `scripts/consolidate_exports.py`: 253 episode records, 46 assets, 1,406 v1 insights, 207 v2 insights, and 13 acquisition tasks.
 - Ran process-tag classification on `data/exports/insights_master.json`: 1,406 insights classified; 3 insights without process match written to `data/exports/process_tag_review_queue_v1.json`.
 - Ran process-tag classification on `data/exports/insights_v2_master.json`: 207 insights classified; 0 insights without process match written to `data/exports/process_tag_review_queue_v2.json`.
+
+## 2026-07-07 - Gate R1 formal approval
+
+Decision:
+
+- Gate R1 formally APPROVED by the external judge on 2026-07-07 after independent verification of batch 006 remediation.
+- Independent verification confirmed 0 duplicate normalized `specific_takeaway` values in v2 and corrected evidence windows after remediation.
+- MSF-R07 and MSF-R08 are closed as `done`; R07 extraction remains stopped at the amended gate sample.
+- MSF-R14 backfill of the remaining 508 chunks stays deferred until MSF-R03 is reopened and the R2 sequence is handled.
+
+Caveats from the decision:
+
+- `quote_cleanliness` favored v1 in the judged snapshot (`v1=18`, `v2=4`, `tie=18`); the root cause was remediated after scoring.
+- `applicability` must be read with structural discount because the side with operational fields can win by format; specificity and evidence_fidelity are the decisive criteria.
+- The score and threshold are a pre-remediation floor, not the post-remediation ceiling.
+- v1 won 11 evidence_fidelity cells, which confirms the blind instrument was honest enough to surface weaknesses in v2.
+
+Taxonomy validation:
+
+- Revalidated `data/processed/taxonomy_seed.json` with `python -B`: parse succeeded, `taxonomy_version=2026-07-07.1`, 12 `process_area` terms, 58 `process` terms, 0 duplicate ids, 0 invalid `process-*` ids, and 0 invalid process parent references.
+- Re-ran non-ASCII scan for `data/processed/taxonomy_seed.json` and `docs/process-taxonomy.md`: 0 non-ASCII characters in both files.
+- Both taxonomy files are already tracked in commit `79c376c`; there are no pending taxonomy file changes at this decision point.
+
+Next session:
+
+- Start EPIC R2 with MSF-R09: evaluator LLM with rubric plus citation-fidelity verification.
+- Then run MSF-R10: blind test against a no-base baseline using v2 as the source. The R10 blind judgment remains external.
+- Reminder remains active: reopen MSF-R03 before any MSF-R14 backfill of the remaining 508 chunks.
