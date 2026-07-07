@@ -779,3 +779,51 @@ Throughput and calibration:
 - Current amended gate progress: 6/15 minimum complete episodes; 98 chunks extracted.
 - Remaining to the lower bound is roughly 127 chunks and 9 complete episodes.
 - At the observed recent throughput range of 27-35 chunks per session, estimate 4-5 more sessions to reach the 15-episode lower bound and 6-8 sessions to reach the 20-episode upper bound, depending on next-episode chunk counts.
+
+## 2026-07-07 - MSF-R07 autonomous gate completion and blind sample prepare
+
+Owner decision:
+
+- Batch 005 was approved externally: 88/88 unique titles, zero encoding residue, and healthy per-episode density.
+- Because `scripts/audit_insights_v2_text.py` is now in the protocol, external review per lot is suspended.
+- Continue R07 autonomously only until 15 fully extracted episodes, then generate the blind 40-pair sample with `--mode prepare` and stop. Do not run `--mode score`; blind judgment remains external.
+
+Extraction scope:
+
+- Route: Codex-first manual extraction (`route=codex_manual`), no API.
+- Commands were run with `python -B`.
+- Episodes completed:
+  - `v6luZ9KvmOI`: 14/14 chunks, 10 insights v2.
+  - `zoChfFHnlOQ`: 18/18 chunks, 16 insights v2.
+  - `qj04cUeaRAw`: 15/15 chunks, 12 insights v2.
+  - `cL3FuW8bAMA`: 17/17 chunks, 15 insights v2.
+  - `JF2oC44lBG8`: 19/19 chunks, 19 insights v2.
+  - `qohJceyapS0`: 17/17 chunks, 15 insights v2.
+  - `YcqJ_vrjf-g`: 16/16 chunks, 8 insights v2.
+  - `wHdyTM-nVqg`: 19/19 chunks, 14 insights v2.
+  - `BbhJn8NXRso`: 13/13 chunks, 12 insights v2.
+
+Validation:
+
+- `scripts/validate_insights_v2.py` returned `VALID` for all 9 new episode files.
+- `scripts/audit_insights_v2_text.py` passed: `VALID editorial_text_files=261`.
+- New evidence quote check: 121/121 new evidence quotes matched their source transcript segment exactly.
+- New evidence quote-noise check: 0 hits for promo CTAs, `inscreva`, `assista tambem`, hashtags, `primeiro link`, `clicar no link`, recommendation cards, or description boilerplate.
+- `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 209 v2 insights, and 13 acquisition tasks.
+- Status after consolidation: 15/50 target episodes fully extracted in v2, 246/754 target chunks extracted, `gate_r1_ready=true`, amended gate coverage ready.
+- Title repetition above 5%: 0. Validation errors: 0.
+
+Blind sample:
+
+- Ran `scripts/generate_insight_v1_v2_review.py --mode prepare --date 2026-07-07 --seed 20260707 --sample-size 40 --target-pairs 40 --target-episodes 15`.
+- Wrote blind sample to `data/exports/insight_v1_v2_blind_sample_2026-07-07.csv`.
+- Wrote local de-anonymization key to `data/exports/insight_v1_v2_blind_key_2026-07-07.json`.
+- Updated `docs/insight-v1-vs-v2-review-2026-07-07.md` as pending blind judgment.
+- Did not run `--mode score`.
+
+Throughput and stop point:
+
+- New session throughput: 148 chunks processed, 121 insights added, 9 episodes closed by chunk. API cost: `$0`.
+- Time cost: 1 autonomous Codex session; terminal wall-clock was not separately stopwatched.
+- Current amended gate progress: 15/15 minimum complete episodes; 246 chunks extracted, inside the expected 225-300 chunk gate range.
+- Stop extraction here. Next step is external blind judgment, then Gate R1 decision. Before any post-gate backfill, reopen MSF-R03 as scheduled.

@@ -265,7 +265,7 @@ Dependencias:
 
 Prioridade: `P0`
 Tipo: `data`
-Status: `in_progress`
+Status: `done`
 
 Escopo:
 
@@ -328,11 +328,21 @@ Execucao 2026-07-07 - micro-fixes e lote Rota B posterior:
 - Rodada local apos consolidacao: 88 insights v2 validos, 88/88 titulos unicos, `claim_risk` distribuido (`low=33`, `medium=51`, `high=4`), 0 arquivos v2 invalidos, 6/50 episodios totalmente extraidos em v2, 98/754 chunks alvo extraidos, `gate_r1_ready=false`.
 - Throughput real da sessao: 30 chunks novos processados, 24 insights novos adicionados, 2 episodios fechados por chunk. Estimativa calibrada ate o gate emendado: mais 4-6 sessoes para atingir 15-20 episodios completos, variando conforme tamanho dos proximos episodios.
 
+Execucao 2026-07-07 - cobertura emendada atingida:
+
+- Revisao externa aprovou o lote anterior: 88/88 titulos unicos, zero residuo de encoding e densidade por episodio saudavel.
+- Com `scripts/audit_insights_v2_text.py` no protocolo, revisao externa por lote fica suspensa.
+- Episodios completados em autonomia ate o ponto de parada do gate: `v6luZ9KvmOI`, `zoChfFHnlOQ`, `qj04cUeaRAw`, `cL3FuW8bAMA`, `JF2oC44lBG8`, `qohJceyapS0`, `YcqJ_vrjf-g`, `wHdyTM-nVqg`, `BbhJn8NXRso`.
+- Rodada local apos consolidacao: 209 insights v2 validos, 0 arquivos v2 invalidos, 15/50 episodios totalmente extraidos em v2, 246/754 chunks alvo extraidos, `gate_r1_ready=true`.
+- Cobertura emendada do MSF-R07 atingida: 15 episodios completos e 246 chunks, dentro da faixa esperada de 225-300 chunks.
+- Throughput real da sessao: 148 chunks novos processados, 121 insights novos adicionados, 9 episodios fechados por chunk. API cost: `$0`; tempo operacional: 1 sessao Codex autonoma.
+- Extracao R07 deve parar aqui ate o julgamento cego externo. A cobertura continua dos 50 episodios permanece em MSF-R14, com MSF-R03 a reabrir antes do backfill pos-gate.
+
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
 Prioridade: `P0`
 Tipo: `qa`
-Status: `blocked`
+Status: `in_progress`
 
 Escopo:
 
@@ -360,6 +370,13 @@ Execucao parcial 2026-07-07:
 - Gerado `docs/insight-v1-vs-v2-review-2026-07-07.md` como pendente de julgamento cego, com 8 pares piloto a partir dos 2 episodios v2 existentes.
 - Gate R1 nao foi declarado; R08 completo continua bloqueado por MSF-R07 ate haver cobertura v2 na amostra emendada, cobertura completa de chunks nos episodios escolhidos e amostra de 40 pares comparaveis preparada para julgamento cego externo.
 - Emenda 2026-07-07: quando a cobertura emendada do MSF-R07 for atingida, gerar a amostra cega de 40 pares com `--mode prepare` e parar. O julgamento cego permanece externo ao Codex.
+
+Execucao 2026-07-07 - amostra cega preparada:
+
+- Apos MSF-R07 atingir 15 episodios completos, gerada amostra cega de 40 pares com `scripts/generate_insight_v1_v2_review.py --mode prepare --date 2026-07-07 --seed 20260707 --sample-size 40 --target-pairs 40 --target-episodes 15`.
+- Saidas locais ignoradas: `data/exports/insight_v1_v2_blind_sample_2026-07-07.csv` e `data/exports/insight_v1_v2_blind_key_2026-07-07.json`.
+- `docs/insight-v1-vs-v2-review-2026-07-07.md` atualizado como pendente de julgamento cego externo.
+- `--mode score` nao foi executado. Gate R1 fica pendente do juiz externo e da decisao formal do owner.
 
 ## EPIC R2 - Avaliacao honesta de outputs
 
@@ -550,7 +567,7 @@ Ordem de ataque sugerida, em sessoes:
 
 1. Sessao 1: MSF-R01, MSF-R02, MSF-R04 (estabilizacao; R03 se sobrar tempo).
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
-3. Sessao 3: MSF-R07, MSF-R08 (extracao v2 nos 50 + comparacao; declarar gate R1) - proximo.
+3. Sessao 3: MSF-R07 atingiu a cobertura emendada e MSF-R08 tem amostra cega preparada; proximo passo e julgamento externo, depois decisao do Gate R1.
 4. Sessao 4: MSF-R09, MSF-R10 (avaliacao honesta + teste cego; declarar gate R2).
 5. Sessao 5: MSF-R11, MSF-R12, MSF-R13 (diversidade + curadoria + packs novos; declarar gate R3).
 6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.
