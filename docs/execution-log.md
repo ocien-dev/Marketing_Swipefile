@@ -735,3 +735,47 @@ Throughput and calibration:
 - Current amended gate progress: 4/15 minimum complete episodes; 68 chunks extracted.
 - Remaining to the lower bound is roughly 157 chunks and 11 complete episodes.
 - At the observed recent throughput range of 27-35 chunks per session, estimate 5-6 more sessions to reach the 15-episode lower bound and 7-9 sessions to reach the 20-episode upper bound, depending on next-episode chunk counts.
+
+## 2026-07-07 - MSF-R07 encoding micro-fixes and batch 005
+
+External review:
+
+- Batch 004 was approved externally: 64/64 unique titles and distributed `claim_risk`.
+- Required micro-fixes before the next lot:
+  - Correct `confian?a` to `confianca` in the `yyoGeQp5yzM` insight title.
+  - Normalize the non-ASCII characters in `TOW0sWhPaZw-v2-0004` `use_case`.
+  - Add a post-lot scan for non-ASCII and orphan `?` artifacts in editorial v2 fields.
+
+Completed:
+
+- Added `scripts/audit_insights_v2_text.py`.
+- Updated `loops/episode-processing.md` so every R07 session runs the editorial text scan after each lot.
+- Applied structured local JSON fixes to `insights_v2.json` files and corresponding `llm_v2_outputs` so future `combine` runs do not reintroduce the encoding artifacts.
+- The auditor now scans final `insights_v2.json` files and chunk outputs.
+
+Extraction scope:
+
+- Route: Codex-first manual extraction (`route=codex_manual`), no API.
+- Commands were run with `python -B`.
+- Episodes processed:
+  - `8WEvN5T7J0U`: 14/14 chunks, 10 insights v2.
+  - `L7u7r6rOl68`: 16/16 chunks, 14 insights v2.
+
+Validation:
+
+- `scripts/audit_insights_v2_text.py` passed: `VALID editorial_text_files=104`.
+- `scripts/validate_insights_v2.py data/processed/8WEvN5T7J0U/insights_v2.json data/processed/L7u7r6rOl68/insights_v2.json` returned `VALID` for both files.
+- New evidence quote check: 24/24 new evidence quotes matched their source transcript segment exactly.
+- New evidence quote-noise check: 0 hits for promo CTAs, `inscreva`, `assista tambem`, hashtags, `primeiro link`, `clicar no link`, or description boilerplate.
+- `scripts/consolidate_exports.py` completed and reported 253 episode records, 46 assets, 1,406 v1 insights, 88 v2 insights, and 13 acquisition tasks.
+- Status after consolidation: 6/50 target episodes fully extracted in v2, 98/754 target chunks extracted, `gate_r1_ready=false`.
+- Title uniqueness: 88/88 unique v2 titles.
+- `claim_risk` distribution: `low=33`, `medium=51`, `high=4`.
+- In-memory compile passed for `scripts/audit_insights_v2_text.py`, `scripts/extract_transcript_insights_llm.py`, and `scripts/consolidate_exports.py` with `python -B`.
+
+Throughput and calibration:
+
+- New session throughput: 30 chunks processed, 24 insights added, 2 episodes closed by chunk. API cost: `$0`.
+- Current amended gate progress: 6/15 minimum complete episodes; 98 chunks extracted.
+- Remaining to the lower bound is roughly 127 chunks and 9 complete episodes.
+- At the observed recent throughput range of 27-35 chunks per session, estimate 4-5 more sessions to reach the 15-episode lower bound and 6-8 sessions to reach the 20-episode upper bound, depending on next-episode chunk counts.

@@ -51,6 +51,7 @@ Session rules:
 - During extraction, do not re-read canonical docs. The required context is only `prompts/extraction/base_insight_extraction_v2.md`, `schemas/insights_v2.schema.json`, and the chunk packet/content being processed.
 - Validate every chunk output through `scripts/extract_transcript_insights_llm.py combine` plus `scripts/validate_insights_v2.py`.
 - Run quote-noise checks on all new evidence. Reject or reprocess evidence containing promo CTAs, "inscreva-se", "assista tambem", hashtags, unrelated episode-title lists, or description boilerplate.
+- After each lot, run `scripts/audit_insights_v2_text.py` to scan editorial fields (`canonical_title`, `specific_takeaway`, `use_case`, `when_to_use`, `when_not_to_use`) for non-ASCII characters and orphan `?` encoding artifacts.
 - At session close, run `scripts/consolidate_exports.py`.
 - Record throughput in `docs/execution-log.md`: chunks processed, session time cost, episodes touched, insights added, validation status, and updated estimate to the amended R1 gate.
 - Commit the versioned docs/scripts changed in the session. Generated `data/processed/**` and `data/exports/**` remain local ignored artifacts unless policy changes.

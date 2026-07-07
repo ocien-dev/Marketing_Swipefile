@@ -317,6 +317,17 @@ Execucao 2026-07-07 - lote seguinte Rota B:
 - Throughput real da sessao: 27 chunks novos processados, 22 insights novos adicionados, 2 episodios fechados por chunk. Estimativa calibrada ate o gate emendado: mais 5-7 sessoes para atingir 15-20 episodios completos, variando conforme tamanho dos proximos episodios.
 - Lembrete operacional registrado pelo owner: reabrir MSF-R03 entre o Gate R1 e o backfill dos chunks restantes.
 
+Execucao 2026-07-07 - micro-fixes e lote Rota B posterior:
+
+- Revisao externa aprovou o lote anterior: 64/64 titulos unicos e `claim_risk` distribuido.
+- Micro-fixes de encoding aplicados nos dados v2 locais e nos `llm_v2_outputs` de origem: `confian?a` -> `confianca`, campos editoriais de `TOW0sWhPaZw-v2-0004` normalizados para ASCII e demais artefatos `?`/non-ASCII encontrados no mesmo scan corrigidos.
+- Criado `scripts/audit_insights_v2_text.py` para auditar campos editoriais v2 (`canonical_title`, `specific_takeaway`, `use_case`, `when_to_use`, `when_not_to_use`) contra non-ASCII e `?` orfao; protocolo R07 atualizado para rodar o auditor apos cada lote.
+- Auditor passou em 104 arquivos v2 locais (episodios finais + chunk outputs).
+- `8WEvN5T7J0U` completado em v2: 14/14 chunks, 10 insights v2.
+- `L7u7r6rOl68` completado em v2: 16/16 chunks, 14 insights v2.
+- Rodada local apos consolidacao: 88 insights v2 validos, 88/88 titulos unicos, `claim_risk` distribuido (`low=33`, `medium=51`, `high=4`), 0 arquivos v2 invalidos, 6/50 episodios totalmente extraidos em v2, 98/754 chunks alvo extraidos, `gate_r1_ready=false`.
+- Throughput real da sessao: 30 chunks novos processados, 24 insights novos adicionados, 2 episodios fechados por chunk. Estimativa calibrada ate o gate emendado: mais 4-6 sessoes para atingir 15-20 episodios completos, variando conforme tamanho dos proximos episodios.
+
 ### MSF-R08 - Comparacao amostral v1 vs v2
 
 Prioridade: `P0`
