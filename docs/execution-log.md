@@ -1814,3 +1814,210 @@ Decision state:
 - MSF-S06 is `done`; `msf-process-produto-low-ticket` is approved.
 - MSF-S07 (`msf-process-quiz`) is released as the last real skill in the first
   wave, but not started in this closure.
+
+## 2026-07-08 - MSF-S07 quiz funnel skill and S09 blind prepare
+
+Inputs:
+
+- Owner requested MSF-S07 as the last real process skill in the first wave
+  after S06/S09 LowTicket PASS.
+- Skill under test: `skills/msf-process-quiz/`.
+- Primary process tag: `process-quiz`.
+- Imported transversal module tags: `process-mecanismo-big-idea` and
+  `process-prova-depoimentos`.
+- S07 must pass its own S09 before the first skill wave is closed.
+
+Implementation:
+
+- Created `skills/msf-process-quiz/` with `scripts/create_process_skill.py`.
+- Filled the 8 process-skill files: `SKILL.md`, `skill.contract.json`,
+  `retrieval.md`, `rubric.md`, `templates/output-template.md`,
+  `examples/briefing.md`, `examples/output-approved.md`, and
+  `agents/openai.yaml`.
+- Kept internal playbook/retrieval/rubric/contract text ASCII; final template
+  and examples use full pt-BR accents.
+- Imported transversal modules by reference and preserved the inherited
+  `module_inheritance_policy`: dedupe evidence by `insight_id`, count
+  `zoChfFHnlOQ-v2-0008` and `mCaFyZpXJdE-v2-0011` once, and keep quiz-specific
+  questions, segmentation, result personalization, offer bridge, completion
+  design, mini VSL placement, and page-level metrics inside the skill.
+- Defined the quiz rubric criteria:
+  `question_diagnostic_coherence_score`, `avatar_recognition_score`,
+  `result_personalization_score`, `mechanism_belief_score`,
+  `proof_claim_control_score`, `offer_bridge_coherence_score`,
+  `completion_design_score`, and `base_usage_score`.
+- Commercial combined criterion for quiz:
+  `question_diagnostic_coherence_score`, `result_personalization_score`, and
+  `offer_bridge_coherence_score`.
+
+S09 blind sample:
+
+- Prepared 4 varied quiz briefings:
+  - `S09-QUIZ-001` problem-diagnostic quiz for autonomous professionals.
+  - `S09-QUIZ-002` avatar-segmentation quiz for dental clinic marketing.
+  - `S09-QUIZ-003` readiness quiz for low-ticket product creators.
+  - `S09-QUIZ-004` product-match quiz for a minimalist skincare kit.
+- Wrote blind CSV:
+  `data/exports/output_s09_quiz_blind_sample_2026-07-08.csv`.
+- Wrote hidden key:
+  `data/exports/output_s09_quiz_blind_key_2026-07-08.json`.
+- Wrote strategy packs:
+  - `data/exports/strategy_pack_s09_quiz_001_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_quiz_002_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_quiz_003_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_quiz_004_2026-07-08.*`
+- Baselines were written as honest quiz-funnel attempts, not deliberately
+  generic.
+- CSV has blank quiz rubric fields and no source-label leakage
+  (`with_skill`, `no_skill`, `baseline`, `com skill`, `sem skill`, `curated`,
+  `Marketing Swipe`, `insight:`, or `msf-process`).
+- No S09 verdict was generated. Judgment remains external.
+
+Encoding and No Invention:
+
+- Initial CSV guard caught 2 orphan question marks in with-skill outputs
+  (`cren?a` and `vi?o`), caused by the write path. The CSV was corrected at the
+  encoding layer without changing quiz logic.
+- Final `orphan_question_mark_contexts` check found 0 orphan question marks in
+  the 4 with-skill outputs selected through the hidden key.
+- Raw non-ASCII scan of with-skill final outputs found normal Latin accent
+  codepoints. These are valid final-output accents under the layered writing
+  policy, not encoding defects.
+- S07 playbook No Invention check passed: 18 citation uses, 17 unique playbook
+  citations, 0 missing, and 0 without `process-quiz`.
+- S09 Quiz key No Invention check passed: 30 citation uses, 18 unique with-skill
+  citations, 0 missing, and 0 without `process-quiz`.
+
+Decision state:
+
+- MSF-S07 moved to owner judgment with status `ready_for_owner_audit`.
+- MSF-S09 is `in_progress` for S07 quiz.
+- `blind_baseline_test` remains `pending` in
+  `skills/msf-process-quiz/skill.contract.json` until external blind judgment.
+- The first skill wave is not closed yet.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-quiz` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- Direct regression tests passed:
+  `tests/test_process_skill_contract.py`, `tests/test_process_tag_retrieval.py`,
+  `tests/test_transversal_modules_contract.py`, and
+  `tests/test_strategy_pack_diversity.py`.
+- S09 Quiz blind CSV structural check passed: 4 pairs and 40 blank judging
+  fields.
+- Source-leak scan on the blind CSV passed.
+- Closure checks passed after documentation updates: process-skill validation,
+  transversal-module validation, direct regression test execution, S07 No
+  Invention checks, S09 Quiz CSV/key checks, internal non-ASCII scan, and
+  `git diff --check`.
+
+## 2026-07-08 - MSF-S09 Quiz apuration and encoding concerns
+
+Inputs:
+
+- Owner supplied the judged blind CSV:
+  `data/exports/output_s09_quiz_blind_sample_2026-07-08_judged.csv`.
+- Hidden key opened after judging:
+  `data/exports/output_s09_quiz_blind_key_2026-07-08.json`.
+- Owner-reported blind winners: 001=A, 002=B, 003=A, 004=B; criteria 32-0-0;
+  commercial core 12-0-0.
+
+Apuration:
+
+- Key mapping: 001 A=com skill, 002 B=com skill, 003 A=com skill, 004 B=com
+  skill.
+- Pair result: com skill 4, sem skill 0, empates 0.
+- Criterion result: com skill 32, sem skill 0, empates 0.
+- Commercial core
+  (`question_diagnostic_coherence_score`, `result_personalization_score`,
+  `offer_bridge_coherence_score`): com skill 12, sem skill 0, empates 0.
+- No Invention passed for the S09 key: 30 citation uses, 18 unique
+  `insight_id` values, 0 missing from `curated_insights`, and 0 without
+  `process-quiz`.
+
+Encoding handling:
+
+- Hardened `orphan_question_mark_contexts` in `scripts/msf_common.py` to catch
+  repeated mid-word `?` mojibake (`obje??o`) and single mid-word `?`
+  (`Prot?tipo`) while allowing legitimate final question marks.
+- Added regression coverage in `tests/test_msf_common_encoding.py`, including
+  direct helper checks and `audit_generated_text` checks.
+- Hardened guard scan of the original blind sample found:
+  - `S09-QUIZ-002`, output B/com skill: `obje??o`.
+  - `S09-QUIZ-003`, output B/sem skill: `Prot?tipo`.
+- Root trace: `obje??o` already exists in ignored upstream local data,
+  including `data/exports/curated_insights.json` and
+  `data/processed/mCaFyZpXJdE/insights_v2.json`; the strategy pack path renders
+  selected insight fields directly, so the skill inherited corrupted source
+  text that the previous guard missed.
+- Wrote encoding-fixed blind sample:
+  `data/exports/output_s09_quiz_blind_sample_2026-07-08_encoding_fixed.csv`.
+- Diff is localized to mojibake characters only:
+  - `S09-QUIZ-002`, output B/com skill: `obje??o` -> `objecao`
+    (2 character substitutions in one token).
+  - `S09-QUIZ-003`, output B/sem skill: `Prot?tipo` -> `Prototipo`
+    (1 character substitution in one token).
+- Final guard scan of the encoding-fixed sample found 0 mojibake hits in all
+  outputs, including 0 in the 4 with-skill outputs.
+
+Docs and decision state:
+
+- Added `docs/msf-s09-quiz-gate-result-2026-07-08.md`.
+- Updated `docs/marketing-swipe-file-skills-backlog.md`.
+- Commercial verdict is `PASS`; gate status remains `CONCERNS`.
+- MSF-S07 remains `ready_for_owner_audit`; `msf-process-quiz` is not approved;
+  `blind_baseline_test` remains pending; the first skill wave remains open until
+  external reconfirmation clears the encoding concern.
+- No commit was created, per owner instruction.
+
+## 2026-07-08 - MSF-S07/S09 Quiz approval and first-wave closure
+
+Inputs:
+
+- External independent audit reconfirmed MSF-S07 after reviewing the
+  encoding-fixed sample.
+- Owner confirmed the key mapping and commercial PASS: com skill won 4/4 pairs,
+  32/32 criteria, and 12/12 commercial-core cells.
+- Owner confirmed the encoding-fixed sample changed only two mojibake tokens:
+  `obje??o` -> `objecao` and `Prot?tipo` -> `Prototipo`, with no copy rewrite.
+- Owner confirmed the hardened guard catches both artifacts, ignores legitimate
+  final question marks, and finds 0 mojibake in the corrected sample.
+- Owner confirmed No Invention: 18/18 unique citations carry `process-quiz`.
+
+Implementation:
+
+- Updated `docs/msf-s09-quiz-gate-result-2026-07-08.md` from `CONCERNS` to
+  `PASS`, preserving the initial concern and recording its resolution.
+- Updated `skills/msf-process-quiz/SKILL.md` to `approved`.
+- Updated `skills/msf-process-quiz/skill.contract.json` so
+  `blind_baseline_test` is `pass`.
+- Updated `docs/marketing-swipe-file-skills-backlog.md`: MSF-S07 is `done`,
+  MSF-S09 is `done`, the first wave is closed, and MSF-S10 is
+  `ready_for_planning`.
+
+Decision state:
+
+- First wave closed: S04 offer, S03 VSL, S05 ads, S06 low-ticket, and S07 quiz
+  are all done/approved.
+- Next planning milestones are registered but not started:
+  - Reopen MSF-R03 for data outside OneDrive before MSF-R14/backfill.
+  - Plan the agent layer that consumes the 5 validated skills.
+- No backfill or agent work was started in this closure.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-quiz --require-done` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B tests\test_msf_common_encoding.py` -> `VALID msf_common_encoding`.
+- Direct regression tests passed:
+  `tests/test_process_skill_contract.py`, `tests/test_process_tag_retrieval.py`,
+  and `tests/test_transversal_modules_contract.py`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- S09 Quiz No Invention check passed: 30 citation uses, 18 unique citations, 0
+  missing, and 0 without `process-quiz`.
+- Hardened guard check on the encoding-fixed sample passed:
+  with-skill mojibake hits 0, all-output mojibake hits 0.
+- Internal non-ASCII scan passed on repo internal docs/scripts/skill files
+  touched in this closure.
+- `git diff --check` passed with LF/CRLF warnings only.

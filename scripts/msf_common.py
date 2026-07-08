@@ -37,7 +37,10 @@ BROKEN_ACCENT_DELETION_RE = re.compile(
     + r")(?!\w)",
     re.IGNORECASE,
 )
-ORPHAN_QUESTION_MARK_RE = re.compile(r"(?<=[A-Za-z])\?(?=[A-Za-z])")
+ORPHAN_QUESTION_MARK_RE = re.compile(
+    r"[A-Za-z]\?+[A-Za-z]|[A-Za-z]\?+(?![\s\"'\)\]\.,;:!]|$)",
+    re.ASCII,
+)
 
 
 def broken_accent_deletion_matches(value: Any) -> list[str]:

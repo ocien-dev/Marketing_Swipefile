@@ -1,0 +1,3 @@
+interface:
+  display_name: "Quiz"
+  short_description: "Create diagnostic quizzes, personalized results, completion flows, and quiz-to-offer bridges from curated MSF insights."

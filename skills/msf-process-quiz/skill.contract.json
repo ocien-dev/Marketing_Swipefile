@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "skill_type": "msf_process_skill",
+  "skill_name": "msf-process-quiz",
+  "display_name": "Quiz",
+  "process_tags": [
+    "process-quiz",
+    "process-mecanismo-big-idea",
+    "process-prova-depoimentos"
+  ],
+  "source_layer": "curated_insights",
+  "citation_policy": {
+    "insight_claim": "[insight:<insight_id>]",
+    "generic_practice": "[generic-practice]"
+  },
+  "writing_policy": {
+    "internal_playbook": "ascii_nfkd",
+    "evidence_quotes": "verbatim_utf8",
+    "final_outputs": "pt_br_full_accents"
+  },
+  "module_inheritance_policy": {
+    "evidence_counting": "dedupe_insight_id_across_imported_modules",
+    "known_overlap_insight_ids": [
+      "zoChfFHnlOQ-v2-0008",
+      "mCaFyZpXJdE-v2-0011"
+    ],
+    "scope_boundary": "process_specific_logic_stays_in_skill_transversal_claims_stay_principle_level"
+  },
+  "required_files": [
+    "SKILL.md",
+    "skill.contract.json",
+    "retrieval.md",
+    "rubric.md",
+    "templates/output-template.md",
+    "examples/briefing.md",
+    "examples/output-approved.md",
+    "agents/openai.yaml"
+  ],
+  "validation_checklist": {
+    "output_from_test_briefing": "pass",
+    "r09_rubric_evaluation": "pass",
+    "blind_baseline_test": "pass",
+    "playbook_claims_cited_or_generic": "pass"
+  }
+}

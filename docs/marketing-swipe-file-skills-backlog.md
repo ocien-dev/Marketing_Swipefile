@@ -18,8 +18,9 @@ Este documento complementa:
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
 MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S03, MSF-S04, MSF-S05, MSF-S06 e
-MSF-S08 estao done; MSF-S07 esta liberado como ultima skill real da primeira
-leva. Skill alimentada por base nao curada reproduz o defeito v1; usar
+MSF-S08 estao done; MSF-S07 esta done/approved. A primeira leva de 5 skills
+esta fechada: S03, S04, S05, S06 e S07 foram aprovadas por seus gates S09.
+Skill alimentada por base nao curada reproduz o defeito v1; usar
 `curated_insights` como fonte candidata/default. Agentes so depois de skills
 validadas individualmente.
 
@@ -411,7 +412,7 @@ Apuracao S09 2026-07-08:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `ready`
+Status: `done`
 
 Escopo: skill `msf-process-quiz` (perguntas, diagnostico, ponte para oferta,
 fechamento de loops abertos).
@@ -419,6 +420,85 @@ fechamento de loops abertos).
 Aceite: Definition of Done da secao 2.
 
 Dependencias: MSF-S01, MSF-S02, MSF-S06 aprovado por S09 Low Ticket.
+
+Execucao 2026-07-08:
+
+- Criada `skills/msf-process-quiz/` via `scripts/create_process_skill.py`.
+- Preenchidos os 8 arquivos da anatomia: `SKILL.md`,
+  `skill.contract.json`, `retrieval.md`, `rubric.md`,
+  `templates/output-template.md`, `examples/briefing.md`,
+  `examples/output-approved.md` e `agents/openai.yaml`.
+- Retrieval usa `curated_insights` com `process-quiz`,
+  `process-mecanismo-big-idea` e `process-prova-depoimentos`.
+- `module_inheritance_policy` aplicada: dedupe por `insight_id` entre modulos
+  e logica especifica de quiz mantida na skill.
+- Rubrica definida com 8 criterios: `question_diagnostic_coherence_score`,
+  `avatar_recognition_score`, `result_personalization_score`,
+  `mechanism_belief_score`, `proof_claim_control_score`,
+  `offer_bridge_coherence_score`, `completion_design_score` e
+  `base_usage_score`.
+- Criterio comercial combinado de quiz =
+  `question_diagnostic_coherence_score`, `result_personalization_score` e
+  `offer_bridge_coherence_score`.
+- Amostra cega S09 Quiz preparada com 4 pares variados em
+  `data/exports/output_s09_quiz_blind_sample_2026-07-08.csv`; chave separada em
+  `data/exports/output_s09_quiz_blind_key_2026-07-08.json`.
+- Briefings cobrem diagnostico de problema, segmentacao de avatar,
+  prontidao/readiness e match de produto, com baselines honestos.
+- Guard inicial `orphan_question_mark` nos 4 outputs com skill passou com 0
+  achados; a apuracao S09 posterior endureceu o detector e encontrou o
+  artefato `obje??o` no output com skill do par 002.
+- No Invention do playbook passou: 17 citacoes unicas resolvem para
+  `curated_insights` real e carregam `process-quiz`.
+- No Invention da chave S09 passou: 18 citacoes unicas dos outputs com skill
+  resolvem para `curated_insights` real e carregam `process-quiz`.
+- Sem veredito S09 nesta execucao; julgamento permanece externo.
+- Status movido para `ready_for_owner_audit`; `blind_baseline_test` segue
+  `pending` ate o julgamento cego.
+
+Apuracao S09 Quiz 2026-07-08:
+
+- Julgamento cego travado em
+  `data/exports/output_s09_quiz_blind_sample_2026-07-08_judged.csv`.
+- Chave aberta apos julgamento: pares 001/003 usam A=com skill e 002/004 usam
+  B=com skill.
+- Resultado comercial: com skill venceu 4/4 pares, 32/32 criterios e 12/12
+  celulas do nucleo comercial; sem skill venceu 0 e houve 0 empates.
+- No Invention da chave passou: 30 usos de citacao, 18 `insight_id` unicos,
+  todos resolvem para `curated_insights` real e carregam `process-quiz`.
+- Guard endurecido em `scripts/msf_common.py` pega `obje??o` e `Prot?tipo` sem
+  reprovar `?` legitimo de fim de pergunta; regressao adicionada em
+  `tests/test_msf_common_encoding.py`.
+- `S09-QUIZ-002`, output B/com skill, continha `obje??o`. Rastreamento apontou
+  corrupcao a montante em dados locais ignorados (`curated_insights` /
+  `data/processed`) que a skill herdou pela strategy pack path.
+- Copia corrigida para reconfirmacao:
+  `data/exports/output_s09_quiz_blind_sample_2026-07-08_encoding_fixed.csv`.
+  Diff localizado: `obje??o` -> `objecao` no output com skill do par 002 e
+  `Prot?tipo` -> `Prototipo` no baseline do par 003; sem reescrita de copy.
+- Scan final da copia corrigida: 0 mojibake nos 4 outputs com skill e 0 nos 8
+  outputs totais.
+- Veredito documentado em
+  `docs/msf-s09-quiz-gate-result-2026-07-08.md`: PASS comercial, mas
+  `CONCERNS` ate reconfirmacao externa. MSF-S07 continua
+  `ready_for_owner_audit`, skill nao aprovada, `blind_baseline_test` pendente.
+
+Reconfirmacao externa 2026-07-08:
+
+- Auditoria externa independente reconfirmou o PASS de S07: com skill venceu
+  4/4 pares, 32/32 criterios e 12/12 celulas comerciais.
+- O `CONCERNS` de encoding foi resolvido por correcao de encoding na raiz,
+  guard endurecido e reconfirmacao externa da copia corrigida.
+- A copia corrigida altera apenas dois tokens mojibake:
+  `obje??o` -> `objecao` no output com skill do par 002 e
+  `Prot?tipo` -> `Prototipo` no baseline do par 003; nenhuma copy foi
+  reescrita.
+- Guard endurecido pega os dois artefatos, ignora `?` legitimo de fim de
+  pergunta e encontra 0 mojibake na copia corrigida.
+- No Invention reconfirmado: 18/18 citacoes unicas resolvem para
+  `curated_insights` real e carregam `process-quiz`.
+- `blind_baseline_test` marcado como `pass`; skill `msf-process-quiz`
+  aprovada; MSF-S07 fechado como `done`.
 
 ### MSF-S08 - Modulos transversais de copy
 
@@ -462,7 +542,7 @@ Execucao 2026-07-07:
 
 Prioridade: `P1`
 Tipo: `qa`
-Status: `in_progress`
+Status: `done`
 
 Escopo:
 
@@ -510,12 +590,22 @@ Execucao parcial 2026-07-08:
 - S09 Low Ticket aprovado como `PASS`: com skill venceu 4/4 pares, 31/32
   criterios e 12/12 celulas comerciais, com 1 empate e 0 perdas.
 - S06 esta done/approved; S07 e a ultima skill real da primeira leva.
+- S09 Quiz para S07 preparado com 4 pares, CSV cego sem vazamento de origem e
+  campos da rubrica de quiz em branco para juiz externo.
+- S09 Quiz apurado como PASS comercial: com skill venceu 4/4 pares, 32/32
+  criterios e 12/12 celulas comerciais, com 0 empates e 0 perdas.
+- O guard de encoding foi endurecido para pegar `obje??o` e `Prot?tipo`; a
+  copia `_encoding_fixed.csv` tem 0 mojibake nos outputs com skill.
+- S07 aprovado apos reconfirmacao externa: `CONCERNS` resolvido, skill
+  `msf-process-quiz` approved, `blind_baseline_test` passou.
+- Primeira leva fechada: S04 oferta, S03 VSL, S05 anuncios, S06 low ticket e
+  S07 quiz estao todas done/approved.
 
 ### MSF-S10 - Agentes consumidores de skills
 
 Prioridade: `P2`
 Tipo: `agent`
-Status: `blocked`
+Status: `ready_for_planning`
 
 Escopo:
 
@@ -530,6 +620,13 @@ Aceite:
   no meio, e o output passa na rubrica.
 
 Dependencias: MSF-S09.
+
+Nota de sequenciamento 2026-07-08:
+
+- As 5 skills da primeira leva estao validadas individualmente e podem ser
+  consumidas pela camada de agentes quando o owner iniciar esse marco.
+- Nao iniciar agentes ainda; antes do MSF-R14/backfill, reabrir MSF-R03 para
+  tratar dados fora do OneDrive conforme a ordem executiva.
 
 ### MSF-S11 - Loop de retroalimentacao continua
 
@@ -593,11 +690,13 @@ Dependencias: MSF-R16, MSF-S10.
 ## 5. Ordem executiva
 
 1. Gates R2 e R3 estao aprovados; MSF-S01 + MSF-S02 (fundacao) estao done.
-2. MSF-S04, MSF-S03, MSF-S05 e MSF-S06 estao aprovados por S09; S07 (quiz)
-   esta liberado como ultima skill real da primeira leva.
-3. S07 deve validar o proprio pipeline skill -> retrieval -> rubrica -> teste
-   cego antes de qualquer agente consumidor.
-4. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
+2. Primeira leva fechada: MSF-S04, MSF-S03, MSF-S05, MSF-S06 e MSF-S07 estao
+   aprovados por S09 e suas skills estao approved.
+3. Proximo marco ready para planejamento: reabrir MSF-R03 (dados fora do
+   OneDrive) antes de MSF-R14/backfill dos chunks restantes.
+4. Marco seguinte ready para planejamento: camada de agentes consumidores das
+   5 skills validadas. Nao iniciar ate o owner mandar o proximo passo.
+5. MSF-S10 cria agentes; MSF-S11 liga a
    retroalimentacao.
-5. Segunda leva (S12) quando o backfill e os assets da academy elevarem a
+6. Segunda leva (S12) quando o backfill e os assets da academy elevarem a
    densidade dos processos adiados.
