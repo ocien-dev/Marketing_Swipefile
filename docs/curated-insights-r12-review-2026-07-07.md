@@ -52,4 +52,11 @@
 ## Human Review
 
 - The owner review sample has 30 items with empty `owner_decision` and `owner_notes` columns.
-- Gate R3 is not declared by this report; the sample and pack comparison remain external-review inputs.
+- Owner review completed on 2026-07-07: the owner kept the sample decisions as filled, with no mass rejection.
+- Gate R3 is approved after owner review and external technical review.
+
+## Gate R3 Notes
+
+- `editorial_score` is compressed in this first curated lot: min 90, median 97. Calibrate the scoring rubric with owner annotations before the next curated lot.
+- `process-copy-anuncios` has 18 curated items. This is enough to start MSF-S, and later backfill should increase coverage.
+- One title suffix boilerplate was flagged in the R13 technical review (`...em lateralizar`) and should be rewritten before the next pack refresh.

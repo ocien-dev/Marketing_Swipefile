@@ -67,7 +67,8 @@ MSF-R11, MSF-R12, MSF-R13.
 Gate de saida R3:
 
 - Strategy packs regenerados a partir de `curated_insights` sem duplicacao dominante no top-N.
-- Status em 2026-07-07: R11 implementado, R12 pronto para revisao humana amostral, R13 pronto para revisao externa. Gate R3 ainda nao declarado.
+- Gate R3 declarado APROVADO em 2026-07-07: owner manteve a amostra R12 conforme as indicacoes de revisao, e a revisao tecnica externa aprovou packs sem duplicacao dominante, curadoria integra e avaliacao honesta `pass`.
+- Observacoes pos-gate: calibrar a regua de `editorial_score` porque o lote ficou comprimido (min 90, mediana 97); reescrever 1 titulo com sufixo boilerplate (`...em lateralizar`); `process-copy-anuncios` tem 18 curados, suficiente para iniciar MSF-S, com backfill para engordar cobertura depois.
 
 ### Bloco R4 - Escala e proximas camadas (somente apos gates R1-R3)
 
@@ -506,7 +507,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `data`
-Status: `ready_for_owner_review`
+Status: `done`
 
 Escopo:
 
@@ -532,6 +533,8 @@ Execucao 2026-07-07:
 - `editorial_score`: minimo 90, maximo 100, media 96.67; 0 itens abaixo do piso 50 entraram.
 - Amostra de 30 itens para revisao humana do owner gerada em `data/exports/curated_insights_owner_review_sample_2026-07-07.csv`.
 - Relatorio: `docs/curated-insights-r12-review-2026-07-07.md`.
+- Revisao humana do owner concluida em 2026-07-07: nenhuma reprovacao em massa; owner manteve tudo conforme as indicacoes da amostra preenchida.
+- Observacao de calibracao: `editorial_score` ficou comprimido (min 90, mediana 97); usar as anotacoes do owner para abrir melhor a regua antes dos proximos lotes.
 
 Dependencias:
 
@@ -541,7 +544,7 @@ Dependencias:
 
 Prioridade: `P1`
 Tipo: `qa`
-Status: `ready_for_external_review`
+Status: `done`
 
 Escopo:
 
@@ -564,7 +567,9 @@ Execucao 2026-07-07:
   - VSL curated pack: 33/40, `pass`, citation fidelity `pass`.
   - Ads curated pack: 35/40, `pass`, citation fidelity `pass`.
 - Resultado de diversidade: VSL top-20 maximo 3 itens por episodio; ads top-20 maximo 3 itens por episodio. Ads reduziu Jaccard medio top-10 de 0.4912 para 0.0800 e nao manteve duas teses de hook no top-10.
-- Decisao formal sobre Gate R3 e fonte default permanece pendente de revisao externa.
+- Revisao tecnica externa aprovou os criterios do Gate R3: packs sem duplicacao dominante, curadoria integra e avaliacao honesta `pass`.
+- Observacoes registradas: 1 titulo com sufixo boilerplate a reescrever (`...em lateralizar`); `process-copy-anuncios` tem 18 itens curados, suficiente para iniciar, com backfill posterior para ampliar cobertura.
+- Gate R3 declarado APROVADO em 2026-07-07. `curated_insights` passa a ser a fonte candidata/default para os packs e para a primeira leva MSF-S.
 
 Dependencias:
 
@@ -653,13 +658,14 @@ Ordem de ataque sugerida, em sessoes:
 2. Sessao 2: MSF-R05, MSF-R06 (contrato v2 + pipeline LLM, piloto em 2 episodios) - done em 2026-07-07.
 3. Sessao 3: MSF-R07 e MSF-R08 done; Gate R1 aprovado em 2026-07-07 apos julgamento cego externo e verificacao independente da remediacao do batch 006.
 4. Sessao 4: MSF-R09 e MSF-R10 done; Gate R2 aprovado em 2026-07-07 apos julgamento cego externo.
-5. Sessao 5: MSF-R11 implementado; MSF-R12 pronto para revisao humana amostral; MSF-R13 pronto para revisao externa. Nao declarar Gate R3 ate a revisao externa.
-6. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates.
+5. Sessao 5: MSF-R11/MSF-R12/MSF-R13 done; Gate R3 aprovado em 2026-07-07.
+6. Proxima sessao: iniciar EPIC MSF-S por MSF-S01 (contrato de skill) e MSF-S02 (retrieval por `process_tags`).
+7. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates e antes do backfill reabrir MSF-R03.
 
 Regras permanentes durante a remediacao:
 
 - Nao iniciar o backfill MSF-R14 dos 508 chunks restantes antes de reabrir MSF-R03 e concluir a sequencia R2 acordada.
-- Com R2 aprovado, nao iniciar backfill MSF-R14, Supabase/MCP ou MSF-S antes de fechar R3.
+- Com R3 aprovado, MSF-S esta destravado; manter MSF-R14 backfill, Supabase e MCP fora de escopo ate a ordem acordada e reabrir MSF-R03 antes do backfill.
 - Nao citar os scores antigos 39/40 e 37/40 como prova de valor.
 - Toda saida LLM validada contra schema antes de entrar na base.
 - Atualizar `docs/execution-log.md` ao fim de cada sessao, como ja e pratica do projeto.

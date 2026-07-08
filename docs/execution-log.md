@@ -1021,3 +1021,26 @@ Validation:
 - Reran non-ASCII scans on tracked changed files and R12 sample/report.
 - Reran `scripts/audit_insights_v2_text.py`.
 - Reran `git diff --check`.
+
+## 2026-07-07 - Gate R3 formal approval
+
+Decision:
+
+- Gate R3 formally APPROVED on 2026-07-07.
+- Owner review of the R12 30-item sample is complete: the owner kept the filled sample decisions as indicated, with no mass rejection.
+- External technical review approved the R3 criteria: packs have no dominant duplication, curated lot is integral, and honest evaluator results are `pass`.
+- MSF-R11, MSF-R12, and MSF-R13 are now `done`.
+
+Registered observations:
+
+- `editorial_score` is compressed in the first curated lot (min 90, median 97). Calibrate the scoring rubric with owner annotations before the next curated batch.
+- One title has a boilerplate suffix to rewrite before the next pack refresh: `...em lateralizar`.
+- `process-copy-anuncios` has 18 curated items. This is sufficient to start MSF-S; later backfill should expand coverage.
+
+Next session:
+
+- EPIC MSF-S is unblocked.
+- Start with MSF-S01: skill contract.
+- Then MSF-S02: retrieval by `process_tags`.
+- Updated `docs/marketing-swipe-file-skills-backlog.md`: MSF-S01 and MSF-S02 moved from gate-blocked to `not_started`; downstream skills remain blocked by their own dependencies.
+- MSF-R14 backfill, Supabase, and MCP remain later work. Reopen MSF-R03 before any MSF-R14 backfill of the remaining 508 chunks.

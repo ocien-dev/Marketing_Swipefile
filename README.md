@@ -30,7 +30,7 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
-Current remediation guardrail: Gates R1 and R2 are approved, but do not run MSF-S, the MSF-R14 backfill, Supabase, or MCP before Gate R3 closes in `docs/marketing-swipe-file-remediation-backlog.md`.
+Current remediation guardrail: Gates R1, R2, and R3 are approved. EPIC MSF-S is unblocked and should start with MSF-S01/MSF-S02. Do not run the MSF-R14 backfill, Supabase, or MCP before the agreed post-R3 order; reopen MSF-R03 before any backfill.
 
 ## Local Data Policy
 
@@ -94,8 +94,9 @@ Current local state as of 2026-07-07:
 - MSF-R09 is complete: `scripts/evaluate_output.py` keeps the old keyword score only as `keyword_presence_check`, and the honest Codex-first rubric evaluation validates JSON against `schemas/output_evaluation.schema.json`.
 - MSF-R10 is complete: external blind judgment scored `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, so Gate R2 is formally approved. The sample limitation is 1 briefing x 2 artifacts; MSF-S09 still needs varied-briefing validation.
 - MSF-R11 is complete: `scripts/generate_strategy_pack.py` now supports MMR/Jaccard diversity with `--diversity-weight`, `--episode-cap`, and `--source curated`; fixture test coverage exists.
-- MSF-R12 is ready for owner review: local ignored `data/exports/curated_insights.json` has 125 curated v2 items and `data/exports/curated_insights_owner_review_sample_2026-07-07.csv` has the 30-item sample.
-- MSF-R13 is ready for external review: curated VSL/ads packs were regenerated and evaluated as support artifacts; Gate R3 is not declared.
+- MSF-R12 is complete: local ignored `data/exports/curated_insights.json` has 125 curated v2 items, and the owner accepted the 30-item review sample as filled.
+- MSF-R13 is complete: curated VSL/ads packs were regenerated, evaluated as support artifacts, and approved by external technical review.
+- Gate R3 is formally approved with three notes: calibrate compressed `editorial_score`, rewrite one boilerplate title suffix (`...em lateralizar`), and accept `process-copy-anuncios` coverage at 18 items for the first MSF-S pass.
 
 Proof-of-value artifacts generated locally:
 
@@ -108,4 +109,4 @@ Proof-of-value artifacts generated locally:
 - `docs/curated-insights-r12-review-2026-07-07.md`: R12 curated lot summary.
 - `docs/strategy-pack-r13-comparison-2026-07-07.md`: R13 pack comparison and evaluator result.
 
-Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R2 is approved by the blind R10 result, R3 is ready for external review but not declared, and MSF-S/MSF-R14/Supabase/MCP remain blocked until Gate R3 closes.
+Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R3 is approved, so MSF-S is unblocked; MSF-R14 backfill, Supabase, and MCP remain later work.

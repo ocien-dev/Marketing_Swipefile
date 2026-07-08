@@ -16,11 +16,10 @@ Este documento complementa:
 - `docs/marketing-swipe-file-full-backlog.md` (series A-M; este epico detalha
   as camadas 6-8 do principio de execucao)
 
-Regra de execucao: nenhuma tarefa MSF-S entra em uso antes dos gates R2 e R3.
-A ordem continua sendo EPIC R2 (MSF-R09/MSF-R10), depois EPIC R3
-(MSF-R11/MSF-R12/MSF-R13), e so entao MSF-S. Skill alimentada por base nao
-curada reproduz o defeito v1. Agentes so depois de skills validadas
-individualmente.
+Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
+MSF-S esta destravado. Comecar por MSF-S01 e MSF-S02. Skill alimentada por
+base nao curada reproduz o defeito v1; usar `curated_insights` como fonte
+candidata/default. Agentes so depois de skills validadas individualmente.
 
 ## 2. Anatomia de uma skill de processo
 
@@ -80,7 +79,7 @@ criativos e videos brutos de anuncio cobrem exatamente esses processos).
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked` (gate R3)
+Status: `not_started`
 
 Escopo:
 
@@ -92,13 +91,13 @@ Aceite:
 
 - Template instanciavel; checklist cobre o Definition of Done da secao 2.
 
-Dependencias: gates R1 (done), R2, R3.
+Dependencias: gates R1, R2 e R3 aprovados.
 
 ### MSF-S02 - Retrieval por process_tags
 
 Prioridade: `P1`
 Tipo: `script`
-Status: `blocked` (gate R3)
+Status: `not_started`
 
 Escopo:
 
@@ -297,9 +296,8 @@ Dependencias: MSF-R16, MSF-S10.
 
 ## 5. Ordem executiva
 
-1. Fechar EPIC R2 (MSF-R09/MSF-R10) e depois EPIC R3
-   (MSF-R11/MSF-R12/MSF-R13), pre-requisito de tudo.
-2. MSF-S01 + MSF-S02 (fundacao) -> MSF-S08 (modulos) -> S03..S07 em ordem de
+1. Gates R2 e R3 estao aprovados; iniciar MSF-S01 + MSF-S02 (fundacao).
+2. Depois MSF-S08 (modulos) -> S03..S07 em ordem de
    densidade: S04 (oferta), S03 (VSL), S05 (anuncios), S06 (low ticket),
    S07 (quiz).
 3. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
