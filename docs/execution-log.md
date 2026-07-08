@@ -1276,3 +1276,201 @@ Validation:
 - Contract/key JSON parse passed.
 - Internal non-ASCII scan passed.
 - `git diff --check` passed.
+
+## 2026-07-08 - MSF-S03 copy VSL skill and S09 blind prepare
+
+Inputs:
+
+- Owner requested MSF-S03 as the next real process skill after S04/S09 PASS.
+- Skill under test: `skills/msf-process-copy-vsl/`.
+- Primary process tag: `process-copy-vsl`.
+- Imported transversal module tags: `process-mecanismo-big-idea` and
+  `process-prova-depoimentos`.
+
+Implementation:
+
+- Created `skills/msf-process-copy-vsl/` with
+  `scripts/create_process_skill.py`.
+- Filled the 8 process-skill files: `SKILL.md`, `skill.contract.json`,
+  `retrieval.md`, `rubric.md`, `templates/output-template.md`,
+  `examples/briefing.md`, `examples/output-approved.md`, and
+  `agents/openai.yaml`.
+- Kept internal playbook/retrieval/rubric/contract text ASCII; final template
+  and examples use full pt-BR accents.
+- Imported transversal modules by reference and preserved the inherited
+  `module_inheritance_policy`: dedupe evidence by `insight_id`, count
+  `zoChfFHnlOQ-v2-0008` and `mCaFyZpXJdE-v2-0011` once, and keep VSL-specific
+  lead, structure, proof placement, objections, offer bridge, and CTA inside
+  the skill.
+- Aligned `rubric.md` to `docs/output-evaluation-rubric.md` with criteria:
+  clarity, curiosity, specificity, mechanism/belief, proof, objection
+  handling, offer bridge, and base usage.
+- Commercial combined criterion for VSL: `mechanism_belief_score`,
+  `proof_score`, and `objection_handling_score`.
+
+S09 blind sample:
+
+- Prepared 4 varied VSL briefings:
+  - `S09-VSL-001` health behavior / responsible weight loss.
+  - `S09-VSL-002` B2B consulting proposal workshop.
+  - `S09-VSL-003` personal finance / overdraft cycle.
+  - `S09-VSL-004` guitar subscription for adult beginners.
+- Wrote blind CSV:
+  `data/exports/output_s09_vsl_blind_sample_2026-07-08.csv`.
+- Wrote hidden key:
+  `data/exports/output_s09_vsl_blind_key_2026-07-08.json`.
+- Wrote strategy packs:
+  - `data/exports/strategy_pack_s09_vsl_001_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_vsl_002_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_vsl_003_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_vsl_004_2026-07-08.*`
+- CSV has blank VSL-rubric fields and no source-label leakage
+  (`with_s03`, `no_skill`, `baseline`, `com skill`, `sem skill`,
+  `curated`, `Marketing Swipe`, or `insight:`).
+- No S09 verdict was generated. Judgment remains external.
+
+Decision state:
+
+- MSF-S03 moved to owner judgment with status `ready_for_owner_audit`.
+- MSF-S09 is `in_progress` for S03 VSL.
+- MSF-S05/MSF-S06/MSF-S07 remain blocked until S03 validates its own skill ->
+  retrieval -> rubric -> blind-test pipeline.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-vsl --require-done` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- Regressions passed: `tests\test_process_skill_contract.py`,
+  `tests\test_process_tag_retrieval.py`,
+  `tests\test_transversal_modules_contract.py`, and
+  `tests\test_strategy_pack_diversity.py`.
+- S03 citation No Invention check passed: 23 real playbook citations resolve to
+  `curated_insights` and all carry `process-copy-vsl`.
+- S09 blind CSV structural check passed: 4 pairs and 10 blank judging fields.
+- Source-leak scan on the blind CSV passed.
+- Internal non-ASCII scan passed for S03 internal files, backlog, and
+  execution log.
+- `git diff --check` passed.
+
+## 2026-07-08 - MSF-S09 VSL gate apuration
+
+Inputs:
+
+- Judged blind CSV:
+  `data/exports/output_s09_vsl_blind_sample_2026-07-08_judged.csv`.
+- Hidden key:
+  `data/exports/output_s09_vsl_blind_key_2026-07-08.json`.
+- Result report:
+  `docs/msf-s09-vsl-gate-result-2026-07-08.md`.
+- Judge: Claude Opus 4.8, key not opened during judgment.
+- Blind caveat: blind de rotulo, nao de estilo.
+
+Apuration:
+
+- Key mapping:
+  - `S09-VSL-001`: A = sem skill, B = com skill; blind winner B.
+  - `S09-VSL-002`: A = com skill, B = sem skill; blind winner A.
+  - `S09-VSL-003`: A = com skill, B = sem skill; blind winner A.
+  - `S09-VSL-004`: A = sem skill, B = com skill; blind winner B.
+- Pair winners after key mapping: com skill 4, sem skill 0, empates 0.
+- Criterion winners: com skill 26, sem skill 0, empates 6.
+- Commercial combined criterion (`mechanism_belief_score`, `proof_score`,
+  `objection_handling_score`): com skill 10 cells, sem skill 0, empates 2.
+- Commercial pair result: com skill wins or ties the commercial core in all 4
+  pairs and loses none.
+
+Encoding verification:
+
+- `S09-VSL-001` output B maps to `with_s03_skill`.
+- Output B contains one orphan question-mark artifact:
+  `...antes do cansa?o bater...`.
+- Other with-skill outputs have no orphan question marks. Legitimate question
+  punctuation was ignored.
+- Added `transliterate_ascii` and `orphan_question_mark_contexts` helpers in
+  `scripts/msf_common.py`.
+- Extended `scripts/audit_insights_v2_text.py` to flag orphan question marks
+  in generated text.
+- Preserved the judged CSV unchanged and wrote an encoding-fixed sample copy:
+  `data/exports/output_s09_vsl_blind_sample_2026-07-08_encoding_fixed.csv`.
+
+Decision state:
+
+- Verdict: `CONCERNS`.
+- Commercial signal passes, but MSF-S03 is not approved until owner
+  reconfirms the encoding-fixed sample.
+- MSF-S03 remains `ready_for_owner_audit`.
+- `msf-process-copy-vsl` is not marked approved; `blind_baseline_test` is back
+  to `pending`.
+- MSF-S05/MSF-S06/MSF-S07 remain blocked.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-vsl` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-vsl --require-done` intentionally remains blocked with `checklist_not_pass=blind_baseline_test` until owner reconfirmation.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- Regressions passed: `tests\test_process_skill_contract.py`,
+  `tests\test_process_tag_retrieval.py`,
+  `tests\test_transversal_modules_contract.py`, and
+  `tests\test_strategy_pack_diversity.py`.
+- S09 VSL apuration check passed: verdict CONCERNS, commercial PASS, 4 pair
+  wins with skill, 26 criterion wins with skill, 10 commercial cells with
+  skill, and 6 ties.
+- S03 citation No Invention check passed: 23 real playbook citations resolve
+  to `curated_insights` and all carry `process-copy-vsl`.
+- Encoding helper check passed: `cansaco` is the expected ASCII transliteration,
+  and
+  `orphan_question_mark_contexts` flags `cansa?o` but not legitimate question
+  punctuation.
+- With-skill orphan scan: judged CSV has 1 preserved artifact; encoding-fixed
+  sample has 0.
+- Internal non-ASCII scan passed.
+- `git diff --check` passed.
+
+## 2026-07-08 - MSF-S03 copy VSL approval after encoding reconfirmation
+
+Inputs:
+
+- Owner reconfirmed MSF-S03 after external audit of the encoding-fixed sample.
+- Commercial PASS stands: com skill won 4/4 pairs, 26 criteria, lost 0, and
+  tied 6.
+- Commercial core stands: com skill 10 cells, sem skill 0, empates 2.
+- The encoding-fixed sample differs from the original blind sample by exactly
+  one character-level correction: `cansa?o` -> `cansaco`.
+- The judged CSV remains preserved unchanged with the original `?` artifact as
+  audit evidence.
+
+Implementation:
+
+- Updated `skills/msf-process-copy-vsl/SKILL.md` to `approved`.
+- Updated `skills/msf-process-copy-vsl/skill.contract.json` so
+  `blind_baseline_test` is `pass`.
+- Updated `docs/msf-s09-vsl-gate-result-2026-07-08.md` from `CONCERNS` to
+  `PASS`, recording the resolved encoding concern.
+- Updated `docs/marketing-swipe-file-skills-backlog.md`: MSF-S03 is `done`,
+  `msf-process-copy-vsl` is approved, MSF-S05 is `ready`, and
+  MSF-S06/MSF-S07 remain blocked until S05 passes its own S09.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-vsl --require-done` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- `pytest` is not installed in the repo `.venv`; the four regression files were
+  executed through their `test_*` functions directly and passed:
+  `tests\test_process_skill_contract.py`, `tests\test_process_tag_retrieval.py`,
+  `tests\test_transversal_modules_contract.py`, and
+  `tests\test_strategy_pack_diversity.py`.
+- S09 VSL apuration check passed: verdict PASS, 4 pair wins with skill, 26
+  criterion wins with skill, 10 commercial cells with skill, and 6 ties.
+- S03 citation No Invention check passed: 23 real playbook citations resolve to
+  `curated_insights` and all carry `process-copy-vsl`.
+- Encoding guard check passed: `transliterate_ascii` converts the accented
+  source to `cansaco` by NFKD, `orphan_question_mark_contexts` catches
+  `cansa?o`, judged CSV preserves 1 orphan artifact, and the encoding-fixed
+  sample has 0.
+- Delta check passed: original blind sample vs encoding-fixed sample differs by
+  exactly one character (`?` -> `c`) for `cansa?o` -> `cansaco`.
+- Method note for S05 S09: keep honest baselines, and run
+  `orphan_question_mark` guard plus internal non-ASCII scan on with-skill
+  outputs before sending the blind sample to the external judge.

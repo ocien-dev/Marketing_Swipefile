@@ -17,10 +17,11 @@ Este documento complementa:
   as camadas 6-8 do principio de execucao)
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
-MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S04 e MSF-S08 estao done; o
-proximo passo e MSF-S03. Skill alimentada por base nao curada reproduz o defeito v1; usar
-`curated_insights` como fonte candidata/default. Agentes so depois de skills
-validadas individualmente.
+MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S03, MSF-S04 e MSF-S08 estao done;
+MSF-S05 esta liberado como proxima skill real; MSF-S06/MSF-S07 seguem blocked
+ate S05 passar pelo proprio S09. Skill alimentada por base nao curada reproduz
+o defeito v1; usar `curated_insights` como fonte candidata/default. Agentes so
+depois de skills validadas individualmente.
 
 ## 2. Anatomia de uma skill de processo
 
@@ -171,7 +172,7 @@ Execucao 2026-07-07:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo: skill `msf-process-copy-vsl` conforme secao 2, consumindo
 `process-copy-vsl` + modulos transversais (MSF-S08). Inclui leads, estrutura,
@@ -185,8 +186,50 @@ Liberacao 2026-07-08:
 
 - MSF-S04 passou no S09 e validou o pipeline skill -> retrieval -> rubrica ->
   teste cego para a primeira skill real.
-- S03 e a proxima skill real liberada; S05-S07 seguem blocked ate S03 passar
-  pelo proprio S09.
+- S03 foi liberada como a proxima skill real; S05-S07 seguiriam blocked ate S03
+  passar pelo proprio S09.
+
+Execucao 2026-07-08:
+
+- Criada `skills/msf-process-copy-vsl/` via
+  `scripts/create_process_skill.py`.
+- Preenchidos os 8 arquivos da anatomia: `SKILL.md`,
+  `skill.contract.json`, `retrieval.md`, `rubric.md`,
+  `templates/output-template.md`, `examples/briefing.md`,
+  `examples/output-approved.md` e `agents/openai.yaml`.
+- Retrieval usa `curated_insights` com `process-copy-vsl`,
+  `process-mecanismo-big-idea` e `process-prova-depoimentos`.
+- `module_inheritance_policy` aplicada: dedupe por `insight_id` entre modulos
+  e logica especifica de VSL mantida na skill.
+- Rubrica alinhada a `docs/output-evaluation-rubric.md`; criterio comercial
+  combinado de VSL = `mechanism_belief_score`, `proof_score` e
+  `objection_handling_score`.
+- Amostra cega S09 VSL preparada com 4 pares variados em
+  `data/exports/output_s09_vsl_blind_sample_2026-07-08.csv`; chave separada em
+  `data/exports/output_s09_vsl_blind_key_2026-07-08.json`.
+- Sem veredito S09 nesta execucao; julgamento permanece externo.
+
+Apuracao S09 2026-07-08:
+
+- Relatorio: `docs/msf-s09-vsl-gate-result-2026-07-08.md`.
+- Julgamento externo em
+  `data/exports/output_s09_vsl_blind_sample_2026-07-08_judged.csv`.
+- Chave aberta somente depois do julgamento cego:
+  `data/exports/output_s09_vsl_blind_key_2026-07-08.json`.
+- Resultado por par: com skill 4, sem skill 0, empates 0.
+- Resultado por criterio: com skill 26, sem skill 0, empates 6.
+- Nucleo comercial combinado (`mechanism_belief_score`, `proof_score`,
+  `objection_handling_score`): com skill 10 celulas, sem skill 0, empates 2;
+  com skill venceu o nucleo nos 4 pares.
+- Veredito final: `PASS`. O S09 VSL teve PASS comercial (com skill venceu 4/4
+  pares, 26 criterios contra 0, 6 empates; nucleo comercial 10-0-2).
+- O `CONCERNS` inicial foi resolvido: auditoria externa reconfirmou que a copia
+  corrigida altera um unico caractere (`cansa?o` -> `cansaco`) sem reescrita de
+  copy, preservando o julgamento cego. A raiz foi corrigida com
+  `transliterate_ascii` NFKD em `scripts/msf_common.py` e guard
+  `orphan_question_mark` em `scripts/audit_insights_v2_text.py`.
+- Skill `msf-process-copy-vsl` aprovada; MSF-S05 liberado como proxima skill
+  real. MSF-S06/MSF-S07 seguem blocked ate S05 passar pelo proprio S09.
 
 ### MSF-S04 - Skill: construcao de oferta
 
@@ -249,14 +292,14 @@ Apuracao S09 2026-07-08:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked`
+Status: `ready`
 
 Escopo: skill `msf-process-copy-anuncios` (hooks, angulos, scripts; absorve
 headlines-hooks e teste-variacao-criativos como capitulos).
 
 Aceite: Definition of Done da secao 2.
 
-Dependencias: MSF-S01, MSF-S02.
+Dependencias: MSF-S01, MSF-S02, MSF-S03 aprovado por S09 VSL.
 
 ### MSF-S06 - Skill: criacao de produto low ticket
 
@@ -353,6 +396,15 @@ Execucao parcial 2026-07-08:
 - S05-S07 continuam blocked ate S03 passar pelo proprio S09.
 - Para S03 em diante, variar mais os briefings (N > 3 quando viavel) e, se
   possivel, alternar quem redige o baseline sem-skill.
+- S09 VSL para S03 preparado com 4 pares, CSV cego sem vazamento de origem e
+  campos da rubrica de VSL em branco para juiz externo.
+- S09 VSL aprovado como `PASS`: com skill venceu 4/4 pares, 26/32 criterios e
+  10/12 celulas comerciais, com 6 empates e 0 perdas.
+- O `CONCERNS` de encoding foi resolvido por correcao de raiz
+  (`transliterate_ascii` NFKD + guard `orphan_question_mark`) e reconfirmacao
+  externa da copia corrigida, que mudou apenas `cansa?o` para `cansaco`.
+- S03 esta done/approved; S05 e a proxima skill real. S06/S07 seguem blocked ate
+  S05 passar pelo proprio S09.
 
 ### MSF-S10 - Agentes consumidores de skills
 

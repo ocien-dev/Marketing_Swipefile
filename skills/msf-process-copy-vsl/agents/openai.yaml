@@ -1,0 +1,4 @@
+interface:
+  display_name: "Copy VSL"
+  short_description: "Use curated Marketing Swipe File insights for Copy VSL."
+  default_prompt: "Create a VSL using the Copy VSL process skill and cite the curated insights that support non-obvious choices."

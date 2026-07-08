@@ -37,11 +37,29 @@ BROKEN_ACCENT_DELETION_RE = re.compile(
     + r")(?!\w)",
     re.IGNORECASE,
 )
+ORPHAN_QUESTION_MARK_RE = re.compile(r"(?<=[A-Za-z])\?(?=[A-Za-z])")
 
 
 def broken_accent_deletion_matches(value: Any) -> list[str]:
     text = "" if value is None else str(value)
     return sorted({match.group(1).lower() for match in BROKEN_ACCENT_DELETION_RE.finditer(text)})
+
+
+def transliterate_ascii(value: Any) -> str:
+    text = "" if value is None else str(value)
+    normalized = unicodedata.normalize("NFKD", text)
+    without_marks = "".join(char for char in normalized if not unicodedata.combining(char))
+    return "".join(char for char in without_marks if ord(char) < 128)
+
+
+def orphan_question_mark_contexts(value: Any, window: int = 40) -> list[str]:
+    text = "" if value is None else str(value)
+    contexts = []
+    for match in ORPHAN_QUESTION_MARK_RE.finditer(text):
+        start = max(0, match.start() - window)
+        end = min(len(text), match.end() + window)
+        contexts.append(" ".join(text[start:end].split()))
+    return contexts
 
 
 def load_json(path: Path) -> dict[str, Any]:

@@ -8,7 +8,12 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from msf_common import broken_accent_deletion_matches, load_json, normalize_text
+from msf_common import (
+    broken_accent_deletion_matches,
+    load_json,
+    normalize_text,
+    orphan_question_mark_contexts,
+)
 
 
 EDITORIAL_FIELDS = [
@@ -72,6 +77,14 @@ def read_generated_text(path: Path) -> str:
 def audit_generated_text(path: Path) -> list[dict[str, Any]]:
     text = read_generated_text(path)
     findings: list[dict[str, Any]] = []
+    for context in orphan_question_mark_contexts(text):
+        findings.append(
+            {
+                "finding_type": "orphan_question_mark",
+                "path": str(path),
+                "excerpt": context,
+            }
+        )
     for pattern in broken_accent_deletion_matches(text):
         start = text.lower().find(pattern)
         line_number = text.count("\n", 0, start) + 1 if start >= 0 else 0
@@ -163,6 +176,11 @@ def main() -> int:
                 print(
                     f"broken_accent_deletion path={item['path']} line={item['line']} "
                     f"pattern={item['pattern']!r} excerpt={item['excerpt']!r}"
+                )
+            elif item.get("finding_type") == "orphan_question_mark":
+                print(
+                    f"orphan_question_mark path={item['path']} "
+                    f"excerpt={item['excerpt']!r}"
                 )
             else:
                 print(

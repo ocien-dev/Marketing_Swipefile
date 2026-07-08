@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-08",
+  "gate": "MSF-S09",
+  "process": "copy-vsl",
+  "skill_under_test": "msf-process-copy-vsl",
+  "blind_sample": "data\\exports\\output_s09_vsl_blind_sample_2026-07-08.csv",
+  "warning": "Do not open before owner blind judgment is complete.",
+  "pairs": [
+    {
+      "pair_id": "S09-VSL-001",
+      "briefing_id": "doces-saude-comportamental",
+      "option_a_source": "no_skill_honest_baseline",
+      "option_b_source": "with_s03_skill",
+      "baseline_mode": "direct_response_empathy",
+      "with_s03_skill_citations": [
+        "aSFAve1klsc-v2-0009",
+        "cL3FuW8bAMA-v2-0005",
+        "L7u7r6rOl68-v2-0009",
+        "qohJceyapS0-v2-0015",
+        "TOW0sWhPaZw-v2-0011"
+      ],
+      "strategy_pack_json": "data\\exports\\strategy_pack_s09_vsl_001_2026-07-08.json",
+      "strategy_pack_md": "data\\exports\\strategy_pack_s09_vsl_001_2026-07-08.md",
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "vsl_specific_logic_kept_in_skill": true
+      }
+    },
+    {
+      "pair_id": "S09-VSL-002",
+      "briefing_id": "b2b-propostas-diagnosticas",
+      "option_a_source": "with_s03_skill",
+      "option_b_source": "no_skill_honest_baseline",
+      "baseline_mode": "consultative_sales_framework",
+      "with_s03_skill_citations": [
+        "aSFAve1klsc-v2-0009",
+        "cL3FuW8bAMA-v2-0005",
+        "qohJceyapS0-v2-0010",
+        "L7u7r6rOl68-v2-0009",
+        "TOW0sWhPaZw-v2-0011"
+      ],
+      "strategy_pack_json": "data\\exports\\strategy_pack_s09_vsl_002_2026-07-08.json",
+      "strategy_pack_md": "data\\exports\\strategy_pack_s09_vsl_002_2026-07-08.md",
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "vsl_specific_logic_kept_in_skill": true
+      }
+    },
+    {
+      "pair_id": "S09-VSL-003",
+      "briefing_id": "financas-cheque-especial",
+      "option_a_source": "with_s03_skill",
+      "option_b_source": "no_skill_honest_baseline",
+      "baseline_mode": "story_first_finance",
+      "with_s03_skill_citations": [
+        "zoChfFHnlOQ-v2-0002",
+        "aSFAve1klsc-v2-0009",
+        "cL3FuW8bAMA-v2-0005",
+        "qohJceyapS0-v2-0010",
+        "aSFAve1klsc-v2-0002"
+      ],
+      "strategy_pack_json": "data\\exports\\strategy_pack_s09_vsl_003_2026-07-08.json",
+      "strategy_pack_md": "data\\exports\\strategy_pack_s09_vsl_003_2026-07-08.md",
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "vsl_specific_logic_kept_in_skill": true
+      }
+    },
+    {
+      "pair_id": "S09-VSL-004",
+      "briefing_id": "violao-assinatura-adultos",
+      "option_a_source": "no_skill_honest_baseline",
+      "option_b_source": "with_s03_skill",
+      "baseline_mode": "community_subscription_pitch",
+      "with_s03_skill_citations": [
+        "8WEvN5T7J0U-v2-0002",
+        "qohJceyapS0-v2-0010",
+        "TOW0sWhPaZw-v2-0006",
+        "zoChfFHnlOQ-v2-0008",
+        "L7u7r6rOl68-v2-0009"
+      ],
+      "strategy_pack_json": "data\\exports\\strategy_pack_s09_vsl_004_2026-07-08.json",
+      "strategy_pack_md": "data\\exports\\strategy_pack_s09_vsl_004_2026-07-08.md",
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "vsl_specific_logic_kept_in_skill": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+pair_id,briefing_id,niche,briefing,output_a,output_b,clarity_score,curiosity_score,specificity_score,mechanism_belief_score,proof_score,objection_handling_score,offer_bridge_score,base_usage_score,winner_or_tie,judge_notes
+S09-VSL-001,doces-saude-comportamental,saude comportamental / emagrecimento responsavel,"Produto: programa online de 6 semanas para mulheres 35+ reduzirem compulsao por doces a noite usando rotina alimentar simples e acompanhamento semanal. Avatar: mulher ocupada, cetica apos dietas restritivas, que sente culpa no fim do dia. Mercado: saude comportamental e emagrecimento responsavel. Nivel de consciencia: consciente do problema, cetica sobre promessas rapidas. Objetivo: VSL curta de trafego frio que construa crenca no mecanismo e leve para oferta de entrada. Restricoes: sem promessa medica, sem perda de peso garantida, sem linguagem de cura.","Lead:
+Voce sente que ate consegue se controlar durante o dia, mas perde o controle quando a noite chega? Isso acontece com muitas mulheres que estao cansadas, pressionadas e tentando seguir regras alimentares dificeis demais.
+
+Apresentacao do problema:
+O doce da noite quase nunca e apenas vontade de doce. Ele pode ser um sinal de ansiedade, cansaco, fome mal distribuida ou falta de uma alternativa concreta para relaxar. O erro comum e responder a isso com culpa e restricao.
+
+Nova abordagem:
+Neste programa de 6 semanas, voce vai aprender a observar o seu padrao, organizar melhor as refeicoes e criar pequenas acoes para reduzir os episodios de exagero. O foco nao e perfeicao. O foco e consistencia.
+
+Como funciona:
+Toda semana voce recebe uma orientacao simples, aplica na sua rotina e acompanha o que mudou. Voce tambem aprende a reconhecer os principais gatilhos: chegar em casa exausta, ficar muito tempo sem comer, descontar o estresse na comida ou transformar um deslize em abandono total.
+
+Prova e seguranca:
+A proposta e educativa e comportamental. Nao prometemos cura, emagrecimento garantido ou resultado medico. A ideia e ajudar voce a criar um plano mais realista para lidar com a noite.
+
+Objecoes:
+Se voce ja tentou dieta e falhou, talvez voce nao precise de outra dieta. Talvez precise de um processo menos radical. Se voce acha que nao tem disciplina, o programa mostra como comecar com pequenos ajustes, nao com uma mudanca brusca.
+
+Oferta:
+O programa inclui aulas curtas, atividades semanais e acompanhamento para adaptar os passos ao seu dia.
+
+CTA:
+Clique para conhecer o programa e veja se essa abordagem combina com o seu momento.","Lead:
+Se voce chega em casa dizendo que hoje vai ser diferente e, mesmo assim, termina a noite procurando doce, talvez o problema nao seja falta de carater. Talvez o seu dia esteja montado para empurrar voce para esse momento.
+
+Problema:
+A maioria das mulheres tenta resolver isso com uma regra mais dura: cortar tudo, compensar no dia seguinte ou recomecar na segunda. Mas essa regra aparece justamente quando voce esta cansada, com fome acumulada e usando o doce como pausa.
+
+Mecanismo do problema:
+O ciclo costuma ter tres partes: um dia controlado demais, uma tarde sem refeicao util e uma noite em que o corpo cobra alivio rapido. Quando isso se repete, o doce vira recompensa, descanso e fuga ao mesmo tempo.
+
+Mecanismo da solucao:
+O programa trabalha com o Ritual de Fechamento Alimentar: uma sequencia simples para preparar o fim do dia antes do pico de vontade. Em vez de depender de forca de vontade as 22h, voce aprende a ajustar a ultima refeicao util, criar uma recompensa planejada e medir o gatilho real de cada noite.
+
+Prova:
+A demonstracao da VSL mostra duas noites da mesma pessoa. Na primeira, ela chega sem plano e belisca ate dormir. Na segunda, ela usa o ritual antes do cansa?o bater. A promessa nao e cura nem perda de peso garantida. E mostrar que uma rotina mais previsivel reduz improviso.
+
+Objecoes:
+""Eu ja tentei dieta"" vira uma vantagem: voce ja sabe que regra impossivel nao sustenta comportamento. ""E se eu falhar?"" entra como dado para ajuste semanal, nao como culpa.
+
+Ponte de oferta:
+Se o problema e a rotina de fim de dia, assistir a mais um conteudo solto nao resolve. O proximo passo e montar o seu ritual, testar por alguns dias e ajustar com acompanhamento.
+
+CTA:
+Clique para ver a primeira semana do programa. Entre apenas se fizer sentido para a sua rotina e procure orientacao profissional se voce tem condicao medica ou historico de transtorno alimentar.",tie,B,B,B,B,B,B,B,B,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] Vence B. Ambos claros e com controle de claim honesto (sem cura/perda garantida), por isso clarity empata. B ganha o resto: nomeia mecanismo do problema (ciclo de 3 partes) e da solucao (Ritual de Fechamento Alimentar), prova por demonstracao concreta (duas noites da mesma pessoa), reframe forte de objecao (""ja tentei dieta"" vira vantagem) e ponte de oferta explicita (conteudo solto nao resolve). A e competente porem generico no mecanismo (""observar padrao, organizar refeicoes""). RESSALVA DE LIMPEZA: output B tem ""cansa?o"" (deveria ser ""cansaco"") - artefato de stripping que passa no scan ASCII mas e palavra quebrada; corrigir antes de aprovar a skill em definitivo se B for a versao com skill."
+S09-VSL-002,b2b-propostas-diagnosticas,servicos B2B / consultoria,"Produto: workshop B2B para consultores independentes transformarem diagnosticos em propostas mais claras e vendaveis. Avatar: consultor que gera boas conversas, mas perde no fechamento quando o cliente pede proposta e some. Mercado: servicos B2B e consultoria. Nivel de consciencia: solution-aware, sabe que precisa melhorar vendas mas rejeita script agressivo. Objetivo: VSL para inscricao em workshop de R$ 497. Restricoes: sem prometer fechamento garantido ou resultado financeiro especifico.","Lead:
+Se o cliente elogia sua reuniao, pede proposta e depois desaparece, talvez o problema nao esteja no preco. Pode estar no fato de que ele saiu da conversa sem sentir o custo de continuar igual.
+
+Problema:
+Muitos consultores fazem diagnosticos tecnicamente bons, mas entregam uma proposta que parece lista de entregaveis. O cliente ve horas, etapas e escopo. Ele nao ve decisao.
+
+Uma crenca:
+A venda consultiva nao acontece quando voce explica tudo o que faz. Ela acontece quando o cliente entende qual problema precisa decidir agora e por que a sua entrega e o caminho mais concreto para essa decisao.
+
+Mecanismo do problema:
+A proposta comum pula do diagnostico para o pacote. Falta construir o produto na cabeca do cliente: que risco sera reduzido, que gargalo sera atacado, que mudanca sera mensuravel e por que isso nao e apenas mais uma consultoria.
+
+Mecanismo da solucao:
+O workshop ensina o Diagnostico de Decisao. Primeiro, voce transforma sintomas em um problema de negocio. Depois, organiza a proposta em tres blocos: custo de inacao, caminho de intervencao e evidencia de prioridade.
+
+Prova:
+Na VSL, mostramos uma proposta antes e depois. Antes: ""mentoria estrategica mensal"". Depois: ""90 dias para reduzir perda de oportunidades no follow-up comercial, com mapa de decisao, rotina de revisao e indicadores de avanco"". A diferenca nao e enfeite; e tangibilidade.
+
+Objecoes:
+""Nao quero parecer vendedor"". Justamente por isso o metodo evita pressao e melhora clareza. ""Meu servico e complexo"". Quanto mais complexo, mais a proposta precisa mostrar decisao, nao despejar detalhes.
+
+Ponte de oferta:
+Se voce ja consegue gerar conversas boas, o gargalo nao e aprender um script pronto. E transformar o diagnostico em uma proposta que o cliente consiga defender internamente.
+
+CTA:
+Entre no workshop, reescreva uma proposta real durante a aula e saia com uma versao pronta para revisar com o proximo cliente.","Lead:
+Voce faz uma boa reuniao, sente que o cliente gostou, envia a proposta e depois recebe silencio? Isso e frustrante porque parece que tudo estava encaminhado, mas a decisao some no meio do caminho.
+
+Diagnostico:
+Na maioria das vezes, a proposta nao comunica valor com a mesma forca da conversa. O consultor explica escopo, horas, etapas e metodologia, mas o cliente nao consegue enxergar com clareza o que muda no negocio dele.
+
+Metodo:
+O workshop mostra como criar uma proposta B2B mais convincente em quatro partes: contexto do cliente, problema principal, plano de acao e proximos passos. A ideia nao e usar manipulacao, e sim organizar melhor a mensagem.
+
+Desenvolvimento:
+Voce vai aprender a abrir a proposta recapitulando o problema, mostrar por que ele importa, apresentar a solucao em blocos simples e fechar com um plano de implementacao. Tambem vamos trabalhar follow-up, porque muitos consultores deixam a decisao esfriar.
+
+Prova:
+Durante a aula, usamos exemplos de propostas genericas e transformamos em propostas mais claras. O foco e mostrar como pequenos ajustes de linguagem e estrutura podem aumentar a percepcao de valor.
+
+Objecoes:
+Se voce acha que vendas nao e sua praia, o workshop foi criado para uma abordagem consultiva. Se voce tem medo de prometer demais, tambem vamos tratar de limites, premissas e criterios de sucesso.
+
+Oferta:
+O workshop custa R$ 497 e inclui aula ao vivo, modelo de proposta e exercicio guiado.
+
+CTA:
+Clique para se inscrever e traga uma proposta real para melhorar durante o workshop.",tie,A,A,A,A,tie,A,A,A,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] Vence A. Baseline B e honesto e bem organizado (proposta em 4 partes), por isso clarity e objection_handling empatam. A ganha o nucleo: mecanismo nomeado (Diagnostico de Decisao, 3 blocos), prova por antes/depois concreto de proposta reescrita (""mentoria estrategica mensal"" -> ""90 dias para reduzir perda no follow-up...""), lead com custo de inacao e ponte melhor (gargalo nao e script pronto). B fica vago na prova (""exemplos de propostas genericas"") e sem mecanismo nomeado."
+S09-VSL-003,financas-cheque-especial,financas pessoais,"Produto: curso de organizacao financeira para adultos sairem do ciclo de cheque especial e atraso sem promessa de enriquecimento. Avatar: adulto endividado que tem medo de olhar a conta, ja tentou planilhas e sente vergonha de pedir ajuda. Mercado: financas pessoais. Nivel de consciencia: problem-aware, evita o tema por ansiedade. Objetivo: VSL evergreen para produto de entrada. Restricoes: sem promessa de quitacao garantida, investimento ou enriquecimento.","Lead:
+Se voce evita abrir o aplicativo do banco porque tem medo do numero que vai aparecer, a sua vida financeira nao esta quebrada por falta de planilha. Ela esta quebrada porque voce perdeu o ponto de decisao.
+
+Problema:
+A maioria das pessoas tenta organizar dinheiro com uma planilha perfeita. Mas a planilha chega tarde: depois que o limite ja foi usado, a fatura ja fechou e a vergonha ja fez voce adiar o assunto por mais uma semana.
+
+Uma crenca:
+Voce nao precisa virar investidor agora. Primeiro, precisa recuperar clareza sobre os tres vazamentos que mantem o cheque especial vivo: data, impulso e silencio.
+
+Mecanismo do problema:
+O ciclo acontece assim: voce evita olhar a conta, usa o limite como anestesia, perde a data real das contas e so percebe quando a taxa ja virou parte do mes. O problema nao e so gastar. E nao ter um ritual curto de decisao antes da proxima saida de dinheiro.
+
+Mecanismo da solucao:
+O curso usa o Mapa dos 3 Vazamentos. Em 20 minutos por semana, voce identifica qual dinheiro ja tem destino, qual gasto precisa de trava e qual conversa financeira precisa acontecer antes de virar atraso.
+
+Prova:
+A VSL mostra uma simulacao com uma pessoa que ganha o mesmo salario nos dois cenarios. No primeiro, ela so olha o saldo depois do susto. No segundo, ela faz o mapa antes do debito automatico e decide o que cortar, renegociar ou pausar. Nao prometemos quitar divida nem enriquecer. Mostramos uma forma concreta de voltar a decidir.
+
+Objecoes:
+""Eu ja tentei planilha"". Este curso comeca antes da planilha, no ritual de olhar e decidir. ""Tenho vergonha"". Por isso o processo e individual, simples e sem exposicao publica.
+
+Ponte de oferta:
+Se o primeiro problema e evitar a realidade, mais informacao solta nao resolve. O proximo passo e montar o seu mapa, repetir por algumas semanas e recuperar previsibilidade.
+
+CTA:
+Clique para entrar no curso e comece pela aula de 20 minutos do primeiro mapa. Use como educacao financeira; se sua situacao exige aconselhamento juridico ou renegociacao especializada, busque ajuda profissional.","Lead:
+Voce sabe que precisa organizar sua vida financeira, mas so de pensar em abrir o banco ja sente ansiedade? Voce nao esta sozinho. Muita gente entra no cheque especial nao porque quer, mas porque perdeu o controle das datas, dos gastos e das prioridades.
+
+Historia:
+Imagine uma pessoa que promete todo mes que agora vai se organizar. Ela baixa uma planilha, anota algumas contas, mas depois esquece de atualizar. Quando percebe, a fatura chegou, o saldo acabou e o limite virou parte da renda.
+
+Virada:
+O curso foi criado para ajudar voce a sair desse modo de sobrevivencia. Em vez de comecar por investimentos ou formulas complicadas, ele comeca pelo basico: entender para onde o dinheiro esta indo, separar contas urgentes e criar um plano realista para as proximas semanas.
+
+Metodo:
+Voce aprende a listar dividas, organizar vencimentos, reduzir pequenos vazamentos e criar uma rotina semanal de verificacao. Tambem recebe modelos simples para acompanhar o progresso sem depender de planilhas complexas.
+
+Prova:
+O conteudo usa exemplos praticos de orcamentos apertados e mostra como pequenas decisoes podem melhorar a clareza financeira. Nao existe promessa de quitacao garantida, mas existe um caminho para parar de fugir do problema.
+
+Objecoes:
+Se voce tem vergonha, saiba que o curso e feito para estudar em casa. Se voce acha que nao entende de numeros, as aulas sao diretas e usam linguagem simples.
+
+Oferta:
+O curso inclui aulas curtas, material de apoio e um passo a passo para montar sua primeira organizacao financeira.
+
+CTA:
+Clique para conhecer o curso e comece pela primeira aula ainda hoje.",tie,A,A,A,A,tie,A,A,A,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] Vence A. Baseline B claro e empatico (clarity e objection empatam). A ganha o nucleo: mecanismo nomeado (Mapa dos 3 Vazamentos: data, impulso, silencio), prova por simulacao de dois cenarios com mesmo salario, claim control (nao promete quitar nem enriquecer) e safety de aconselhamento profissional. B e generico (""comeca pelo basico"") e vago na prova."
+S09-VSL-004,violao-assinatura-adultos,educacao musical / assinatura,"Produto: assinatura de violao para adultos iniciantes que sabem acordes soltos mas travam para tocar musicas completas. Avatar: adulto 30+ que comprou curso, pratica sozinho, se frustra e abandona por falta de progresso percebido. Mercado: educacao musical por assinatura. Nivel de consciencia: produto-aware, ja tentou aulas soltas. Objetivo: VSL pos-lead-magnet para assinatura mensal. Restricoes: sem prometer talento rapido ou performance profissional.","Lead:
+Voce ja tentou aprender violao, decorou alguns acordes, mas ainda nao consegue tocar uma musica inteira com seguranca? Isso e mais comum do que parece, principalmente para adultos que estudam sozinhos.
+
+Problema:
+O aprendizado fica confuso porque existem muitas aulas soltas. Uma ensina acorde, outra ensina ritmo, outra ensina teoria. No fim, voce sabe um pouco de cada coisa, mas nao sente que esta tocando de verdade.
+
+Solucao:
+A assinatura foi criada para dar continuidade. Em vez de comprar cursos isolados, voce segue uma trilha mensal com musicas, exercicios e orientacoes para evoluir passo a passo.
+
+Como funciona:
+Todo mes voce recebe novas aulas, desafios de pratica e sugestoes de repertorio. A ideia e aprender com musicas reais, com versoes adaptadas para o seu nivel. Voce tambem pode repetir as aulas e acompanhar seu avanco ao longo do tempo.
+
+Prova:
+O metodo usa progresso gradual. Primeiro voce toca uma versao simples. Depois melhora trocas de acordes, ritmo e fluidez. Assim, cada musica vira um marco de aprendizado.
+
+Objecoes:
+Se voce acha que nao tem tempo, as praticas sao curtas. Se voce ja abandonou outros cursos, a assinatura ajuda porque sempre existe uma proxima aula e uma proxima musica para seguir.
+
+Oferta:
+A assinatura inclui biblioteca de aulas, trilhas por nivel e novos desafios mensais para adultos iniciantes.
+
+CTA:
+Clique para assinar e comece pela sua primeira musica guiada.","Lead:
+Se voce sabe meia duzia de acordes, mas trava quando tenta tocar uma musica inteira, o problema talvez nao seja falta de dom. Pode ser que voce esteja treinando pedacos que nunca se juntam.
+
+Problema:
+O adulto iniciante costuma estudar como se tivesse tempo infinito: um acorde hoje, uma batida amanha, uma escala solta no fim de semana. Isso da sensacao de estudo, mas nao cria progresso percebido. Sem musica completa, a motivacao evapora.
+
+Uma crenca:
+Voce nao precisa aprender tudo antes de tocar. Voce precisa de um ciclo que transforme tecnica pequena em musica inteira o quanto antes.
+
+Mecanismo do problema:
+A aula solta separa conhecimento de aplicacao. Voce aprende G, D e Em, mas nao sabe quando trocar, como simplificar a batida ou como escolher uma musica que caiba no seu nivel.
+
+Mecanismo da solucao:
+A assinatura usa o Ciclo Musica Inteira: toda semana voce recebe uma musica nivelada, um ajuste tecnico minimo e uma missao de execucao. O foco nao e virar profissional rapido. E acumular provas de progresso.
+
+Prova:
+A VSL mostra o mesmo aluno em dois caminhos. No primeiro, ele pratica acordes soltos por 30 dias. No segundo, ele toca uma versao simplificada de uma musica real na primeira semana e melhora a batida na segunda. A prova e a progressao visivel, nao uma promessa de talento.
+
+Objecoes:
+""Eu nao tenho tempo"". Por isso a assinatura trabalha com ciclos curtos. ""Eu ja comprei curso e parei"". Curso parado entrega biblioteca; assinatura precisa entregar proxima musica, proxima missao e feedback de continuidade.
+
+Ponte de oferta:
+Se o seu problema e abandonar antes de sentir progresso, comprar mais aulas soltas repete o ciclo. A assinatura existe para manter voce dentro de uma sequencia tocavel.
+
+CTA:
+Clique para entrar, escolha sua primeira musica nivelada e comece pela versao simplificada. O objetivo deste mes e terminar uma musica, nao provar que voce nasceu talentoso.",tie,B,B,B,B,B,B,B,B,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] Vence B. Ambos claros (clarity empata). B ganha o resto: mecanismo nomeado (Ciclo Musica Inteira), prova por dois caminhos do mesmo aluno (acordes soltos 30 dias vs musica simplificada na semana 1) e - decisivo para assinatura - reframe curso-vs-assinatura (""curso parado entrega biblioteca; assinatura precisa entregar proxima musica e missao""), que sustenta retencao. A e competente mas generico no mecanismo e na prova."
