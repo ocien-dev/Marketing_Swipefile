@@ -18,6 +18,24 @@ description: Use this Marketing Swipe File process skill to create or critique _
 6. Do not treat this skill as production-ready until the checklist in
    `skill.contract.json` is `pass` for all required checks.
 
+## Transversal Modules
+
+Before writing a process-specific playbook, check whether the skill needs
+shared copy modules from `skills/_modules/msf-transversal-copy/`.
+
+- Import `transversal:mecanismo-big-idea` when the output needs belief,
+  mechanism, promise logic, or a causal bridge.
+- Import `transversal:prova-depoimentos` when the output needs proof,
+  testimonials, expert authority, credibility, or claim-risk control.
+- Reference the module path instead of copying shared module playbook content
+  into this skill.
+- When importing both transversal modules, count evidence by unique
+  `insight_id`; known overlap ids `zoChfFHnlOQ-v2-0008` and
+  `mCaFyZpXJdE-v2-0011` count once, not once per module.
+- Keep process-specific logic such as quiz flow, low-ticket offer mechanics,
+  and CTA sequencing inside this skill. Transversal modules only support
+  principle-level claims.
+
 ## Writing Policy
 
 - Internal playbook, retrieval notes, contract fields, and editorial summaries

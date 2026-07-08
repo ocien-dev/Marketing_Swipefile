@@ -13,6 +13,7 @@
     "source_layer",
     "citation_policy",
     "writing_policy",
+    "module_inheritance_policy",
     "required_files",
     "validation_checklist"
   ],
@@ -76,6 +77,38 @@
         },
         "final_outputs": {
           "const": "pt_br_full_accents"
+        }
+      }
+    },
+    "module_inheritance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_counting",
+        "known_overlap_insight_ids",
+        "scope_boundary"
+      ],
+      "properties": {
+        "evidence_counting": {
+          "const": "dedupe_insight_id_across_imported_modules"
+        },
+        "known_overlap_insight_ids": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "zoChfFHnlOQ-v2-0008"
+            },
+            {
+              "const": "mCaFyZpXJdE-v2-0011"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "scope_boundary": {
+          "const": "process_specific_logic_stays_in_skill_transversal_claims_stay_principle_level"
         }
       }
     },

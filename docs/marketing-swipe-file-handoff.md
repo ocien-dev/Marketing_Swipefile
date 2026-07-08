@@ -75,7 +75,7 @@ Ja existe um MVP local operavel em arquivos:
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: Gate R1, Gate R2 e Gate R3 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. MSF-R11/MSF-R12/MSF-R13 estao done; o owner manteve a amostra R12 conforme as indicacoes, e a revisao tecnica externa aprovou R3. MSF-S esta destravado; MSF-S01 e MSF-S02 estao done. A proxima sessao MSF-S deve seguir para MSF-S08 e entao para a primeira skill real em ordem de densidade. Nao iniciar backfill MSF-R14, Supabase ou MCP antes da ordem pos-R3 acordada; antes do backfill, reabrir MSF-R03.
+Importante: Gate R1, Gate R2 e Gate R3 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. MSF-R11/MSF-R12/MSF-R13 estao done; o owner manteve a amostra R12 conforme as indicacoes, e a revisao tecnica externa aprovou R3. MSF-S esta destravado; MSF-S01, MSF-S02 e MSF-S08 estao done. MSF-S04 esta liberado como proxima skill real. Nao iniciar backfill MSF-R14, Supabase ou MCP antes da ordem pos-R3 acordada; antes do backfill, reabrir MSF-R03.
 
 ## Politica De Escrita Por Camada
 
@@ -186,6 +186,7 @@ Busca e outputs:
 - `scripts/evaluate_output.py`
 - `scripts/create_process_skill.py`
 - `scripts/validate_process_skill.py`
+- `scripts/validate_transversal_modules.py`
 
 Helpers:
 
@@ -238,7 +239,7 @@ Comece com este briefing:
 ```text
 Estou no projeto Marketing Swipe File em C:\Users\luish\OneDrive\Code\Marketing_Swipe_File.
 Leia docs/marketing-swipe-file-handoff.md, README.md, docs/execution-log.md e docs/marketing-swipe-file-full-backlog.md.
-Continue a partir do EPIC MSF-S: MSF-S01 e MSF-S02 estao done. Existe template instanciavel em skills/_templates/msf-process-skill/, schema em schemas/msf_process_skill_contract.schema.json e retrieval por process_tags em scripts/search_insights.py e scripts/generate_strategy_pack.py usando curated_insights como fonte default. Proximo passo: MSF-S08 (modulos transversais mecanismo-big-idea e prova-depoimentos) e depois primeira skill real da leva em ordem de densidade. Nao inicie MSF-R14 backfill, Supabase ou MCP antes da ordem pos-R3 acordada; antes do backfill MSF-R14, reabra MSF-R03.
+Continue a partir do EPIC MSF-S: MSF-S01, MSF-S02 e MSF-S08 estao done. MSF-S08 aprovou os modulos transversais em skills/_modules/msf-transversal-copy/ e o relatorio de auditoria em docs/msf-s08-transversal-modules-review-2026-07-07.md. Proximo passo: MSF-S04, skill construcao-oferta, como primeira skill real. Nao inicie MSF-R14 backfill, Supabase ou MCP antes da ordem pos-R3 acordada; antes do backfill MSF-R14, reabra MSF-R03.
 ```
 
 Use este Python local, porque `python` pode nao estar no PATH:
@@ -381,8 +382,8 @@ Use `--start-priority` para pular blocos ja tentados e `--max-attempts` para rod
 
 Prioridade imediata:
 
-1. Executar MSF-S08: definir os modulos transversais `process-mecanismo-big-idea` e `process-prova-depoimentos` para consumo por S03-S07.
-2. Instanciar a primeira skill real da leva com `scripts/create_process_skill.py`, em ordem de densidade: S04 oferta, S03 VSL, S05 anuncios, S06 low ticket, S07 quiz.
+1. Instanciar MSF-S04, skill construcao-oferta, como primeira skill real da leva com `scripts/create_process_skill.py`.
+2. Depois de S04 validar o pipeline skill -> retrieval -> rubrica -> teste cego, seguir S03 VSL, S05 anuncios, S06 low ticket e S07 quiz.
 3. Incorporar as observacoes R3 nos proximos lotes: calibrar `editorial_score`, reescrever o titulo com sufixo `...em lateralizar`, e engordar `process-copy-anuncios` no backfill.
 4. Antes do backfill MSF-R14 dos 508 chunks restantes, reabrir MSF-R03 como combinado.
 5. So depois voltar a escala, Supabase/MCP, triagem ampla de assets e ranking de strategy packs.
@@ -404,7 +405,7 @@ Para a Release 1 completa ainda faltam:
 - Supabase ainda nao foi criado.
 - MCP ainda nao foi criado.
 - Agentes especializados ainda nao foram criados.
-- MSF-S01/MSF-S02 estao done; MSF-S03..S13 continuam pendentes/bloqueados por dependencias proprias.
+- MSF-S01/MSF-S02/MSF-S08 estao done; MSF-S04 esta liberado como proxima skill real; MSF-S03/MSF-S05..S13 continuam pendentes/bloqueados por dependencias proprias.
 
 ## Observacoes Tecnicas
 

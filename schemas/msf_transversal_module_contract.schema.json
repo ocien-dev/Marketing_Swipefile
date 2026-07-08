@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/msf_transversal_module_contract.schema.json",
+  "title": "Marketing Swipe File Transversal Module Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "module_set_type",
+    "module_set_name",
+    "source_layer",
+    "citation_policy",
+    "writing_policy",
+    "audit_gate",
+    "required_files",
+    "modules"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "module_set_type": {
+      "const": "msf_transversal_copy_modules"
+    },
+    "module_set_name": {
+      "const": "msf-transversal-copy"
+    },
+    "source_layer": {
+      "const": "curated_insights"
+    },
+    "citation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "insight_claim",
+        "generic_practice"
+      ],
+      "properties": {
+        "insight_claim": {
+          "const": "[insight:<insight_id>]"
+        },
+        "generic_practice": {
+          "const": "[generic-practice]"
+        }
+      }
+    },
+    "writing_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "internal_playbook",
+        "evidence_quotes",
+        "final_outputs"
+      ],
+      "properties": {
+        "internal_playbook": {
+          "const": "ascii_nfkd"
+        },
+        "evidence_quotes": {
+          "const": "verbatim_utf8"
+        },
+        "final_outputs": {
+          "const": "pt_br_full_accents"
+        }
+      }
+    },
+    "audit_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_audit_required",
+        "status"
+      ],
+      "properties": {
+        "owner_audit_required": {
+          "const": true
+        },
+        "status": {
+          "enum": [
+            "ready_for_owner_audit",
+            "approved",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "required_files": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module_id",
+          "process_tag",
+          "file",
+          "import_as",
+          "status",
+          "consumed_by"
+        ],
+        "properties": {
+          "module_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+          },
+          "process_tag": {
+            "type": "string",
+            "pattern": "^process-[a-z0-9][a-z0-9-]*[a-z0-9]$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^modules/[a-z0-9][a-z0-9-]*\\.md$"
+          },
+          "import_as": {
+            "type": "string",
+            "pattern": "^transversal:[a-z0-9][a-z0-9-]*[a-z0-9]$"
+          },
+          "status": {
+            "enum": [
+              "ready_for_owner_audit",
+              "approved",
+              "blocked"
+            ]
+          },
+          "consumed_by": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^msf-process-[a-z0-9][a-z0-9-]*[a-z0-9]$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

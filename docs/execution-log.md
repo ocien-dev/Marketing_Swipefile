@@ -1126,3 +1126,39 @@ Decision state:
 External review:
 
 - Foundation MSF-S01/MSF-S02 approved after external review: tests pass, the template has the full required file set, the validator enforces placeholders/checklist contract, `writing_policy` is present in the contract, and retrieval defaults to curated insights with `--process-tags`.
+
+## 2026-07-07 - MSF-S08 transversal copy modules
+
+Implementation:
+
+- Created `skills/_modules/msf-transversal-copy/` as a shared module set, not as standalone active process skills.
+- Added `transversal:mecanismo-big-idea` for `process-mecanismo-big-idea`.
+- Added `transversal:prova-depoimentos` for `process-prova-depoimentos`.
+- Added `schemas/msf_transversal_module_contract.schema.json`.
+- Added `scripts/validate_transversal_modules.py`.
+- Added `tests/test_transversal_modules_contract.py`.
+- Updated the process-skill template so future S03-S07 skills import shared module files by reference instead of copying shared playbook content.
+- Added owner-audit packet: `docs/msf-s08-transversal-modules-review-2026-07-07.md`.
+
+Audit state:
+
+- Current local `curated_insights` coverage: 30 items for `process-mecanismo-big-idea` and 33 items for `process-prova-depoimentos`.
+- Both modules are declared consumable by S03-S07, satisfying the "at least two skills" S08 requirement.
+- External audit approved MSF-S08 on 2026-07-07: all 17 citations resolve to real `curated_insights`, carry the declared tag, and pass No Invention.
+- The mechanism/proof boundaries are approved.
+- `module.contract.json` now marks the module set and both modules as `approved`.
+- `schemas/msf_process_skill_contract.schema.json` and the process-skill template now carry `module_inheritance_policy` for S04+: deduplicate evidence counts by `insight_id` across imported modules, especially `zoChfFHnlOQ-v2-0008` and `mCaFyZpXJdE-v2-0011`, and keep process-specific logic in the process skill while transversal claims stay at principle level.
+- MSF-S08 is `done`.
+- MSF-S04 is released as the next real process skill; S03/S05-S07 remain after S04 validates the skill -> retrieval -> rubric -> blind-test pipeline.
+- No S04/S03-S07 process skill was started in this close-out.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- `.\.venv\Scripts\python.exe -B tests\test_transversal_modules_contract.py` -> `VALID transversal_modules_contract`.
+- Existing S01/S02 regressions still passed: `tests\test_process_skill_contract.py`, `tests\test_process_tag_retrieval.py`, and `tests\test_strategy_pack_diversity.py`.
+- Contract/schema JSON parse passed for process-skill and transversal-module schemas/contracts.
+- In-memory compile passed for the touched Python scripts.
+- Non-ASCII scan passed on the changed internal files.
+- `git diff --check` passed.
+- Smoke packs generated 8 selected insights for each transversal tag, and all selected insights contained the requested tag.

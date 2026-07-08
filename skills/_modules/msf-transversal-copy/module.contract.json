@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "module_set_type": "msf_transversal_copy_modules",
+  "module_set_name": "msf-transversal-copy",
+  "source_layer": "curated_insights",
+  "citation_policy": {
+    "insight_claim": "[insight:<insight_id>]",
+    "generic_practice": "[generic-practice]"
+  },
+  "writing_policy": {
+    "internal_playbook": "ascii_nfkd",
+    "evidence_quotes": "verbatim_utf8",
+    "final_outputs": "pt_br_full_accents"
+  },
+  "audit_gate": {
+    "owner_audit_required": true,
+    "status": "approved"
+  },
+  "required_files": [
+    "module.contract.json",
+    "module-index.md",
+    "retrieval.md",
+    "modules/mecanismo-big-idea.md",
+    "modules/prova-depoimentos.md"
+  ],
+  "modules": [
+    {
+      "module_id": "mecanismo-big-idea",
+      "process_tag": "process-mecanismo-big-idea",
+      "file": "modules/mecanismo-big-idea.md",
+      "import_as": "transversal:mecanismo-big-idea",
+      "status": "approved",
+      "consumed_by": [
+        "msf-process-construcao-oferta",
+        "msf-process-copy-vsl",
+        "msf-process-copy-anuncios",
+        "msf-process-produto-low-ticket",
+        "msf-process-quiz"
+      ]
+    },
+    {
+      "module_id": "prova-depoimentos",
+      "process_tag": "process-prova-depoimentos",
+      "file": "modules/prova-depoimentos.md",
+      "import_as": "transversal:prova-depoimentos",
+      "status": "approved",
+      "consumed_by": [
+        "msf-process-construcao-oferta",
+        "msf-process-copy-vsl",
+        "msf-process-copy-anuncios",
+        "msf-process-produto-low-ticket",
+        "msf-process-quiz"
+      ]
+    }
+  ]
+}

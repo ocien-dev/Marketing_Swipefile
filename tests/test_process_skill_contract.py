@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 import uuid
 from pathlib import Path
@@ -46,6 +47,21 @@ def test_process_skill_require_done_blocks_pending_checklist() -> None:
     assert any(error.startswith("checklist_not_pass=") for error in errors)
 
 
+def test_process_skill_template_records_module_inheritance_policy() -> None:
+    target = instantiate_process_skill(
+        slug="copy-vsl",
+        display_name="Copy VSL",
+        process_tags=["process-copy-vsl"],
+        output_root=workspace_case_dir(),
+        template_dir=DEFAULT_TEMPLATE_DIR,
+    )
+    contract = json.loads((target / "skill.contract.json").read_text(encoding="utf-8"))
+    policy = contract["module_inheritance_policy"]
+    assert policy["evidence_counting"] == "dedupe_insight_id_across_imported_modules"
+    assert policy["known_overlap_insight_ids"] == ["zoChfFHnlOQ-v2-0008", "mCaFyZpXJdE-v2-0011"]
+    assert policy["scope_boundary"] == "process_specific_logic_stays_in_skill_transversal_claims_stay_principle_level"
+
+
 def test_process_skill_validator_rejects_unresolved_placeholders() -> None:
     target = instantiate_process_skill(
         slug="copy-vsl",
@@ -67,5 +83,6 @@ def test_process_skill_validator_rejects_unresolved_placeholders() -> None:
 if __name__ == "__main__":
     test_process_skill_template_instantiates_and_validates()
     test_process_skill_require_done_blocks_pending_checklist()
+    test_process_skill_template_records_module_inheritance_policy()
     test_process_skill_validator_rejects_unresolved_placeholders()
     print("VALID process_skill_contract")

@@ -16,6 +16,14 @@
     "evidence_quotes": "verbatim_utf8",
     "final_outputs": "pt_br_full_accents"
   },
+  "module_inheritance_policy": {
+    "evidence_counting": "dedupe_insight_id_across_imported_modules",
+    "known_overlap_insight_ids": [
+      "zoChfFHnlOQ-v2-0008",
+      "mCaFyZpXJdE-v2-0011"
+    ],
+    "scope_boundary": "process_specific_logic_stays_in_skill_transversal_claims_stay_principle_level"
+  },
   "required_files": [
     "SKILL.md",
     "skill.contract.json",

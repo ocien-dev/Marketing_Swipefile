@@ -17,8 +17,8 @@ Este documento complementa:
   as camadas 6-8 do principio de execucao)
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
-MSF-S esta destravado. MSF-S01 e MSF-S02 estao done; o proximo passo e
-MSF-S08. Skill alimentada por base nao curada reproduz o defeito v1; usar
+MSF-S esta destravado. MSF-S01, MSF-S02 e MSF-S08 estao done; o proximo passo
+e MSF-S04. Skill alimentada por base nao curada reproduz o defeito v1; usar
 `curated_insights` como fonte candidata/default. Agentes so depois de skills
 validadas individualmente.
 
@@ -185,14 +185,24 @@ Dependencias: MSF-S01, MSF-S02.
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked`
+Status: `not_started`
 
 Escopo: skill `msf-process-construcao-oferta` (promessa, stack, bonus,
 garantia, nome; absorve precificacao como capitulo do playbook).
 
 Aceite: Definition of Done da secao 2.
 
-Dependencias: MSF-S01, MSF-S02.
+Dependencias: MSF-S01, MSF-S02, MSF-S08.
+
+Liberacao 2026-07-07:
+
+- MSF-S08 aprovado em auditoria externa; S04 e a primeira skill real da leva.
+- Deve importar `transversal:mecanismo-big-idea` e
+  `transversal:prova-depoimentos` por referencia quando aplicavel.
+- Deve deduplicar contagem de evidencia por `insight_id` ao importar ambos os
+  modulos, especialmente `zoChfFHnlOQ-v2-0008` e `mCaFyZpXJdE-v2-0011`.
+- Logica especifica de oferta, preco, stack, bonus, garantia e CTA fica na
+  skill S04; os modulos transversais ficam no nivel de principio.
 
 ### MSF-S05 - Skill: copy para anuncios
 
@@ -237,7 +247,7 @@ Dependencias: MSF-S01, MSF-S02.
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked`
+Status: `done`
 
 Escopo:
 
@@ -250,6 +260,26 @@ Aceite:
   duplicar conteudo de playbook.
 
 Dependencias: MSF-S02.
+
+Execucao 2026-07-07:
+
+- Criado o conjunto compartilhado em `skills/_modules/msf-transversal-copy/`;
+  os modulos nao sao skills isoladas.
+- Criados `transversal:mecanismo-big-idea` e
+  `transversal:prova-depoimentos`, cada um ligado ao `process_tag`
+  correspondente e declarado como consumivel por S03-S07.
+- Criado `schemas/msf_transversal_module_contract.schema.json`.
+- Criado `scripts/validate_transversal_modules.py` para validar contrato,
+  arquivos obrigatorios, tags ativas, citacoes, placeholders, ASCII interno e
+  consumo por pelo menos duas skills.
+- Criado `docs/msf-s08-transversal-modules-review-2026-07-07.md` como pacote
+  de auditoria do owner.
+- Auditoria externa aprovada em 2026-07-07: 17 citacoes resolvem para
+  `curated_insights` real, carregam a tag declarada, No Invention passa e as
+  fronteiras de mecanismo/prova estao corretas.
+- Contrato/template de skill atualizado com restricoes herdadas: deduplicar
+  contagem de evidencia por `insight_id` entre modulos e manter logica
+  processo-especifica dentro da skill.
 
 ### MSF-S09 - Validacao cega por skill
 
@@ -352,9 +382,10 @@ Dependencias: MSF-R16, MSF-S10.
 ## 5. Ordem executiva
 
 1. Gates R2 e R3 estao aprovados; MSF-S01 + MSF-S02 (fundacao) estao done.
-2. Proximo: MSF-S08 (modulos) -> S03..S07 em ordem de
-   densidade: S04 (oferta), S03 (VSL), S05 (anuncios), S06 (low ticket),
-   S07 (quiz).
+2. MSF-S08 esta aprovado; proximo passo e S04 (oferta) como primeira skill
+   real. Depois de S04 validar o pipeline skill -> retrieval -> rubrica ->
+   teste cego, seguir S03 (VSL), S05 (anuncios), S06 (low ticket), S07
+   (quiz).
 3. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
    retroalimentacao.
 4. Segunda leva (S12) quando o backfill e os assets da academy elevarem a

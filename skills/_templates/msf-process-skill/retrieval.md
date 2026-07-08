@@ -25,4 +25,12 @@ Selection rules:
 3. Prefer higher `editorial_score`, strong evidence, and specific operational
    takeaways.
 4. Use transversal tags only when they support the primary process output.
-5. Cite the `insight_id` for any rule imported into the playbook.
+5. Deduplicate evidence counts by `insight_id` across imported modules. Known
+   overlap ids `zoChfFHnlOQ-v2-0008` and `mCaFyZpXJdE-v2-0011` count once.
+6. Cite the `insight_id` for any rule imported into the playbook.
+7. Keep quiz, low-ticket, CTA, and other process-specific logic in the process
+   skill; transversal module claims stay at principle level.
+
+Transversal module recipes live in
+`skills/_modules/msf-transversal-copy/retrieval.md`. Import those recipes by
+reference; do not duplicate the shared module playbook in this skill.
