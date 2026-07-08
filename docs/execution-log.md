@@ -1067,3 +1067,23 @@ Validation:
 - Confirmed existing owner decisions/notes remained populated: 16 `aprovar`, 9 `aprovar_com_ajuste_evidencia`, 3 `revisar_antes_default`, 2 `mesclar_manter_um`; 30/30 notes populated.
 - `scripts/audit_insights_v2_text.py` passed on 261 v2 files and 43 generated CSV/MD exports; broken accent-deletion pattern hits: 0.
 - The Gate R3 approval remains valid; the corrected quotes are more readable than the reviewed export.
+
+## 2026-07-07 - Layered writing policy before MSF-S01
+
+Decision:
+
+- Owner formalized the writing policy after the R12 sample review and the CSV normalizer bug fix.
+- Internal layer uses ASCII only by Unicode NFKD transliteration when ASCII is required: data fields, ids, tags, titles, takeaways, repo docs, internal playbooks, and retrieval recipes. No character deletion.
+- Evidence quotes remain verbatim UTF-8 with accents in every artifact, including CSV exports written as `utf-8-sig`.
+- Final human-facing outputs (VSL, ads, quiz, emails, templates, and skill examples) must use full pt-BR accentuation and correct spelling.
+
+Implementation:
+
+- Registered the policy in `docs/marketing-swipe-file-handoff.md` and in the anatomy/acceptance of `docs/marketing-swipe-file-skills-backlog.md`.
+- Updated `docs/output-evaluation-rubric.md` and `scripts/evaluate_output.py`: MSF-R09 now emits `language_encoding_check`; known ASCII-stripping artifacts fail quality, and final pt-BR outputs without accented letters require revision before approval.
+- Centralized the accent-deletion wordlist in `scripts/msf_common.py` and kept `scripts/audit_insights_v2_text.py` using it across generated CSV/MD text.
+- Clarified scan scope in `loops/episode-processing.md`: non-ASCII scans apply to internal editorial fields and must not conflict with verbatim quotes or final pt-BR outputs.
+
+Next:
+
+- MSF-S01 and MSF-S02 remain `not_started` and will begin in a separate session, per owner instruction.

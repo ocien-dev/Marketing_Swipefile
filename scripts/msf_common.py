@@ -9,6 +9,41 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+BROKEN_ACCENT_DELETION_PATTERNS = [
+    "anotaes",
+    "cdigo",
+    "comeou",
+    "contedo",
+    "contm",
+    "difcil",
+    "edio",
+    "fcil",
+    "histrias",
+    "lanamento",
+    "mtodo",
+    "negcio",
+    "nvel",
+    "possvel",
+    "seleo",
+    "variaao",
+    "varivel",
+    "vdeo",
+    "vocs",
+]
+
+BROKEN_ACCENT_DELETION_RE = re.compile(
+    r"(?<!\w)("
+    + "|".join(re.escape(pattern) for pattern in BROKEN_ACCENT_DELETION_PATTERNS)
+    + r")(?!\w)",
+    re.IGNORECASE,
+)
+
+
+def broken_accent_deletion_matches(value: Any) -> list[str]:
+    text = "" if value is None else str(value)
+    return sorted({match.group(1).lower() for match in BROKEN_ACCENT_DELETION_RE.finditer(text)})
+
+
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as file:
         return json.load(file)
@@ -97,4 +132,3 @@ def first_evidence(insight: dict[str, Any]) -> dict[str, Any]:
     if isinstance(evidence_items, list) and evidence_items and isinstance(evidence_items[0], dict):
         return evidence_items[0]
     return {}
-

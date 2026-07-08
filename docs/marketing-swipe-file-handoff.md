@@ -77,6 +77,31 @@ Ja existe um MVP local operavel em arquivos:
 
 Importante: Gate R1, Gate R2 e Gate R3 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. MSF-R11/MSF-R12/MSF-R13 estao done; o owner manteve a amostra R12 conforme as indicacoes, e a revisao tecnica externa aprovou R3. MSF-S esta destravado; proxima sessao comeca por MSF-S01 e MSF-S02. Nao iniciar backfill MSF-R14, Supabase ou MCP antes da ordem pos-R3 acordada; antes do backfill, reabrir MSF-R03.
 
+## Politica De Escrita Por Camada
+
+Decisao do owner em 2026-07-07, motivada pela revisao da amostra R12 e pelo
+bug corrigido no export do CSV de revisao:
+
+- Camada interna: dados, ids, tags, titulos, takeaways, campos editoriais,
+  docs do repo, playbooks internos e receitas de retrieval usam ASCII por
+  transliteracao Unicode NFKD quando precisarem representar portugues sem
+  acentos. Acento vira letra base (`variacao`, `contem`, `incrivel`). Nunca
+  usar ASCII `errors=ignore` como delecao de caractere. Nao reescrever a base
+  existente por causa desta regra; ela ja foi verificada como integra.
+- Quotes de evidencia: sempre verbatim UTF-8 com acentos preservados, em
+  qualquer arquivo. CSVs de revisao humana devem ser gravados como
+  `utf-8-sig`.
+- Outputs finais: VSL, anuncios, quizzes, emails, templates e exemplos de
+  skill destinados a leitura humana devem sair em portugues com acentuacao
+  completa e ortografia correta.
+- Enforcement: o avaliador honesto de MSF-R09 deve reprovar qualidade quando
+  um output final em pt-BR sai sem caracteres acentuados e com sinais de
+  ASCII stripping ate correcao.
+- Scans non-ASCII de repo ou lote se aplicam a camada interna. Eles nao devem
+  conflitar com quotes verbatim nem com artefatos de output final em pt-BR
+  pleno. A wordlist de delecao de acentos em `scripts/audit_insights_v2_text.py`
+  vale para todo texto gerado como guarda permanente de regressao.
+
 ## Lote VTurb
 
 Lista em `data/input/youtube_urls.csv`:

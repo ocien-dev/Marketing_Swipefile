@@ -18,7 +18,15 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from msf_common import as_list, first_evidence, load_json, normalize_text, write_json, write_text
+from msf_common import (
+    as_list,
+    broken_accent_deletion_matches,
+    first_evidence,
+    load_json,
+    normalize_text,
+    write_json,
+    write_text,
+)
 
 
 KEYWORD_CRITERIA = {
@@ -280,11 +288,38 @@ def validate_criteria(artifact_type: str, criteria_scores: list[dict[str, Any]])
             raise SystemExit(f"Missing justification for {item.get('criterion')}")
 
 
-def decision_from_score(total: int, has_ids: bool, citation_fidelity: dict[str, Any]) -> str:
+def has_accented_letters(text: str) -> bool:
+    return any(ord(char) > 127 and char.isalpha() for char in text)
+
+
+def language_encoding_check(text: str) -> dict[str, Any]:
+    broken_patterns = broken_accent_deletion_matches(text)
+    has_accents = has_accented_letters(text)
+    if broken_patterns:
+        status = "fail"
+        notes = "Known accent-deletion artifacts detected in final output text."
+    elif not has_accents:
+        status = "needs_revision"
+        notes = "Final pt-BR output has no accented letters; verify full Portuguese accentuation before approval."
+    else:
+        status = "pass"
+        notes = "Final output preserves pt-BR accented text and has no known accent-deletion artifacts."
+    return {
+        "status": status,
+        "has_accented_letters": has_accents,
+        "broken_accent_patterns": broken_patterns,
+        "notes": notes,
+    }
+
+
+def decision_from_score(total: int, has_ids: bool, citation_fidelity: dict[str, Any], language_check: dict[str, Any]) -> str:
     unsupported = citation_fidelity.get("unsupported_or_overextended_claims") or []
     status = normalize_text(citation_fidelity.get("status"))
-    if not has_ids or status == "fail" or unsupported:
+    language_status = normalize_text(language_check.get("status"))
+    if not has_ids or status == "fail" or unsupported or language_status == "fail":
         return "fail"
+    if language_status == "needs_revision":
+        return "needs_revision"
     if total >= 32:
         return "pass"
     if total >= 22:
@@ -301,6 +336,7 @@ def build_honest_report(args: argparse.Namespace, text: str, keyword_check: dict
             "artifact_type": args.artifact_type,
             "artifact_path": str(args.output),
             "keyword_presence_check": keyword_check,
+            "language_encoding_check": language_encoding_check(text),
             "warning": "MSF-R09 final score was not produced because --judgment-json was not provided.",
         }
 
@@ -317,7 +353,8 @@ def build_honest_report(args: argparse.Namespace, text: str, keyword_check: dict
     if not isinstance(citation_fidelity, dict):
         raise SystemExit(f"Missing citation_fidelity object in {args.judgment_json}")
     total_score = sum(int(item["score"]) for item in criteria_scores)
-    decision = decision_from_score(total_score, bool(ids), citation_fidelity)
+    language_check = language_encoding_check(text)
+    decision = decision_from_score(total_score, bool(ids), citation_fidelity, language_check)
 
     legacy_score = args.legacy_score
     if legacy_score is None:
@@ -338,6 +375,7 @@ def build_honest_report(args: argparse.Namespace, text: str, keyword_check: dict
         "referenced_insight_ids": sorted(ids),
         "cited_insights": cited_insight_context(text, ids, index),
         "citation_fidelity": citation_fidelity,
+        "language_encoding_check": language_check,
         "criteria_scores": criteria_scores,
         "total_score": total_score,
         "max_score": len(criteria_scores) * 5,
@@ -379,6 +417,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"- Proxy score: {check['total_score']} / {check['max_score']}",
             f"- Proxy decision: {check['decision']}",
             f"- Referenced insight ids: {len(check['referenced_insight_ids'])}",
+            f"- Language encoding: {report['language_encoding_check']['status']}",
             "",
             "## Proxy Scores",
             "",
@@ -417,6 +456,14 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append("- Unsupported or overextended claims: none.")
     if fidelity.get("notes"):
         lines.append(f"- Notes: {fidelity['notes']}")
+    lines.extend(["", "## Language Encoding", ""])
+    language = report["language_encoding_check"]
+    lines.append(f"- Status: {language.get('status')}")
+    lines.append(f"- Has accented letters: {language.get('has_accented_letters')}")
+    patterns = language.get("broken_accent_patterns") or []
+    lines.append(f"- Broken accent patterns: {', '.join(patterns) if patterns else 'none'}")
+    if language.get("notes"):
+        lines.append(f"- Notes: {language['notes']}")
     lines.extend(["", "## Keyword Presence Check", ""])
     check = report["keyword_presence_check"]
     lines.append(f"- Proxy score: {check['total_score']} / {check['max_score']} ({check['decision']})")

@@ -15,6 +15,7 @@
     "referenced_insight_ids",
     "cited_insights",
     "citation_fidelity",
+    "language_encoding_check",
     "criteria_scores",
     "total_score",
     "max_score",
@@ -247,6 +248,37 @@
           }
         },
         "unsupported_or_overextended_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "language_encoding_check": {
+      "type": "object",
+      "required": [
+        "status",
+        "has_accented_letters",
+        "broken_accent_patterns",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "needs_revision",
+            "fail"
+          ]
+        },
+        "has_accented_letters": {
+          "type": "boolean"
+        },
+        "broken_accent_patterns": {
           "type": "array",
           "items": {
             "type": "string"

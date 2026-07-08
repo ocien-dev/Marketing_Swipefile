@@ -11,6 +11,22 @@ An output that claims to use the base must include:
 - Evidence quotes in the strategy pack or source notes.
 - Warnings for weak or low-confidence insights.
 
+## Language And Encoding
+
+- Final human-facing outputs in Portuguese, including VSLs, ads, quizzes,
+  emails, templates, and skill examples, must use full pt-BR accentuation and
+  correct spelling.
+- If a final pt-BR output has no accented characters and also shows ASCII
+  stripping artifacts such as `contm`, `variaao`, `negcio`, `vdeo`,
+  `contedo`, `vocs`, `fcil`, `possvel`, `nvel`, or `mtodo`, quality fails
+  until corrected.
+- If a final pt-BR output has no accented characters but no known stripping
+  artifact, mark it `needs_revision` until full pt-BR accentuation is verified.
+- Evidence quotes remain verbatim UTF-8 and should not be normalized for the
+  evaluation report.
+- Internal playbooks, ids, tags, repo docs, and editorial data may use ASCII
+  only by Unicode NFKD transliteration, never by character deletion.
+
 ## VSL Criteria
 
 Score each from 0 to 5:

@@ -36,6 +36,25 @@ Cada skill e um diretorio `skills/msf-process-{slug}/` contendo:
    avaliador LLM do MSF-R09.
 5. `examples/`: 1+ exemplo real de briefing -> output aprovado.
 
+Politica de escrita por camada:
+
+- Camada interna: dados, ids, tags, titulos, takeaways, campos editoriais,
+  docs do repo, playbooks internos e receitas de retrieval usam ASCII por
+  transliteracao Unicode NFKD quando precisarem representar portugues sem
+  acentos. Acento vira letra base (`variacao`, `contem`, `incrivel`). Nunca
+  usar ASCII `errors=ignore` como delecao de caractere. A base existente nao
+  deve ser reescrita por causa desta regra; ela ja foi verificada como integra.
+- Quotes de evidencia: sempre verbatim UTF-8, com acentos preservados, em
+  qualquer arquivo. CSVs voltados a revisao humana devem ser gravados como
+  `utf-8-sig`.
+- Outputs finais: VSL, anuncios, quizzes, emails, templates e exemplos de
+  skill destinados a leitura humana devem sair em portugues com acentuacao
+  completa e ortografia correta.
+- Scans non-ASCII de repo ou lote so se aplicam a camada interna. Eles nao
+  devem reprovar quotes verbatim nem artefatos de output final em pt-BR pleno.
+- A wordlist de delecao de acentos em `scripts/audit_insights_v2_text.py`
+  vale para todo texto gerado como guarda permanente de regressao.
+
 Definition of Done de qualquer skill:
 
 - Gerou output real a partir de briefing de teste.
@@ -86,10 +105,15 @@ Escopo:
 - Criar template de diretorio de skill (secao 2) e schema/checklist de
   validacao de skill.
 - Definir formato da citacao de insight_id no playbook.
+- Declarar no contrato/template a politica de escrita por camada: playbook
+  interno ASCII por NFKD, quotes verbatim UTF-8 e templates/exemplos de output
+  em pt-BR pleno com acentuacao correta.
 
 Aceite:
 
 - Template instanciavel; checklist cobre o Definition of Done da secao 2.
+- Contrato de skill impede ASCII stripping e separa claramente playbook
+  interno, evidencia e output final.
 
 Dependencias: gates R1, R2 e R3 aprovados.
 

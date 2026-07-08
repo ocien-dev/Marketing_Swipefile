@@ -13,6 +13,7 @@
 - The old evaluator remains available only as `keyword_presence_check`.
 - Final score now requires a Codex-authored judgment JSON with criterion scores, justification, and citation-fidelity notes.
 - The script loads the output, briefing, cited `insight_id` values, strategy pack, and local insight masters to attach evidence context.
+- The report now includes `language_encoding_check`: final pt-BR outputs with known ASCII-stripping artifacts fail quality, and outputs with no accented letters require revision before approval.
 - Reports are validated as JSON before markdown rendering.
 
 ## Results

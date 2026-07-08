@@ -1,15 +1,14 @@
 #!/usr/bin/env python
-"""Audit editorial text fields in raw_insights_v2 payloads."""
+"""Audit internal editorial text and generated-text encoding artifacts."""
 
 from __future__ import annotations
 
 import argparse
-import re
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json, normalize_text
+from msf_common import broken_accent_deletion_matches, load_json, normalize_text
 
 
 EDITORIAL_FIELDS = [
@@ -19,36 +18,6 @@ EDITORIAL_FIELDS = [
     "when_to_use",
     "when_not_to_use",
 ]
-
-BROKEN_ACCENT_DELETION_PATTERNS = [
-    "anotaes",
-    "cdigo",
-    "comeou",
-    "contedo",
-    "contm",
-    "difcil",
-    "edio",
-    "fcil",
-    "histrias",
-    "lanamento",
-    "mtodo",
-    "negcio",
-    "nvel",
-    "possvel",
-    "seleo",
-    "variaao",
-    "varivel",
-    "vdeo",
-    "vocs",
-]
-
-BROKEN_ACCENT_DELETION_RE = re.compile(
-    r"(?<!\w)("
-    + "|".join(re.escape(pattern) for pattern in BROKEN_ACCENT_DELETION_PATTERNS)
-    + r")(?!\w)",
-    re.IGNORECASE,
-)
-
 
 def default_paths(processed_root: Path) -> list[Path]:
     paths = list(processed_root.glob("*/insights_v2.json"))
@@ -64,10 +33,6 @@ def default_generated_text_paths(exports_root: Path) -> list[Path]:
 
 def has_non_ascii(value: str) -> bool:
     return any(ord(char) > 127 for char in value)
-
-
-def broken_accent_deletion_matches(value: str) -> list[str]:
-    return sorted({match.group(1).lower() for match in BROKEN_ACCENT_DELETION_RE.finditer(value)})
 
 
 def audit_payload(path: Path) -> list[dict[str, Any]]:
@@ -107,16 +72,16 @@ def read_generated_text(path: Path) -> str:
 def audit_generated_text(path: Path) -> list[dict[str, Any]]:
     text = read_generated_text(path)
     findings: list[dict[str, Any]] = []
-    for match in BROKEN_ACCENT_DELETION_RE.finditer(text):
-        start = match.start()
-        line_number = text.count("\n", 0, start) + 1
-        excerpt_start = max(0, start - 50)
-        excerpt_end = min(len(text), match.end() + 50)
+    for pattern in broken_accent_deletion_matches(text):
+        start = text.lower().find(pattern)
+        line_number = text.count("\n", 0, start) + 1 if start >= 0 else 0
+        excerpt_start = max(0, start - 50) if start >= 0 else 0
+        excerpt_end = min(len(text), start + len(pattern) + 50) if start >= 0 else 0
         findings.append(
             {
                 "finding_type": "broken_accent_deletion",
                 "path": str(path),
-                "pattern": match.group(1),
+                "pattern": pattern,
                 "line": line_number,
                 "excerpt": " ".join(text[excerpt_start:excerpt_end].split()),
             }
