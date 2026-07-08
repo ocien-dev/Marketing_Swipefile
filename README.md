@@ -30,7 +30,7 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
-Current remediation guardrail: Gates R1, R2, and R3 are approved. EPIC MSF-S is unblocked and should start with MSF-S01/MSF-S02. Do not run the MSF-R14 backfill, Supabase, or MCP before the agreed post-R3 order; reopen MSF-R03 before any backfill.
+Current remediation guardrail: Gates R1, R2, and R3 are approved. EPIC MSF-S is unblocked; MSF-S01/MSF-S02 are complete, and the next MSF-S step is MSF-S08 before the first real process skill. Do not run the MSF-R14 backfill, Supabase, or MCP before the agreed post-R3 order; reopen MSF-R03 before any backfill.
 
 ## Local Data Policy
 
@@ -97,6 +97,8 @@ Current local state as of 2026-07-07:
 - MSF-R12 is complete: local ignored `data/exports/curated_insights.json` has 125 curated v2 items, and the owner accepted the 30-item review sample as filled.
 - MSF-R13 is complete: curated VSL/ads packs were regenerated, evaluated as support artifacts, and approved by external technical review.
 - Gate R3 is formally approved with three notes: calibrate compressed `editorial_score`, rewrite one boilerplate title suffix (`...em lateralizar`), and accept `process-copy-anuncios` coverage at 18 items for the first MSF-S pass.
+- MSF-S01 is complete: `skills/_templates/msf-process-skill/`, `schemas/msf_process_skill_contract.schema.json`, `scripts/create_process_skill.py`, and `scripts/validate_process_skill.py` define the process-skill contract/template.
+- MSF-S02 is complete: `scripts/search_insights.py` and `scripts/generate_strategy_pack.py` default to `curated_insights` and support `--process-tags` filters.
 
 Proof-of-value artifacts generated locally:
 
@@ -109,4 +111,4 @@ Proof-of-value artifacts generated locally:
 - `docs/curated-insights-r12-review-2026-07-07.md`: R12 curated lot summary.
 - `docs/strategy-pack-r13-comparison-2026-07-07.md`: R13 pack comparison and evaluator result.
 
-Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R3 is approved, so MSF-S is unblocked; MSF-R14 backfill, Supabase, and MCP remain later work.
+Important caveat: the old 39/40 and 37/40 scores do not prove value. Gate R3 is approved, MSF-S01/MSF-S02 are done, and MSF-R14 backfill, Supabase, and MCP remain later work.

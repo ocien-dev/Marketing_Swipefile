@@ -8,13 +8,38 @@ import json
 from pathlib import Path
 from typing import Any
 
-from msf_common import as_list, first_evidence, insight_text, load_json, normalize_text, tokens, write_json, write_text
+from msf_common import (
+    as_list,
+    first_evidence,
+    insight_text,
+    load_json,
+    matches_process_tags,
+    normalize_process_tags,
+    normalize_text,
+    tokens,
+    write_json,
+    write_text,
+)
+
+
+DEFAULT_MASTERS = {
+    "raw": Path("data/exports/insights_master.json"),
+    "v1": Path("data/exports/insights_master.json"),
+    "v2": Path("data/exports/insights_v2_master.json"),
+    "curated": Path("data/exports/curated_insights.json"),
+}
 
 
 def load_master(path: Path) -> list[dict[str, Any]]:
     payload = load_json(path)
     insights = payload.get("insights", [])
     return [item for item in insights if isinstance(item, dict)]
+
+
+def resolve_master_path(args: argparse.Namespace) -> Path:
+    if args.master:
+        return args.master
+    return DEFAULT_MASTERS[args.source]
 
 
 def contains_filter(values: list[Any], expected: str | None) -> bool:
@@ -40,6 +65,8 @@ def passes_filters(insight: dict[str, Any], args: argparse.Namespace) -> bool:
     if args.asset_id and normalize_text(insight.get("asset_id")) != normalize_text(args.asset_id):
         return False
     if args.applicability and not contains_filter(as_list(insight.get("applicability")), args.applicability):
+        return False
+    if not matches_process_tags(insight, args.process_tags, args.process_tag_mode):
         return False
     confidence = insight.get("confidence_score")
     confidence_value = float(confidence) if isinstance(confidence, (int, float)) else 0.0
@@ -80,6 +107,9 @@ def render_markdown(results: list[dict[str, Any]], args: argparse.Namespace) -> 
         "# Marketing Swipe File Search Results",
         "",
         f"- Query: {args.query or 'N/A'}",
+        f"- Source: {args.source}",
+        f"- Source path: {resolve_master_path(args)}",
+        f"- Process tags: {', '.join(args.process_tags) if args.process_tags else 'N/A'}",
         f"- Results: {len(results)}",
         "",
     ]
@@ -94,6 +124,7 @@ def render_markdown(results: list[dict[str, Any]], args: argparse.Namespace) -> 
                 f"- Episode: {insight.get('episode_video_id')} - {insight.get('episode_title')}",
                 f"- Level/type: {insight.get('level')} / {insight.get('insight_type')}",
                 f"- Themes: {themes}",
+                f"- Process tags: {', '.join(str(item) for item in as_list(insight.get('process_tags')))}",
                 f"- Confidence: {insight.get('confidence_score')}",
                 f"- Score: {insight.get('score')}",
                 "",
@@ -108,7 +139,8 @@ def render_markdown(results: list[dict[str, Any]], args: argparse.Namespace) -> 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--master", default=Path("data/exports/insights_master.json"), type=Path)
+    parser.add_argument("--master", type=Path, help="Override source master path.")
+    parser.add_argument("--source", choices=sorted(DEFAULT_MASTERS), default="curated", help="Source layer to use when --master is omitted.")
     parser.add_argument("--query", help="Text query")
     parser.add_argument("--theme", help="Filter by theme")
     parser.add_argument("--level", choices=["strategic", "tactical", "operational"])
@@ -117,16 +149,27 @@ def main() -> int:
     parser.add_argument("--episode", help="Filter by episode id or title")
     parser.add_argument("--asset-id", help="Filter by asset id")
     parser.add_argument("--applicability", help="Filter by applicability role")
+    parser.add_argument("--process-tags", nargs="+", help="Filter by process-* tags. Accepts repeated values or comma-separated lists.")
+    parser.add_argument("--process-tag-mode", choices=["any", "all"], default="any", help="Require any or all requested process tags.")
     parser.add_argument("--min-confidence", default=0.0, type=float)
     parser.add_argument("--limit", default=20, type=int)
     parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
     parser.add_argument("--output", type=Path, help="Optional output path")
     args = parser.parse_args()
+    args.process_tags = normalize_process_tags(args.process_tags)
 
-    insights = load_master(args.master)
+    insights = load_master(resolve_master_path(args))
     results = search(insights, args)
     if args.format == "json":
-        payload = {"query": args.query, "result_count": len(results), "results": results}
+        payload = {
+            "query": args.query,
+            "source": args.source,
+            "source_path": str(resolve_master_path(args)),
+            "process_tags": args.process_tags,
+            "process_tag_mode": args.process_tag_mode,
+            "result_count": len(results),
+            "results": results,
+        }
         if args.output:
             write_json(args.output, payload)
         print(json.dumps(payload, ensure_ascii=True, indent=2))
@@ -140,4 +183,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

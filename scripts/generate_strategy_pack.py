@@ -10,7 +10,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import as_list, first_evidence, jaccard, load_json, normalize_text, tokens, write_json, write_text
+from msf_common import (
+    as_list,
+    first_evidence,
+    jaccard,
+    load_json,
+    matches_process_tags,
+    normalize_process_tags,
+    normalize_text,
+    tokens,
+    write_json,
+    write_text,
+)
 
 
 DEFAULT_MASTERS = {
@@ -64,17 +75,17 @@ def theme_score(insight: dict[str, Any], desired_themes: list[str]) -> float:
 
 
 def keyword_score(insight: dict[str, Any], keywords: list[str], briefing_terms: set[str]) -> float:
-    text_terms = tokens(
-        " ".join(
-            [
-                str(insight.get("title") or ""),
-                str(insight.get("insight_ptbr") or ""),
-                " ".join(str(item) for item in as_list(insight.get("themes"))),
-                " ".join(str(item) for item in as_list(insight.get("applicability"))),
-            ]
-        )
+    source_text = " ".join(
+        [
+            str(insight.get("title") or ""),
+            str(insight.get("insight_ptbr") or ""),
+            " ".join(str(item) for item in as_list(insight.get("themes"))),
+            " ".join(str(item) for item in as_list(insight.get("applicability"))),
+        ]
     )
-    score = sum(1 for keyword in keywords if normalize_text(keyword) in " ".join(text_terms)) * 5
+    text_terms = tokens(source_text)
+    source_norm = normalize_text(source_text)
+    score = sum(1 for keyword in keywords if normalize_text(keyword) in source_norm) * 5
     score += len(text_terms & briefing_terms) * 3
     return score
 
@@ -115,8 +126,12 @@ def build_ranked_candidates(insights: list[dict[str, Any]], args: argparse.Names
     desired_themes = TASK_THEMES.get(task_key, [])
     keywords = TASK_KEYWORDS.get(task_key, [])
     briefing_terms = tokens(" ".join(str(value or "") for value in [args.product, args.avatar, args.market, args.asset_type, args.query]))
+    process_tags = getattr(args, "process_tags", []) or []
+    process_tag_mode = getattr(args, "process_tag_mode", "any")
     ranked = []
     for insight in insights:
+        if not matches_process_tags(insight, process_tags, process_tag_mode):
+            continue
         confidence = confidence_score(insight)
         if confidence < args.min_confidence:
             continue
@@ -272,6 +287,8 @@ def group_pack_items(insights: list[dict[str, Any]]) -> dict[str, list[dict[str,
 def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict[str, Any]:
     selected = rank_insights(insights, args)
     grouped = group_pack_items(selected)
+    process_tags = getattr(args, "process_tags", []) or []
+    process_tag_mode = getattr(args, "process_tag_mode", "any")
     open_questions = []
     if not selected:
         open_questions.append("A base ainda nao tem insights suficientes para esta tarefa. Rode extracao e consolide exports.")
@@ -281,6 +298,8 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
         open_questions.append("Poucos insights relevantes encontrados; expandir episodios ou baixar o limite de confianca pode ajudar.")
     if len(selected) < args.limit:
         open_questions.append("A diversidade/cap por episodio reduziu o top-N; revisar se o limite ou o cap devem ser ajustados.")
+    if process_tags and not selected:
+        open_questions.append("Nenhum insight curado encontrado para os process_tags pedidos; revisar tags ou aguardar novo lote curado.")
 
     return {
         "schema_version": "1.0",
@@ -288,6 +307,10 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
         "task": args.task,
         "source": args.source,
         "source_path": str(resolve_master_path(args)),
+        "process_tag_filter": {
+            "process_tags": process_tags,
+            "mode": process_tag_mode,
+        },
         "diversity": {
             "method": "mmr_jaccard",
             "diversity_weight": args.diversity_weight,
@@ -319,6 +342,8 @@ def render_markdown(pack: dict[str, Any]) -> str:
         f"- Avatar: {briefing.get('avatar') or 'N/A'}",
         f"- Market: {briefing.get('market') or 'N/A'}",
         f"- Asset type: {briefing.get('asset_type') or 'N/A'}",
+        f"- Source: {pack.get('source')} ({pack.get('source_path')})",
+        f"- Process tags: {', '.join(pack.get('process_tag_filter', {}).get('process_tags') or []) or 'N/A'}",
         f"- Results: {pack.get('result_count')}",
         "",
         "## Priority Insights",
@@ -357,7 +382,7 @@ def render_markdown(pack: dict[str, Any]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--master", type=Path, help="Override the source master path.")
-    parser.add_argument("--source", choices=sorted(DEFAULT_MASTERS), default="raw", help="Source layer to use when --master is omitted.")
+    parser.add_argument("--source", choices=sorted(DEFAULT_MASTERS), default="curated", help="Source layer to use when --master is omitted.")
     parser.add_argument("--task", required=True, help="Task type, e.g. vsl, anuncios, oferta, quiz")
     parser.add_argument("--product", help="Product or offer")
     parser.add_argument("--avatar", help="Target avatar")
@@ -365,6 +390,8 @@ def main() -> int:
     parser.add_argument("--asset-type", help="Desired output asset type")
     parser.add_argument("--query", help="Extra retrieval query")
     parser.add_argument("--constraints", help="Free-form constraints")
+    parser.add_argument("--process-tags", nargs="+", help="Filter by process-* tags. Accepts repeated values or comma-separated lists.")
+    parser.add_argument("--process-tag-mode", choices=["any", "all"], default="any", help="Require any or all requested process tags.")
     parser.add_argument("--min-confidence", default=0.0, type=float)
     parser.add_argument("--limit", default=20, type=int)
     parser.add_argument("--diversity-weight", default=0.3, type=float, help="MMR Jaccard diversity penalty, 0.0 to 1.0.")
@@ -373,6 +400,7 @@ def main() -> int:
     parser.add_argument("--output-json", type=Path, help="Path to write strategy pack JSON")
     parser.add_argument("--output-md", type=Path, help="Path to write strategy pack markdown")
     args = parser.parse_args()
+    args.process_tags = normalize_process_tags(args.process_tags)
 
     insights = load_insights(resolve_master_path(args))
     pack = build_pack(args, insights)

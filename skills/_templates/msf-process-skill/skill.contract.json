@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "skill_type": "msf_process_skill",
+  "skill_name": "__SKILL_NAME__",
+  "display_name": "__DISPLAY_NAME__",
+  "process_tags": [
+    "__PRIMARY_PROCESS_TAG__"
+  ],
+  "source_layer": "curated_insights",
+  "citation_policy": {
+    "insight_claim": "[insight:<insight_id>]",
+    "generic_practice": "[generic-practice]"
+  },
+  "writing_policy": {
+    "internal_playbook": "ascii_nfkd",
+    "evidence_quotes": "verbatim_utf8",
+    "final_outputs": "pt_br_full_accents"
+  },
+  "required_files": [
+    "SKILL.md",
+    "skill.contract.json",
+    "retrieval.md",
+    "rubric.md",
+    "templates/output-template.md",
+    "examples/briefing.md",
+    "examples/output-approved.md"
+  ],
+  "validation_checklist": {
+    "output_from_test_briefing": "pending",
+    "r09_rubric_evaluation": "pending",
+    "blind_baseline_test": "pending",
+    "playbook_claims_cited_or_generic": "pending"
+  }
+}

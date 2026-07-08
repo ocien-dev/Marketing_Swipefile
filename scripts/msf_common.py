@@ -109,15 +109,66 @@ def unique_preserve_order(values: Iterable[Any]) -> list[Any]:
     return result
 
 
+def split_filter_values(values: Any) -> list[str]:
+    result: list[str] = []
+    for value in as_list(values):
+        if value is None:
+            continue
+        for part in re.split(r"[,;]", str(value)):
+            item = part.strip()
+            if item:
+                result.append(item)
+    return result
+
+
+def normalize_process_tag(value: Any) -> str:
+    tag = slugify(value)
+    if not tag:
+        return ""
+    if tag.startswith("process-"):
+        return tag
+    return f"process-{tag}"
+
+
+def normalize_process_tags(values: Any) -> list[str]:
+    return [
+        str(item)
+        for item in unique_preserve_order(
+            normalize_process_tag(value) for value in split_filter_values(values)
+        )
+        if item
+    ]
+
+
+def insight_process_tags(insight: dict[str, Any]) -> list[str]:
+    return normalize_process_tags(insight.get("process_tags"))
+
+
+def matches_process_tags(insight: dict[str, Any], expected_tags: Any, mode: str = "any") -> bool:
+    expected = set(normalize_process_tags(expected_tags))
+    if not expected:
+        return True
+    current = set(insight_process_tags(insight))
+    if mode == "all":
+        return expected <= current
+    return bool(expected & current)
+
+
 def insight_text(insight: dict[str, Any], include_evidence: bool = True) -> str:
     parts = [
+        insight.get("canonical_title"),
         insight.get("title"),
+        insight.get("specific_takeaway"),
         insight.get("insight_original"),
         insight.get("insight_ptbr"),
         insight.get("summary_ptbr"),
+        insight.get("use_case"),
+        insight.get("when_to_use"),
+        insight.get("when_not_to_use"),
         " ".join(str(item) for item in as_list(insight.get("themes"))),
         " ".join(str(item) for item in as_list(insight.get("subthemes"))),
         " ".join(str(item) for item in as_list(insight.get("applicability"))),
+        " ".join(str(item) for item in as_list(insight.get("process_tags"))),
     ]
     if include_evidence:
         for evidence in as_list(insight.get("evidence")):

@@ -17,9 +17,10 @@ Este documento complementa:
   as camadas 6-8 do principio de execucao)
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
-MSF-S esta destravado. Comecar por MSF-S01 e MSF-S02. Skill alimentada por
-base nao curada reproduz o defeito v1; usar `curated_insights` como fonte
-candidata/default. Agentes so depois de skills validadas individualmente.
+MSF-S esta destravado. MSF-S01 e MSF-S02 estao done; o proximo passo e
+MSF-S08. Skill alimentada por base nao curada reproduz o defeito v1; usar
+`curated_insights` como fonte candidata/default. Agentes so depois de skills
+validadas individualmente.
 
 ## 2. Anatomia de uma skill de processo
 
@@ -98,7 +99,7 @@ criativos e videos brutos de anuncio cobrem exatamente esses processos).
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -117,11 +118,25 @@ Aceite:
 
 Dependencias: gates R1, R2 e R3 aprovados.
 
+Execucao 2026-07-07:
+
+- Criado template instanciavel em `skills/_templates/msf-process-skill/` com
+  `SKILL.md`, `retrieval.md`, `rubric.md`, `skill.contract.json`, `templates/`,
+  `examples/` e `agents/openai.yaml`.
+- Criado `schemas/msf_process_skill_contract.schema.json`.
+- Criado `scripts/create_process_skill.py` para instanciar
+  `skills/msf-process-{slug}/` a partir do template, validando `process_tags`
+  contra `data/processed/taxonomy_seed.json`.
+- Criado `scripts/validate_process_skill.py` para validar contrato, arquivos
+  obrigatorios, frontmatter, tags, marcadores de citacao, politica de escrita
+  interna e checklist; `--require-done` exige todos os itens da DoD como `pass`.
+- Teste adicionado: `tests/test_process_skill_contract.py`.
+
 ### MSF-S02 - Retrieval por process_tags
 
 Prioridade: `P1`
 Tipo: `script`
-Status: `not_started`
+Status: `done`
 
 Escopo:
 
@@ -135,6 +150,22 @@ Aceite:
   sem duplicacao dominante.
 
 Dependencias: MSF-R11, MSF-R12.
+
+Execucao 2026-07-07:
+
+- `scripts/search_insights.py` agora usa `curated_insights` como fonte default
+  via `--source curated`, preservando override por `--master` e fontes
+  `raw`/`v1`/`v2`.
+- `scripts/search_insights.py` e `scripts/generate_strategy_pack.py` aceitam
+  `--process-tags` com lista ou CSV e `--process-tag-mode any|all`.
+- `scripts/generate_strategy_pack.py` usa `curated` como fonte default,
+  registra `process_tag_filter` no JSON do pack e preserva MMR/Jaccard,
+  `--episode-cap` e `--thesis-cap`.
+- Helpers compartilhados em `scripts/msf_common.py` normalizam e comparam
+  `process_tags` sem alterar quotes de evidencia.
+- Skill local `skills/marketing-swipe-file-retrieve/` atualizada com exemplos
+  de retrieval por `process_tags`.
+- Teste adicionado: `tests/test_process_tag_retrieval.py`.
 
 ### MSF-S03 - Skill: copy para VSL
 
@@ -320,8 +351,8 @@ Dependencias: MSF-R16, MSF-S10.
 
 ## 5. Ordem executiva
 
-1. Gates R2 e R3 estao aprovados; iniciar MSF-S01 + MSF-S02 (fundacao).
-2. Depois MSF-S08 (modulos) -> S03..S07 em ordem de
+1. Gates R2 e R3 estao aprovados; MSF-S01 + MSF-S02 (fundacao) estao done.
+2. Proximo: MSF-S08 (modulos) -> S03..S07 em ordem de
    densidade: S04 (oferta), S03 (VSL), S05 (anuncios), S06 (low ticket),
    S07 (quiz).
 3. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a

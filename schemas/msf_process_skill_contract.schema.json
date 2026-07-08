@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://marketing-swipe-file.local/schemas/msf_process_skill_contract.schema.json",
+  "title": "Marketing Swipe File Process Skill Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "skill_type",
+    "skill_name",
+    "display_name",
+    "process_tags",
+    "source_layer",
+    "citation_policy",
+    "writing_policy",
+    "required_files",
+    "validation_checklist"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "skill_type": {
+      "const": "msf_process_skill"
+    },
+    "skill_name": {
+      "type": "string",
+      "pattern": "^msf-process-[a-z0-9][a-z0-9-]{1,58}[a-z0-9]$"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "process_tags": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^process-[a-z0-9][a-z0-9-]*[a-z0-9]$"
+      }
+    },
+    "source_layer": {
+      "const": "curated_insights"
+    },
+    "citation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "insight_claim",
+        "generic_practice"
+      ],
+      "properties": {
+        "insight_claim": {
+          "const": "[insight:<insight_id>]"
+        },
+        "generic_practice": {
+          "const": "[generic-practice]"
+        }
+      }
+    },
+    "writing_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "internal_playbook",
+        "evidence_quotes",
+        "final_outputs"
+      ],
+      "properties": {
+        "internal_playbook": {
+          "const": "ascii_nfkd"
+        },
+        "evidence_quotes": {
+          "const": "verbatim_utf8"
+        },
+        "final_outputs": {
+          "const": "pt_br_full_accents"
+        }
+      }
+    },
+    "required_files": {
+      "type": "array",
+      "minItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validation_checklist": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_from_test_briefing",
+        "r09_rubric_evaluation",
+        "blind_baseline_test",
+        "playbook_claims_cited_or_generic"
+      ],
+      "properties": {
+        "output_from_test_briefing": {
+          "$ref": "#/$defs/check_status"
+        },
+        "r09_rubric_evaluation": {
+          "$ref": "#/$defs/check_status"
+        },
+        "blind_baseline_test": {
+          "$ref": "#/$defs/check_status"
+        },
+        "playbook_claims_cited_or_generic": {
+          "$ref": "#/$defs/check_status"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "check_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "pass",
+        "fail"
+      ]
+    }
+  }
+}

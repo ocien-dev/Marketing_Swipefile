@@ -1087,3 +1087,42 @@ Implementation:
 Next:
 
 - MSF-S01 and MSF-S02 remain `not_started` and will begin in a separate session, per owner instruction.
+
+## 2026-07-07 - MSF-S01/MSF-S02 foundation
+
+MSF-S01:
+
+- Added the instantiable process-skill template at `skills/_templates/msf-process-skill/`.
+- Added `schemas/msf_process_skill_contract.schema.json`.
+- Added `scripts/create_process_skill.py` to instantiate `skills/msf-process-{slug}/` from the template and validate requested `process_tags` against `data/processed/taxonomy_seed.json`.
+- Added `scripts/validate_process_skill.py` to validate contract shape, required files, frontmatter, process tags, citation markers, internal ASCII policy, and the Definition of Done checklist. `--require-done` requires all checklist items to be `pass`.
+- The contract records the citation format `[insight:<insight_id>]`, generic marker `[generic-practice]`, and layered writing policy: internal ASCII by NFKD, evidence quotes verbatim UTF-8, final outputs in full pt-BR.
+
+MSF-S02:
+
+- Updated `scripts/search_insights.py` with `--source`, default `curated`, and `--process-tags` / `--process-tag-mode any|all`.
+- Updated `scripts/generate_strategy_pack.py` so `curated_insights` is the default source, `--process-tags` filters candidates, and pack JSON records `process_tag_filter`.
+- Preserved MSF-R11 controls: MMR/Jaccard diversity, `--episode-cap`, and `--thesis-cap`.
+- Hardened `keyword_score` to match multi-word keywords against normalized source text instead of a joined token set, avoiding nondeterministic ordering in the diversity fixture.
+- Updated `scripts/msf_common.py` with shared process-tag parsing/matching helpers and richer curated insight text for search.
+- Updated `skills/marketing-swipe-file-retrieve/` with curated/process-tag examples.
+- Added tests: `tests/test_process_skill_contract.py` and `tests/test_process_tag_retrieval.py`.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B tests\test_process_skill_contract.py` -> `VALID process_skill_contract`.
+- `.\.venv\Scripts\python.exe -B tests\test_process_tag_retrieval.py` -> `VALID process_tag_retrieval`.
+- `.\.venv\Scripts\python.exe -B tests\test_strategy_pack_diversity.py` repeated 5x -> `VALID strategy_pack_diversity_fixture`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py .tmp\process-skill-smoke\msf-process-copy-vsl` -> `VALID process_skill`.
+- Smoke generated a curated VSL pack with `--process-tags process-copy-vsl,process-mecanismo-big-idea`; all selected insights came from the requested tags and preserved episode/thesis diversity.
+
+Decision state:
+
+- MSF-S01 is `done`.
+- MSF-S02 is `done`.
+- No MSF-S03..S07 process skill was started.
+- Next MSF-S step: MSF-S08 transversal modules, then instantiate the first real process skill in the documented density order.
+
+External review:
+
+- Foundation MSF-S01/MSF-S02 approved after external review: tests pass, the template has the full required file set, the validator enforces placeholders/checklist contract, `writing_policy` is present in the contract, and retrieval defaults to curated insights with `--process-tags`.

@@ -14,14 +14,15 @@ Use this skill whenever an agent needs references from the local base before pro
 1. Refresh master exports:
    `scripts/consolidate_exports.py`
 2. Search directly when exploring:
-   `scripts/search_insights.py --query "lead mecanismo" --theme VSL --limit 10`
+   `scripts/search_insights.py --source curated --process-tags process-copy-vsl --query "lead mecanismo" --limit 10`
 3. Generate a task pack when creating an output:
-   `scripts/generate_strategy_pack.py --task vsl --product "<produto>" --avatar "<avatar>" --market "<mercado>" --output-json data/exports/strategy_pack_vsl.json --output-md data/exports/strategy_pack_vsl.md`
+   `scripts/generate_strategy_pack.py --source curated --task vsl --process-tags process-copy-vsl,process-mecanismo-big-idea --product "<produto>" --avatar "<avatar>" --market "<mercado>" --output-json data/exports/strategy_pack_vsl.json --output-md data/exports/strategy_pack_vsl.md`
 4. Use `prompts/retrieval/strategy_pack_retrieval.md` when a model needs to turn retrieved records into a structured context package.
 
 ## Rules
 
 - Always cite `insight_id` when using an insight in an output.
+- Use `curated_insights` as the default source for process skills and post-R3 strategy packs.
 - Prefer insights with strong evidence and higher confidence.
 - Keep transcript and asset sources separate.
 - If the strategy pack has few or zero results, say the base is not mature enough for that task yet.
@@ -33,4 +34,5 @@ Use this skill whenever an agent needs references from the local base before pro
 - `--level tactical`
 - `--insight-type framework`
 - `--applicability "copywriter de VSLs"`
+- `--process-tags process-copy-vsl,process-prova-depoimentos`
 - `--min-confidence 0.75`
