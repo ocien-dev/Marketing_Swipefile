@@ -108,7 +108,7 @@ Artefatos de prova:
 - `data/exports/output_r10_blind_sample_2026-07-07_judged.csv`: julgamento externo concluido.
 - `docs/output-r10-blind-review-2026-07-07.md`: Gate R2 aprovado.
 - `data/exports/curated_insights.json`: lote local R12 com 125 itens curados.
-- `data/exports/curated_insights_owner_review_sample_2026-07-07.csv`: amostra de 30 itens para revisao humana do owner.
+- `data/exports/curated_insights_owner_review_sample_2026-07-07.csv`: amostra de 30 itens para revisao humana do owner; regenerada em `utf-8-sig` com `evidence_quote` verbatim UTF-8 e decisoes do owner preservadas.
 - `docs/curated-insights-r12-review-2026-07-07.md`: relatorio R12.
 - `data/exports/strategy_pack_curated_vsl_lowticket_2026-07-07.json` e `data/exports/strategy_pack_curated_ads_lowticket_2026-07-07.json`: packs R13 a partir de curated.
 - `docs/strategy-pack-r13-comparison-2026-07-07.md`: comparacao R13 e avaliacao honesta dos packs.

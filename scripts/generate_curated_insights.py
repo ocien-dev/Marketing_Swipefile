@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import unicodedata
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -98,8 +99,9 @@ def has_text(value: Any, min_length: int = 8) -> bool:
     return len(str(value or "").strip()) >= min_length
 
 
-def ascii_safe(value: Any) -> str:
-    return str(value or "").encode("ascii", errors="ignore").decode("ascii")
+def transliterate_ascii(value: Any) -> str:
+    normalized = unicodedata.normalize("NFKD", str(value or ""))
+    return normalized.encode("ascii", errors="ignore").decode("ascii")
 
 
 def complete_editorial_fields(insight: dict[str, Any], labels: dict[str, str]) -> dict[str, Any]:
@@ -381,14 +383,17 @@ def write_review_sample(path: Path, items: list[dict[str, Any]]) -> None:
         "owner_decision",
         "owner_notes",
     ]
-    with path.open("w", encoding="utf-8", newline="") as file:
+    existing_annotations = load_existing_review_annotations(path)
+    with path.open("w", encoding="utf-8-sig", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         for index, item in enumerate(items, start=1):
+            insight_id = str(item.get("insight_id") or "")
+            annotation = existing_annotations.get(insight_id, {})
             writer.writerow(
                 {
                     "sample_rank": index,
-                    "insight_id": item.get("insight_id"),
+                    "insight_id": insight_id,
                     "canonical_title": item.get("canonical_title"),
                     "process_tags": ";".join(str(tag) for tag in as_list(item.get("process_tags"))),
                     "editorial_score": item.get("editorial_score"),
@@ -397,11 +402,28 @@ def write_review_sample(path: Path, items: list[dict[str, Any]]) -> None:
                     "use_case": item.get("use_case"),
                     "when_to_use": item.get("when_to_use"),
                     "when_not_to_use": item.get("when_not_to_use"),
-                    "evidence_quote": ascii_safe(first_evidence(item).get("quote_original")),
-                    "owner_decision": "",
-                    "owner_notes": "",
+                    "evidence_quote": first_evidence(item).get("quote_original") or "",
+                    "owner_decision": annotation.get("owner_decision", ""),
+                    "owner_notes": annotation.get("owner_notes", ""),
                 }
             )
+
+
+def load_existing_review_annotations(path: Path) -> dict[str, dict[str, str]]:
+    if not path.exists():
+        return {}
+    annotations: dict[str, dict[str, str]] = {}
+    with path.open("r", encoding="utf-8-sig", newline="") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            insight_id = str(row.get("insight_id") or "").strip()
+            if not insight_id:
+                continue
+            annotations[insight_id] = {
+                "owner_decision": row.get("owner_decision") or "",
+                "owner_notes": row.get("owner_notes") or "",
+            }
+    return annotations
 
 
 def validate_curated(items: list[dict[str, Any]], valid_process_ids: set[str], min_score: int, min_count: int, max_count: int) -> list[str]:

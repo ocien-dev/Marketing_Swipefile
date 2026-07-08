@@ -51,8 +51,9 @@
 
 ## Human Review
 
-- The owner review sample has 30 items with empty `owner_decision` and `owner_notes` columns.
+- The original owner review sample had 30 items with empty `owner_decision` and `owner_notes` columns.
 - Owner review completed on 2026-07-07: the owner kept the sample decisions as filled, with no mass rejection.
+- Post-review export fix on 2026-07-07: the owner review CSV was regenerated as `utf-8-sig` with `evidence_quote` copied verbatim from `curated_insights.json`; owner decisions and notes were preserved.
 - Gate R3 is approved after owner review and external technical review.
 
 ## Gate R3 Notes

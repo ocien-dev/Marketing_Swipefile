@@ -1044,3 +1044,26 @@ Next session:
 - Then MSF-S02: retrieval by `process_tags`.
 - Updated `docs/marketing-swipe-file-skills-backlog.md`: MSF-S01 and MSF-S02 moved from gate-blocked to `not_started`; downstream skills remain blocked by their own dependencies.
 - MSF-R14 backfill, Supabase, and MCP remain later work. Reopen MSF-R03 before any MSF-R14 backfill of the remaining 508 chunks.
+
+## 2026-07-07 - Owner review CSV encoding remediation
+
+Bug:
+
+- External audit confirmed that `data/exports/curated_insights_owner_review_sample_2026-07-07.csv` corrupted `evidence_quote` by deleting accented characters during CSV export.
+- Source bases remained integral: `data/exports/insights_v2_master.json` and `data/exports/curated_insights.json` were not affected.
+
+Fix:
+
+- Updated `scripts/generate_curated_insights.py` so evidence quotes are copied verbatim from source evidence and owner-facing review CSVs are written as `utf-8-sig`.
+- Added NFKD-based ASCII transliteration helper for future editorial-only ASCII needs; ASCII deletion via `errors=ignore` is no longer used in the review export path.
+- Preserved existing `owner_decision` and `owner_notes` when regenerating the sample.
+- Extended `scripts/audit_insights_v2_text.py` to fail on known accent-deletion artifacts in editorial fields and generated CSV/MD exports.
+
+Validation:
+
+- Regenerated the owner review sample locally after the fix.
+- Confirmed 30/30 sample `evidence_quote` values match the corresponding first evidence quote in `curated_insights.json`.
+- Confirmed 29/30 sample rows now preserve non-ASCII evidence text where present; the CSV starts with UTF-8 BOM (`efbbbf`).
+- Confirmed existing owner decisions/notes remained populated: 16 `aprovar`, 9 `aprovar_com_ajuste_evidencia`, 3 `revisar_antes_default`, 2 `mesclar_manter_um`; 30/30 notes populated.
+- `scripts/audit_insights_v2_text.py` passed on 261 v2 files and 43 generated CSV/MD exports; broken accent-deletion pattern hits: 0.
+- The Gate R3 approval remains valid; the corrected quotes are more readable than the reviewed export.

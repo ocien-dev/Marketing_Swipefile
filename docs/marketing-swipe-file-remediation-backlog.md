@@ -535,6 +535,7 @@ Execucao 2026-07-07:
 - Relatorio: `docs/curated-insights-r12-review-2026-07-07.md`.
 - Revisao humana do owner concluida em 2026-07-07: nenhuma reprovacao em massa; owner manteve tudo conforme as indicacoes da amostra preenchida.
 - Observacao de calibracao: `editorial_score` ficou comprimido (min 90, mediana 97); usar as anotacoes do owner para abrir melhor a regua antes dos proximos lotes.
+- Correcao pos-revisao em 2026-07-07: o CSV de revisao do owner foi regenerado em `utf-8-sig`, preservando `owner_decision`/`owner_notes` e mantendo `evidence_quote` verbatim UTF-8 a partir de `curated_insights.json`. Regra registrada: ASCII so por transliteracao NFKD quando exigido em campos editoriais; quotes de evidencia nunca sao normalizadas.
 
 Dependencias:
 
