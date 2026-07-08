@@ -1474,3 +1474,178 @@ Validation:
 - Method note for S05 S09: keep honest baselines, and run
   `orphan_question_mark` guard plus internal non-ASCII scan on with-skill
   outputs before sending the blind sample to the external judge.
+
+## 2026-07-08 - MSF-S05 copy ads skill and S09 blind prepare
+
+Inputs:
+
+- Owner requested MSF-S05 as the next real process skill after S03/S09 VSL PASS.
+- Skill under test: `skills/msf-process-copy-anuncios/`.
+- Primary process tag: `process-copy-anuncios`.
+- Imported transversal module tags: `process-mecanismo-big-idea` and
+  `process-prova-depoimentos`.
+- S06/S07 remain blocked until S05 passes its own S09.
+
+Implementation:
+
+- Created `skills/msf-process-copy-anuncios/` with
+  `scripts/create_process_skill.py`.
+- Filled the 8 process-skill files: `SKILL.md`, `skill.contract.json`,
+  `retrieval.md`, `rubric.md`, `templates/output-template.md`,
+  `examples/briefing.md`, `examples/output-approved.md`, and
+  `agents/openai.yaml`.
+- Kept internal playbook/retrieval/rubric/contract text ASCII; final template
+  and examples use full pt-BR accents.
+- Imported transversal modules by reference and preserved the inherited
+  `module_inheritance_policy`: dedupe evidence by `insight_id`, count
+  `zoChfFHnlOQ-v2-0008` and `mCaFyZpXJdE-v2-0011` once, and keep ad-specific
+  hook, angle, script, variation logic, platform fit, creative direction, CTA,
+  and testing order inside the skill.
+- Aligned `rubric.md` to `docs/output-evaluation-rubric.md` with criteria:
+  hook strength, angle clarity, avatar fit, proof or plausibility,
+  testability, platform fit, creative direction, and base usage.
+- Commercial combined criterion for ads: `hook_strength_score`,
+  `proof_or_plausibility_score`, and `testability_score`.
+
+S09 blind sample:
+
+- Prepared 4 varied ads briefings:
+  - `S09-ADS-001` Meta feed image ad for home-fitness quiz.
+  - `S09-ADS-002` Reels/short-video ad for small-store AI course.
+  - `S09-ADS-003` Google Search ad for clinic financial diagnosis.
+  - `S09-ADS-004` Google Display retargeting ad for HR onboarding SaaS.
+- Wrote blind CSV:
+  `data/exports/output_s09_ads_blind_sample_2026-07-08.csv`.
+- Wrote hidden key:
+  `data/exports/output_s09_ads_blind_key_2026-07-08.json`.
+- Wrote strategy packs:
+  - `data/exports/strategy_pack_s09_ads_001_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_ads_002_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_ads_003_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_ads_004_2026-07-08.*`
+- Baselines were written as honest copy attempts, not deliberately generic.
+- The first inline CSV generation path exposed PowerShell accent loss, so the
+  sample was regenerated through ASCII-only Unicode escapes and rechecked.
+- CSV has blank ads-rubric fields and no source-label leakage (`with_s05`,
+  `no_skill`, `baseline`, `com skill`, `sem skill`, `curated`,
+  `Marketing Swipe`, or `insight:`).
+- No S09 verdict was generated. Judgment remains external.
+
+Decision state:
+
+- MSF-S05 moved to owner judgment with status `ready_for_owner_audit`.
+- MSF-S09 is `in_progress` for S05 ads.
+- MSF-S06/MSF-S07 remain blocked until S05 validates its own skill ->
+  retrieval -> rubric -> blind-test pipeline.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-anuncios` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- `pytest` is not installed in the repo `.venv`; the four regression files were
+  executed through their `test_*` functions directly and passed:
+  `tests\test_process_skill_contract.py`, `tests\test_process_tag_retrieval.py`,
+  `tests\test_transversal_modules_contract.py`, and
+  `tests\test_strategy_pack_diversity.py`.
+- S05 citation No Invention check passed: 18 real playbook citations resolve to
+  `curated_insights` and all carry `process-copy-anuncios`.
+- S09 ads key citation check passed: 12 unique with-skill citations resolve to
+  `curated_insights` and all carry `process-copy-anuncios`.
+- S09 ads blind CSV structural check passed: 4 pairs and 40 blank judging
+  fields.
+- Source-leak scan on the blind CSV passed.
+- With-skill output encoding guard passed: 0 orphan question marks and all 4
+  with-skill outputs preserve pt-BR accents.
+- `git diff --check` passed before docs update; final scan and diff check run
+  after this log update.
+
+## 2026-07-08 - MSF-S09 ads apuration and S05 approval
+
+Inputs:
+
+- Owner-provided blind judgment:
+  `data/exports/output_s09_ads_blind_sample_2026-07-08_judged.csv`.
+- Hidden key opened only after judging:
+  `data/exports/output_s09_ads_blind_key_2026-07-08.json`.
+- Skill under test: `skills/msf-process-copy-anuncios/`.
+- PASS rule: with-skill must win or tie the commercial core in every pair, lose
+  no pair overall, and have no pending encoding defect in with-skill outputs.
+
+Apuration:
+
+- A/B mapping by key:
+  - `S09-ADS-001`: A = with skill, B = no skill; blind winner A.
+  - `S09-ADS-002`: A = no skill, B = with skill; blind winner B.
+  - `S09-ADS-003`: A = with skill, B = no skill; blind winner A.
+  - `S09-ADS-004`: A = no skill, B = with skill; blind winner B.
+- Pair result: with skill 4, no skill 0, ties 0.
+- Criterion result: with skill 30, no skill 0, ties 2.
+- The 2 ties were `platform_fit_score` in pairs 001 and 003.
+- Commercial core (`hook_strength_score`, `proof_or_plausibility_score`,
+  `testability_score`): with skill 12, no skill 0, ties 0.
+- Gate report written to
+  `docs/msf-s09-ads-gate-result-2026-07-08.md`.
+
+Encoding:
+
+- `orphan_question_mark_contexts` found 0 orphan question marks in the 4
+  with-skill outputs selected through the hidden key.
+- Raw non-ASCII scan of with-skill final outputs found only normal Latin
+  accent codepoints (`U+00C9`, `U+00E1`, `U+00E2`, `U+00E3`, `U+00E7`,
+  `U+00E9`, `U+00EA`, `U+00ED`, `U+00F3`, `U+00F4`, `U+00F5`, `U+00FA`).
+  These are valid final-output accents under the layered writing policy, not
+  encoding defects.
+- Internal non-ASCII scan passed for the ads skill internal files and docs.
+
+Decision state:
+
+- Verdict: `PASS`.
+- MSF-S05 marked `done` in the skills backlog.
+- `msf-process-copy-anuncios` marked approved in `SKILL.md`.
+- `blind_baseline_test` marked `pass` in
+  `skills/msf-process-copy-anuncios/skill.contract.json`.
+- MSF-S06 (`msf-process-produto-low-ticket`) released as the next real skill.
+- MSF-S07 remains blocked until S06 passes its own S09.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-anuncios --require-done` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- Direct regression execution passed for:
+  `tests\test_process_skill_contract.py`, `tests\test_process_tag_retrieval.py`,
+  `tests\test_transversal_modules_contract.py`, and
+  `tests\test_strategy_pack_diversity.py`.
+- Reproducible S09 ads apuration check passed:
+  pair `4-0-0`, criteria `30-0-2`, commercial core `12-0-0`.
+
+## 2026-07-08 - MSF-S05 external approval and versioning closure
+
+Inputs:
+
+- Owner reported independent external audit approval for MSF-S05/S09 Ads.
+- External audit reproduced the hidden-key mapping: with-skill won 4/4 pairs.
+- External audit confirmed No Invention for 12 with-skill citations resolving to
+  real `curated_insights` with `process-copy-anuncios`.
+- External audit confirmed encoding clean, with no remaining caveat.
+
+Versioning scope:
+
+- Versioned the S05 skill directory:
+  `skills/msf-process-copy-anuncios/`.
+- Versioned the S09 Ads gate report:
+  `docs/msf-s09-ads-gate-result-2026-07-08.md`.
+- Versioned backlog and execution-log updates.
+- Kept ignored S09 Ads exports local-only under `data/exports/`, per owner
+  instruction; the versioned gate report records the result numbers
+  `4-0-0`, `30-0-2`, and `12-0-0`.
+- MSF-S06 remains the next real skill to start only after explicit owner prompt.
+
+Closure validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-copy-anuncios --require-done` -> `VALID process_skill`.
+- Local S09 Ads key No Invention check passed: 20 citation uses, 12 unique
+  citations, 0 missing, and 0 without `process-copy-anuncios`.
+- Internal non-ASCII scan passed for docs and S05 internal skill files.
+- `git diff --check` passed.

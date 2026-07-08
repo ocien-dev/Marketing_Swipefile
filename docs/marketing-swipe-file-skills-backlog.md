@@ -17,11 +17,11 @@ Este documento complementa:
   as camadas 6-8 do principio de execucao)
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
-MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S03, MSF-S04 e MSF-S08 estao done;
-MSF-S05 esta liberado como proxima skill real; MSF-S06/MSF-S07 seguem blocked
-ate S05 passar pelo proprio S09. Skill alimentada por base nao curada reproduz
-o defeito v1; usar `curated_insights` como fonte candidata/default. Agentes so
-depois de skills validadas individualmente.
+MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S03, MSF-S04, MSF-S05 e MSF-S08
+estao done; MSF-S06 esta liberado como proxima skill real; MSF-S07 segue
+blocked ate S06 passar pelo proprio S09. Skill alimentada por base nao curada
+reproduz o defeito v1; usar `curated_insights` como fonte candidata/default.
+Agentes so depois de skills validadas individualmente.
 
 ## 2. Anatomia de uma skill de processo
 
@@ -292,7 +292,7 @@ Apuracao S09 2026-07-08:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `ready`
+Status: `done`
 
 Escopo: skill `msf-process-copy-anuncios` (hooks, angulos, scripts; absorve
 headlines-hooks e teste-variacao-criativos como capitulos).
@@ -301,18 +301,61 @@ Aceite: Definition of Done da secao 2.
 
 Dependencias: MSF-S01, MSF-S02, MSF-S03 aprovado por S09 VSL.
 
+Execucao 2026-07-08:
+
+- Criada `skills/msf-process-copy-anuncios/` via
+  `scripts/create_process_skill.py`.
+- Preenchidos os 8 arquivos da anatomia: `SKILL.md`,
+  `skill.contract.json`, `retrieval.md`, `rubric.md`,
+  `templates/output-template.md`, `examples/briefing.md`,
+  `examples/output-approved.md` e `agents/openai.yaml`.
+- Retrieval usa `curated_insights` com `process-copy-anuncios`,
+  `process-mecanismo-big-idea` e `process-prova-depoimentos`.
+- `module_inheritance_policy` aplicada: dedupe por `insight_id` entre modulos
+  e logica especifica de anuncio mantida na skill.
+- Rubrica alinhada a `docs/output-evaluation-rubric.md`; criterio comercial
+  combinado de anuncios = `hook_strength_score`,
+  `proof_or_plausibility_score` e `testability_score`.
+- Amostra cega S09 Ads preparada com 4 pares variados em
+  `data/exports/output_s09_ads_blind_sample_2026-07-08.csv`; chave separada em
+  `data/exports/output_s09_ads_blind_key_2026-07-08.json`.
+- Briefings cobrem Meta feed imagem, Reels/short video, Google Search e Google
+  Display retargeting, com baselines honestos.
+- Guard `orphan_question_mark` nos 4 outputs com skill passou com 0 achados; os
+  outputs com skill preservam acentuacao pt-BR.
+- Sem veredito S09 nesta execucao; julgamento permanece externo.
+
+Apuracao S09 2026-07-08:
+
+- Relatorio: `docs/msf-s09-ads-gate-result-2026-07-08.md`.
+- Julgamento externo em
+  `data/exports/output_s09_ads_blind_sample_2026-07-08_judged.csv`.
+- Chave aberta somente depois do julgamento cego:
+  `data/exports/output_s09_ads_blind_key_2026-07-08.json`.
+- Resultado por par: com skill 4, sem skill 0, empates 0.
+- Resultado por criterio: com skill 30, sem skill 0, empates 2.
+- Nucleo comercial combinado (`hook_strength_score`,
+  `proof_or_plausibility_score`, `testability_score`): com skill 12 celulas,
+  sem skill 0, empates 0; com skill venceu o nucleo nos 4 pares.
+- Guard `orphan_question_mark` nos outputs com skill passou com 0 achados; os
+  non-ASCII encontrados sao acentos normais de output final pt-BR, nao defeito
+  de encoding.
+- Veredito final: `PASS`. Skill `msf-process-copy-anuncios` aprovada.
+- MSF-S06 liberado como proxima skill real. MSF-S07 segue blocked ate S06
+  passar pelo proprio S09.
+
 ### MSF-S06 - Skill: criacao de produto low ticket
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked`
+Status: `ready`
 
 Escopo: skill `msf-process-produto-low-ticket` (transformacao de entrada,
 formato, esteira front-end -> backend).
 
 Aceite: Definition of Done da secao 2.
 
-Dependencias: MSF-S01, MSF-S02.
+Dependencias: MSF-S01, MSF-S02, MSF-S05 aprovado por S09 Ads.
 
 ### MSF-S07 - Skill: criacao de quiz
 
@@ -325,7 +368,7 @@ fechamento de loops abertos).
 
 Aceite: Definition of Done da secao 2.
 
-Dependencias: MSF-S01, MSF-S02.
+Dependencias: MSF-S01, MSF-S02, MSF-S06 aprovado por S09 low-ticket.
 
 ### MSF-S08 - Modulos transversais de copy
 
@@ -392,8 +435,9 @@ Execucao parcial 2026-07-08:
   comerciais combinados.
 - Auditoria externa independente confirmou o PASS de S04, citacoes validas e
   dedupe respeitado.
-- S03 liberado como proxima skill real.
-- S05-S07 continuam blocked ate S03 passar pelo proprio S09.
+- S03 foi liberado como proxima skill real depois de S04.
+- Depois do PASS de S03, S05 foi liberado; S06/S07 continuam blocked ate S05
+  passar pelo proprio S09.
 - Para S03 em diante, variar mais os briefings (N > 3 quando viavel) e, se
   possivel, alternar quem redige o baseline sem-skill.
 - S09 VSL para S03 preparado com 4 pares, CSV cego sem vazamento de origem e
@@ -405,6 +449,12 @@ Execucao parcial 2026-07-08:
   externa da copia corrigida, que mudou apenas `cansa?o` para `cansaco`.
 - S03 esta done/approved; S05 e a proxima skill real. S06/S07 seguem blocked ate
   S05 passar pelo proprio S09.
+- S09 Ads para S05 preparado com 4 pares, CSV cego sem vazamento de origem e
+  campos da rubrica de anuncios em branco para juiz externo.
+- S09 Ads aprovado como `PASS`: com skill venceu 4/4 pares, 30/32 criterios e
+  12/12 celulas comerciais, com 2 empates e 0 perdas.
+- S05 esta done/approved; S06 e a proxima skill real. S07 segue blocked ate
+  S06 passar pelo proprio S09.
 
 ### MSF-S10 - Agentes consumidores de skills
 
@@ -488,10 +538,11 @@ Dependencias: MSF-R16, MSF-S10.
 ## 5. Ordem executiva
 
 1. Gates R2 e R3 estao aprovados; MSF-S01 + MSF-S02 (fundacao) estao done.
-2. MSF-S04 esta aprovado por S09; proximo passo e S03 (VSL). S05 (anuncios),
-   S06 (low ticket) e S07 (quiz) seguem blocked ate S03 validar o proprio
+2. MSF-S04, MSF-S03 e MSF-S05 estao aprovados por S09; S06 (low ticket) esta
+   liberado como proxima skill real.
+3. S07 (quiz) segue blocked ate S06 validar o proprio
    pipeline skill -> retrieval -> rubrica -> teste cego.
-3. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
+4. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
    retroalimentacao.
-4. Segunda leva (S12) quando o backfill e os assets da academy elevarem a
+5. Segunda leva (S12) quando o backfill e os assets da academy elevarem a
    densidade dos processos adiados.
