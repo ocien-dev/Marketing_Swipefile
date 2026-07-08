@@ -1649,3 +1649,168 @@ Closure validation:
   citations, 0 missing, and 0 without `process-copy-anuncios`.
 - Internal non-ASCII scan passed for docs and S05 internal skill files.
 - `git diff --check` passed.
+
+## 2026-07-08 - MSF-S06 low-ticket product skill and S09 blind prepare
+
+Inputs:
+
+- Owner requested MSF-S06 as the next real process skill after S05/S09 Ads
+  PASS.
+- Skill under test: `skills/msf-process-produto-low-ticket/`.
+- Primary process tag: `process-produto-low-ticket`.
+- Imported transversal module tags: `process-mecanismo-big-idea` and
+  `process-prova-depoimentos`.
+- S07 remains blocked until S06 passes its own S09.
+
+Implementation:
+
+- Created `skills/msf-process-produto-low-ticket/` with
+  `scripts/create_process_skill.py`.
+- Filled the 8 process-skill files: `SKILL.md`, `skill.contract.json`,
+  `retrieval.md`, `rubric.md`, `templates/output-template.md`,
+  `examples/briefing.md`, `examples/output-approved.md`, and
+  `agents/openai.yaml`.
+- Kept internal playbook/retrieval/rubric/contract text ASCII; final template
+  and examples use full pt-BR accents.
+- Imported transversal modules by reference and preserved the inherited
+  `module_inheritance_policy`: dedupe evidence by `insight_id`, count
+  `zoChfFHnlOQ-v2-0008` and `mCaFyZpXJdE-v2-0011` once, and keep
+  low-ticket-specific transformation, scope, format, price-value logic,
+  consumability, backend bridge, and validation plan inside the skill.
+- Defined the low-ticket rubric criteria:
+  `entry_transformation_clarity_score`, `avatar_promise_fit_score`,
+  `scope_consumability_score`, `price_value_coherence_score`,
+  `mechanism_belief_score`, `proof_claim_control_score`,
+  `backend_ascension_bridge_score`, and `base_usage_score`.
+- Commercial combined criterion for low ticket:
+  `entry_transformation_clarity_score`, `price_value_coherence_score`, and
+  `backend_ascension_bridge_score`.
+
+S09 blind sample:
+
+- Prepared 4 varied low-ticket briefings:
+  - `S09-LOWTICKET-001` paid 7-day nutrition-planning challenge.
+  - `S09-LOWTICKET-002` ebook + mini-course for MEI cash separation.
+  - `S09-LOWTICKET-003` template kit for agency onboarding.
+  - `S09-LOWTICKET-004` recorded guitar workshop for adult beginners.
+- Wrote blind CSV:
+  `data/exports/output_s09_lowticket_blind_sample_2026-07-08.csv`.
+- Wrote hidden key:
+  `data/exports/output_s09_lowticket_blind_key_2026-07-08.json`.
+- Wrote strategy packs:
+  - `data/exports/strategy_pack_s09_lowticket_001_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_lowticket_002_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_lowticket_003_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_lowticket_004_2026-07-08.*`
+- Baselines were written as honest product strategy attempts, not deliberately
+  generic.
+- CSV has blank low-ticket rubric fields and no source-label leakage
+  (`with_s06`, `no_skill`, `baseline`, `com skill`, `sem skill`, `curated`,
+  `Marketing Swipe`, or `insight:`).
+- No S09 verdict was generated. Judgment remains external.
+
+Decision state:
+
+- MSF-S06 moved to owner judgment with status `ready_for_owner_audit`.
+- MSF-S09 is `in_progress` for S06 low ticket.
+- MSF-S07 remains blocked until S06 validates its own skill -> retrieval ->
+  rubric -> blind-test pipeline.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-produto-low-ticket` -> `VALID process_skill`.
+- S06 playbook No Invention check passed: 18 real playbook citations resolve
+  to `curated_insights` and all carry `process-produto-low-ticket`.
+- S09 low-ticket key citation check passed: 13 unique with-skill citations
+  resolve to `curated_insights` and all carry `process-produto-low-ticket`.
+- S09 low-ticket blind CSV structural check passed: 4 pairs and 40 blank
+  judging fields.
+- Source-leak scan on the blind CSV passed.
+- With-skill output encoding guard passed: 0 orphan question marks and all 4
+  with-skill outputs preserve pt-BR accents.
+- Closure checks passed after documentation updates:
+  `validate_process_skill.py`, `validate_transversal_modules.py`, direct
+  regression test execution, S09 low-ticket CSV/key checks, S06 No Invention
+  checks, internal non-ASCII scan, and `git diff --check`.
+
+## 2026-07-08 - MSF-S09 low-ticket apuration and S06 approval
+
+Inputs:
+
+- Owner-provided blind judgment:
+  `data/exports/output_s09_lowticket_blind_sample_2026-07-08_judged.csv`.
+- Hidden key opened only after judging:
+  `data/exports/output_s09_lowticket_blind_key_2026-07-08.json`.
+- Skill under test: `skills/msf-process-produto-low-ticket/`.
+- PASS rule: with-skill must win or tie the commercial core in every pair,
+  lose no pair overall, and have no pending encoding defect in with-skill
+  outputs.
+
+Apuration:
+
+- A/B mapping by key:
+  - `S09-LOWTICKET-001`: A = no skill, B = with skill; blind winner B.
+  - `S09-LOWTICKET-002`: A = with skill, B = no skill; blind winner A.
+  - `S09-LOWTICKET-003`: A = no skill, B = with skill; blind winner B.
+  - `S09-LOWTICKET-004`: A = with skill, B = no skill; blind winner A.
+- Pair result: with skill 4, no skill 0, ties 0.
+- Criterion result: with skill 31, no skill 0, ties 1.
+- The 1 tie was `proof_claim_control_score` in pair 003.
+- Commercial core (`entry_transformation_clarity_score`,
+  `price_value_coherence_score`, `backend_ascension_bridge_score`): with skill
+  12, no skill 0, ties 0.
+- Gate report written to
+  `docs/msf-s09-lowticket-gate-result-2026-07-08.md`.
+
+Encoding and No Invention:
+
+- `orphan_question_mark_contexts` found 0 orphan question marks in the 4
+  with-skill outputs selected through the hidden key.
+- Raw non-ASCII scan of with-skill final outputs found only normal Latin accent
+  codepoints. These are valid final-output accents under the layered writing
+  policy, not encoding defects.
+- S09 Low Ticket key No Invention check passed: 20 citation uses, 13 unique
+  citations, 0 missing, and 0 without `process-produto-low-ticket`.
+
+Decision state:
+
+- Verdict: `PASS`.
+- MSF-S06 marked `done` in the skills backlog.
+- `msf-process-produto-low-ticket` marked approved in `SKILL.md`.
+- `blind_baseline_test` marked `pass` in
+  `skills/msf-process-produto-low-ticket/skill.contract.json`.
+- MSF-S07 (`msf-process-quiz`) released as the last real skill in the first
+  wave.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-produto-low-ticket --require-done` -> `VALID process_skill`.
+- Reproducible S09 low-ticket apuration check passed:
+  pair `4-0-0`, criteria `31-0-1`, commercial core `12-0-0`.
+
+## 2026-07-08 - MSF-S06/S09 LowTicket commit and push closure
+
+Inputs:
+
+- External independent audit approved MSF-S06/S09 LowTicket as `PASS`.
+- Owner requested commit + push of the S06 skill, S09 gate report, backlog, and
+  execution log.
+- `data/exports` remains gitignored/local-only for LowTicket CSV/JSON strategy
+  artifacts.
+
+Closure validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-produto-low-ticket --require-done` -> `VALID process_skill`.
+- Internal non-ASCII scan passed for the S06 gate docs and internal skill
+  files.
+- `git diff --check` passed with line-ending warnings only for modified docs.
+- Ignored LowTicket exports remain present on disk and outside the staged Git
+  set.
+
+Decision state:
+
+- MSF-S06 is `done`; `msf-process-produto-low-ticket` is approved.
+- MSF-S07 (`msf-process-quiz`) is released as the last real skill in the first
+  wave, but not started in this closure.

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Produto Low Ticket"
+  short_description: "Create entry products, low-ticket scopes, price-value logic, and backend bridges from curated MSF insights."

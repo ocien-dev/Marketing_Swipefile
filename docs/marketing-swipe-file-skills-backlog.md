@@ -17,11 +17,11 @@ Este documento complementa:
   as camadas 6-8 do principio de execucao)
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
-MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S03, MSF-S04, MSF-S05 e MSF-S08
-estao done; MSF-S06 esta liberado como proxima skill real; MSF-S07 segue
-blocked ate S06 passar pelo proprio S09. Skill alimentada por base nao curada
-reproduz o defeito v1; usar `curated_insights` como fonte candidata/default.
-Agentes so depois de skills validadas individualmente.
+MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S03, MSF-S04, MSF-S05, MSF-S06 e
+MSF-S08 estao done; MSF-S07 esta liberado como ultima skill real da primeira
+leva. Skill alimentada por base nao curada reproduz o defeito v1; usar
+`curated_insights` como fonte candidata/default. Agentes so depois de skills
+validadas individualmente.
 
 ## 2. Anatomia de uma skill de processo
 
@@ -341,14 +341,14 @@ Apuracao S09 2026-07-08:
   non-ASCII encontrados sao acentos normais de output final pt-BR, nao defeito
   de encoding.
 - Veredito final: `PASS`. Skill `msf-process-copy-anuncios` aprovada.
-- MSF-S06 liberado como proxima skill real. MSF-S07 segue blocked ate S06
-  passar pelo proprio S09.
+- MSF-S06 liberado como proxima skill real; naquele momento, MSF-S07 seguia
+  blocked ate S06 passar pelo proprio S09.
 
 ### MSF-S06 - Skill: criacao de produto low ticket
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `ready`
+Status: `done`
 
 Escopo: skill `msf-process-produto-low-ticket` (transformacao de entrada,
 formato, esteira front-end -> backend).
@@ -357,18 +357,68 @@ Aceite: Definition of Done da secao 2.
 
 Dependencias: MSF-S01, MSF-S02, MSF-S05 aprovado por S09 Ads.
 
+Execucao 2026-07-08:
+
+- Criada `skills/msf-process-produto-low-ticket/` via
+  `scripts/create_process_skill.py`.
+- Preenchidos os 8 arquivos da anatomia: `SKILL.md`,
+  `skill.contract.json`, `retrieval.md`, `rubric.md`,
+  `templates/output-template.md`, `examples/briefing.md`,
+  `examples/output-approved.md` e `agents/openai.yaml`.
+- Retrieval usa `curated_insights` com `process-produto-low-ticket`,
+  `process-mecanismo-big-idea` e `process-prova-depoimentos`.
+- `module_inheritance_policy` aplicada: dedupe por `insight_id` entre modulos
+  e logica especifica de produto low ticket mantida na skill.
+- Rubrica definida com 8 criterios: `entry_transformation_clarity_score`,
+  `avatar_promise_fit_score`, `scope_consumability_score`,
+  `price_value_coherence_score`, `mechanism_belief_score`,
+  `proof_claim_control_score`, `backend_ascension_bridge_score` e
+  `base_usage_score`.
+- Criterio comercial combinado de low ticket =
+  `entry_transformation_clarity_score`, `price_value_coherence_score` e
+  `backend_ascension_bridge_score`.
+- Amostra cega S09 Low Ticket preparada com 4 pares variados em
+  `data/exports/output_s09_lowticket_blind_sample_2026-07-08.csv`; chave
+  separada em
+  `data/exports/output_s09_lowticket_blind_key_2026-07-08.json`.
+- Briefings cobrem desafio pago, ebook/mini-curso, template/kit e workshop
+  gravado, com baselines honestos.
+- Guard `orphan_question_mark` nos 4 outputs com skill passou com 0 achados; os
+  outputs com skill preservam acentuacao pt-BR.
+- Sem veredito S09 nesta execucao; julgamento permanece externo.
+
+Apuracao S09 2026-07-08:
+
+- Relatorio: `docs/msf-s09-lowticket-gate-result-2026-07-08.md`.
+- Julgamento externo em
+  `data/exports/output_s09_lowticket_blind_sample_2026-07-08_judged.csv`.
+- Chave aberta somente depois do julgamento cego:
+  `data/exports/output_s09_lowticket_blind_key_2026-07-08.json`.
+- Resultado por par: com skill 4, sem skill 0, empates 0.
+- Resultado por criterio: com skill 31, sem skill 0, empates 1.
+- Nucleo comercial combinado (`entry_transformation_clarity_score`,
+  `price_value_coherence_score`, `backend_ascension_bridge_score`): com skill
+  12 celulas, sem skill 0, empates 0; com skill venceu o nucleo nos 4 pares.
+- Guard `orphan_question_mark` nos outputs com skill passou com 0 achados; os
+  non-ASCII encontrados sao acentos normais de output final pt-BR, nao defeito
+  de encoding.
+- No Invention da chave passou: 13 citacoes unicas resolvem para
+  `curated_insights` real e carregam `process-produto-low-ticket`.
+- Veredito final: `PASS`. Skill `msf-process-produto-low-ticket` aprovada.
+- MSF-S07 liberado como ultima skill real da primeira leva.
+
 ### MSF-S07 - Skill: criacao de quiz
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked`
+Status: `ready`
 
 Escopo: skill `msf-process-quiz` (perguntas, diagnostico, ponte para oferta,
 fechamento de loops abertos).
 
 Aceite: Definition of Done da secao 2.
 
-Dependencias: MSF-S01, MSF-S02, MSF-S06 aprovado por S09 low-ticket.
+Dependencias: MSF-S01, MSF-S02, MSF-S06 aprovado por S09 Low Ticket.
 
 ### MSF-S08 - Modulos transversais de copy
 
@@ -453,8 +503,13 @@ Execucao parcial 2026-07-08:
   campos da rubrica de anuncios em branco para juiz externo.
 - S09 Ads aprovado como `PASS`: com skill venceu 4/4 pares, 30/32 criterios e
   12/12 celulas comerciais, com 2 empates e 0 perdas.
-- S05 esta done/approved; S06 e a proxima skill real. S07 segue blocked ate
-  S06 passar pelo proprio S09.
+- S05 esta done/approved; S06 virou a proxima skill real; naquele momento, S07
+  seguia blocked ate S06 passar pelo proprio S09.
+- S09 Low Ticket para S06 preparado com 4 pares, CSV cego sem vazamento de
+  origem e campos da rubrica de low ticket em branco para juiz externo.
+- S09 Low Ticket aprovado como `PASS`: com skill venceu 4/4 pares, 31/32
+  criterios e 12/12 celulas comerciais, com 1 empate e 0 perdas.
+- S06 esta done/approved; S07 e a ultima skill real da primeira leva.
 
 ### MSF-S10 - Agentes consumidores de skills
 
@@ -538,10 +593,10 @@ Dependencias: MSF-R16, MSF-S10.
 ## 5. Ordem executiva
 
 1. Gates R2 e R3 estao aprovados; MSF-S01 + MSF-S02 (fundacao) estao done.
-2. MSF-S04, MSF-S03 e MSF-S05 estao aprovados por S09; S06 (low ticket) esta
-   liberado como proxima skill real.
-3. S07 (quiz) segue blocked ate S06 validar o proprio
-   pipeline skill -> retrieval -> rubrica -> teste cego.
+2. MSF-S04, MSF-S03, MSF-S05 e MSF-S06 estao aprovados por S09; S07 (quiz)
+   esta liberado como ultima skill real da primeira leva.
+3. S07 deve validar o proprio pipeline skill -> retrieval -> rubrica -> teste
+   cego antes de qualquer agente consumidor.
 4. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
    retroalimentacao.
 5. Segunda leva (S12) quando o backfill e os assets da academy elevarem a
