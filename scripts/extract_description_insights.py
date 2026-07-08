@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json, normalize_text, slugify, write_json
+from msf_common import data_path, load_json, normalize_text, slugify, write_json
 
 
 STOP_MARKERS = [
@@ -173,9 +173,9 @@ def extract_from_metadata(metadata_path: Path, output_path: Path) -> dict[str, A
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--metadata", type=Path, help="Single metadata.json")
-    parser.add_argument("--all", action="store_true", help="Process all metadata under data/raw/youtube")
-    parser.add_argument("--raw-youtube-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
+    parser.add_argument("--all", action="store_true", help="Process all metadata under the configured raw/youtube root")
+    parser.add_argument("--raw-youtube-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
     args = parser.parse_args()
 
     metadata_paths: list[Path]
@@ -201,4 +201,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

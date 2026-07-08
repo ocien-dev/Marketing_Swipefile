@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json, normalize_text, slugify, unique_preserve_order, write_json, write_text
+from msf_common import data_path, load_json, normalize_text, slugify, unique_preserve_order, write_json, write_text
 
 
 @dataclass(frozen=True)
@@ -534,7 +534,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--video-id", action="append", dest="video_ids", help="Episode video id. Can be repeated.")
     parser.add_argument("--all-processed", action="store_true", help="Process every episode with a chunks directory.")
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
     parser.add_argument("--output-name", default="insights.json")
     parser.add_argument("--max-per-rule", default=8, type=int)
     parser.add_argument("--max-per-chunk", default=3, type=int)

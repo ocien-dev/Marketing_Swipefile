@@ -10,6 +10,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import utc_now, write_json
 
 
@@ -100,7 +101,7 @@ def main() -> int:
     parser.add_argument("--file", type=Path, help="Single obtained file to register")
     parser.add_argument("--referenced-asset-id", default=None, help="Optional referenced asset id")
     parser.add_argument("--source", default=None, help="Optional source name")
-    parser.add_argument("--output-root", default=Path("data/raw/assets"), type=Path)
+    parser.add_argument("--output-root", default=data_path("raw", "assets"), type=Path)
     args = parser.parse_args()
 
     files: list[Path]

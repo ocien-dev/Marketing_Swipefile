@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import slugify, write_json
+from msf_common import data_path, slugify, write_json
 
 
 def utc_now() -> str:
@@ -327,18 +327,18 @@ def update_queue_status(queue_path: Path, results: list[dict[str, Any]]) -> None
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--queue", default=Path("data/input/academy_video_transcription_queue.csv"), type=Path)
+    parser.add_argument("--queue", default=data_path("input", "academy_video_transcription_queue.csv"), type=Path)
     parser.add_argument("--queue-type", default="drive_video_asset")
     parser.add_argument("--status", default="needs_download_audio_extraction")
     parser.add_argument("--limit", default=5, type=int)
     parser.add_argument("--max-download-mb", default=8, type=int)
     parser.add_argument("--model", default="tiny")
     parser.add_argument("--deps-dir", default=Path(".codex_deps/transcription"), type=Path)
-    parser.add_argument("--model-cache", default=Path("data/cache/faster_whisper"), type=Path)
-    parser.add_argument("--media-root", default=Path("data/raw/academy_media"), type=Path)
-    parser.add_argument("--raw-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
-    parser.add_argument("--output-log", default=Path("data/logs/academy_video_transcription_results.jsonl"), type=Path)
+    parser.add_argument("--model-cache", default=data_path("cache", "faster_whisper"), type=Path)
+    parser.add_argument("--media-root", default=data_path("raw", "academy_media"), type=Path)
+    parser.add_argument("--raw-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
+    parser.add_argument("--output-log", default=data_path("logs", "academy_video_transcription_results.jsonl"), type=Path)
     parser.add_argument("--max-chars", default=50000, type=int)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--force-download", action="store_true")

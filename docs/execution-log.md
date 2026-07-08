@@ -2021,3 +2021,59 @@ Validation:
 - Internal non-ASCII scan passed on repo internal docs/scripts/skill files
   touched in this closure.
 - `git diff --check` passed with LF/CRLF warnings only.
+
+## 2026-07-08 - MSF-R03 data migration out of OneDrive
+
+Scope:
+
+- Executed MSF-R03 phases 1-4 to move ignored/local-only runtime data out of
+  the OneDrive-backed repo tree.
+- Approved external root: `C:\MSF-data\Marketing_Swipe_File`.
+- No junction was created.
+- `data/processed/taxonomy_seed.json` remains the canonical repo-tracked
+  taxonomy seed.
+
+Implementation:
+
+- Added data-root helpers in `scripts/msf_common.py`: `repo_root`,
+  `repo_data_root`, `data_root`, `data_path`, and `repo_data_path`.
+- Migrated runtime defaults from hardcoded `data/...` paths to `data_path(...)`.
+- Kept taxonomy defaults on `repo_data_path("processed", "taxonomy_seed.json")`.
+- Updated current operational docs, loops, retrieval recipes, and legacy local
+  skills to mention `MSF_DATA_DIR`.
+- Added `MSF_DATA_DIR=C:\MSF-data\Marketing_Swipe_File` to `.env.example`.
+- Persisted the user environment variable with
+  `setx MSF_DATA_DIR "C:\MSF-data\Marketing_Swipe_File"`.
+
+Copy and cleanup:
+
+- Pre-delete coverage check rebuilt
+  `git ls-files --others --ignored --exclude-standard data`.
+- Manifest coverage passed: 9,713 files covered in external root, 9,709 regular
+  files matched by byte-size, and 4 cache symlinks matched by resolved
+  payload/hash.
+- Deleted exactly the 9,713 ignored/local-only manifest files from repo `data/`.
+- Preserved all tracked data files: `.gitkeep` files, lightweight tracked queues,
+  `taxonomy_seed.json`, and previously tracked S09 audit artifacts.
+- Post-delete repo data check: 31 actual `data/` files, 31 tracked `data/`
+  files, 0 extra ignored/local-only payload files, 0 missing tracked files.
+
+Validation:
+
+- New process using the persistent user environment resolved
+  `data_root=C:\MSF-data\Marketing_Swipe_File`.
+- 5 process-skill validators with `--require-done` passed.
+- `scripts/validate_transversal_modules.py skills\_modules\msf-transversal-copy`
+  passed.
+- Generated 1 real strategy pack per approved first-wave skill; all read
+  `C:\MSF-data\Marketing_Swipe_File\exports\curated_insights.json`.
+- No Invention passed for the 5 skills against external curated.
+- Hardened mojibake guard passed on the post-delete generated packs: 0 findings.
+- `git ls-files --deleted` returned 0.
+- `git diff --check` passed with LF/CRLF warnings only.
+
+Decision state:
+
+- MSF-R03 is `done`.
+- MSF-R14 backfill is the next milestone, but was not started; it remains
+  waiting for an explicit owner prompt.

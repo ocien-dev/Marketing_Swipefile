@@ -3,7 +3,7 @@
 
 This script intentionally does not call an LLM API yet. It prepares chunk
 packets for Codex/manual review and merges validated chunk outputs into the
-canonical `data/processed/{video_id}/insights_v2.json` file.
+canonical `{MSF_DATA_DIR or repo/data}/processed/{video_id}/insights_v2.json` file.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json, slugify, write_json, write_text
+from msf_common import data_path, load_json, slugify, write_json, write_text
 from validate_insights_v2 import validate_payload
 
 
@@ -245,8 +245,8 @@ def main() -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     common: dict[str, Any] = {
-        "processed_root": Path("data/processed"),
-        "raw_youtube_root": Path("data/raw/youtube"),
+        "processed_root": data_path("processed"),
+        "raw_youtube_root": data_path("raw", "youtube"),
     }
 
     prepare = subparsers.add_parser("prepare", help="Prepare Codex packet files from transcript chunks.")

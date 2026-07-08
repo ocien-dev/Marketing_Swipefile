@@ -1,6 +1,6 @@
 ---
 name: marketing-swipe-file-process-assets
-description: Register and process obtained complementary files for the Marketing Swipe File. Use when Codex needs to handle files placed in data/input/assets/{video_id}/, register checksummed assets, extract normalized segments from PDF, DOCX, TXT, Markdown, HTML, CSV, XLSX, or PPTX files, generate asset summaries, and preserve evidence locators.
+description: Register and process obtained complementary files for the Marketing Swipe File. Use when Codex needs to handle files placed in the configured runtime input/assets folder, register checksummed assets, extract normalized segments from PDF, DOCX, TXT, Markdown, HTML, CSV, XLSX, or PPTX files, generate asset summaries, and preserve evidence locators.
 ---
 
 # Marketing Swipe File Process Assets
@@ -11,12 +11,16 @@ Use this skill when the user has obtained complementary files or when fixture as
 
 ## Workflow
 
-1. Put files under `data/input/assets/{video_id}/`.
-2. Run:
-   `scripts/run_asset_pipeline.py --episode-video-id <video_id> --input-dir data/input/assets/<video_id>`
-3. For already registered assets, run:
+1. Set the runtime data root when MSF-R03 external data is active:
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   ```
+2. Put files under `$dataRoot\input\assets\{video_id}\`.
+3. Run:
+   `scripts/run_asset_pipeline.py --episode-video-id <video_id> --input-dir "$dataRoot\input\assets\<video_id>"`
+4. For already registered assets, run:
    `scripts/run_asset_pipeline.py --episode-video-id <video_id>`
-4. Review raw metadata, extracted segments, and `asset_summary.md`.
+5. Review raw metadata, extracted segments, and `asset_summary.md`.
 
 ## Supported Inputs
 
@@ -30,6 +34,6 @@ Image OCR is not part of the MVP flow yet. Image assets are registered but skipp
 
 ## Rules
 
-- Preserve original files in `data/raw/assets/{asset_id}/`.
+- Preserve original files in `$dataRoot\raw\assets\{asset_id}\`.
 - Use checksum-based asset ids to avoid duplicate registration.
 - Keep page, sheet, cell, slide, or section locators in every segment when possible.

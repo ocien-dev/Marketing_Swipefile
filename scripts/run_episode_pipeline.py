@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json, write_json, write_text
+from msf_common import data_path, load_json, write_json, write_text
 from youtube_common import extract_video_id
 
 
@@ -276,8 +276,8 @@ def main() -> int:
     parser.add_argument("--csv", type=Path, help="CSV with youtube_url values")
     parser.add_argument("--video-id", help="Existing local video id")
     parser.add_argument("--source", default="VTurb")
-    parser.add_argument("--raw-youtube-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
+    parser.add_argument("--raw-youtube-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
     parser.add_argument("--log", type=Path, help="JSONL log path")
     parser.add_argument("--extractors", default="vsl,ads,offer,funnel,copy,ops")
     parser.add_argument("--max-chars", default=50000, type=int)
@@ -286,7 +286,7 @@ def main() -> int:
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
-    log_path = args.log or Path("data/logs") / f"episode_pipeline_{utc_now().replace(':', '').replace('-', '')}.jsonl"
+    log_path = args.log or data_path("logs") / f"episode_pipeline_{utc_now().replace(':', '').replace('-', '')}.jsonl"
     logger = PipelineLogger(log_path)
     for item in video_inputs(args):
         run_for_video(args, logger, item)

@@ -2,6 +2,12 @@
 
 Source layer: `curated_insights`
 
+Data root:
+
+```powershell
+$dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+```
+
 Primary process tag:
 
 - `process-copy-vsl`
@@ -20,7 +26,7 @@ Use search while exploring:
 Use strategy packs when producing an output:
 
 ```powershell
-.\.venv\Scripts\python.exe -B scripts\generate_strategy_pack.py --source curated --task vsl --process-tags process-copy-vsl,process-mecanismo-big-idea,process-prova-depoimentos --product "<product>" --avatar "<avatar>" --market "<market>" --asset-type "vsl" --query "<briefing terms>" --limit 20 --output-json data/exports/strategy_pack_vsl.json --output-md data/exports/strategy_pack_vsl.md
+.\.venv\Scripts\python.exe -B scripts\generate_strategy_pack.py --source curated --task vsl --process-tags process-copy-vsl,process-mecanismo-big-idea,process-prova-depoimentos --product "<product>" --avatar "<avatar>" --market "<market>" --asset-type "vsl" --query "<briefing terms>" --limit 20 --output-json "$dataRoot\exports\strategy_pack_vsl.json" --output-md "$dataRoot\exports\strategy_pack_vsl.md"
 ```
 
 Selection rules:

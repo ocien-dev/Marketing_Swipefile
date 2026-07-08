@@ -10,6 +10,8 @@ import unicodedata
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
+
 
 ASSET_PATTERNS = [
     {
@@ -230,7 +232,7 @@ def detect_assets(metadata: dict[str, Any], segments_payload: dict[str, Any]) ->
             index = len(detected) + 1
             referenced_asset_id = f"{video_id}-refasset-{index:04d}"
             task_type, base_instruction = detect_keyword_instruction(text, pattern["asset_type_guess"])
-            asset_dir = f"data/input/assets/{video_id}/"
+            asset_dir = str(data_path("input", "assets", video_id))
             instruction = f"{base_instruction} Inserir o arquivo obtido em {asset_dir}."
 
             asset = {

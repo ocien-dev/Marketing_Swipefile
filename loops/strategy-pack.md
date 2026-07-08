@@ -7,7 +7,10 @@ Goal: turn the local base into task-ready context for a consuming agent.
 1. Run `scripts/consolidate_exports.py`.
 2. Explore with `scripts/search_insights.py`.
 3. Generate the pack:
-   `scripts/generate_strategy_pack.py --task <vsl|anuncios|oferta|quiz|webinar> --product "<produto>" --avatar "<avatar>" --market "<mercado>" --output-json data/exports/strategy_pack.json --output-md data/exports/strategy_pack.md`
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   scripts/generate_strategy_pack.py --task <vsl|anuncios|oferta|quiz|webinar> --product "<produto>" --avatar "<avatar>" --market "<mercado>" --output-json "$dataRoot\exports\strategy_pack.json" --output-md "$dataRoot\exports\strategy_pack.md"
+   ```
 4. Use `prompts/retrieval/strategy_pack_retrieval.md` if a model needs to reshape or rerank retrieved records.
 5. Require final outputs to list `insight_id` values used.
 

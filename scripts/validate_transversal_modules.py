@@ -8,12 +8,12 @@ import re
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json
+from msf_common import load_json, repo_data_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCHEMA = ROOT / "schemas" / "msf_transversal_module_contract.schema.json"
-DEFAULT_TAXONOMY = ROOT / "data" / "processed" / "taxonomy_seed.json"
+DEFAULT_TAXONOMY = repo_data_path("processed", "taxonomy_seed.json")
 PLACEHOLDER_RE = re.compile(r"__[A-Z0-9_]+__")
 INSIGHT_CITATION_RE = re.compile(r"\[insight:[A-Za-z0-9_-]+-v2-\d{4}\]")
 

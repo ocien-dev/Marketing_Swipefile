@@ -9,13 +9,13 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json, normalize_process_tags, slugify
+from msf_common import load_json, normalize_process_tags, repo_data_path, slugify
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TEMPLATE_DIR = ROOT / "skills" / "_templates" / "msf-process-skill"
 DEFAULT_OUTPUT_ROOT = ROOT / "skills"
-DEFAULT_TAXONOMY = ROOT / "data" / "processed" / "taxonomy_seed.json"
+DEFAULT_TAXONOMY = repo_data_path("processed", "taxonomy_seed.json")
 
 
 def valid_process_ids(taxonomy_path: Path) -> set[str]:

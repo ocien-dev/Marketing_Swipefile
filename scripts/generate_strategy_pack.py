@@ -12,6 +12,7 @@ from typing import Any
 
 from msf_common import (
     as_list,
+    data_path,
     first_evidence,
     jaccard,
     load_json,
@@ -25,10 +26,10 @@ from msf_common import (
 
 
 DEFAULT_MASTERS = {
-    "raw": Path("data/exports/insights_master.json"),
-    "v1": Path("data/exports/insights_master.json"),
-    "v2": Path("data/exports/insights_v2_master.json"),
-    "curated": Path("data/exports/curated_insights.json"),
+    "raw": data_path("exports", "insights_master.json"),
+    "v1": data_path("exports", "insights_master.json"),
+    "v2": data_path("exports", "insights_v2_master.json"),
+    "curated": data_path("exports", "curated_insights.json"),
 }
 
 

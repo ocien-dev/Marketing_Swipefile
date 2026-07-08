@@ -2,13 +2,20 @@
 
 Use this procedure when Marketing Swipe File detects a complementary material in an episode.
 
+Runtime data is under `$env:MSF_DATA_DIR` when it is set; otherwise it falls
+back to repo-local `data/`. For concrete commands:
+
+```powershell
+$dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+```
+
 ## Where to See Pending Actions
 
 For each processed episode, check:
 
 ```text
-data/processed/{video_id}/manual_actions.md
-data/processed/{video_id}/acquisition_tasks.json
+{dataRoot}/processed/{video_id}/manual_actions.md
+{dataRoot}/processed/{video_id}/acquisition_tasks.json
 ```
 
 The manual actions file tells you:
@@ -32,7 +39,7 @@ When the instruction says to comment a keyword:
 5. Place it in:
 
 ```text
-data/input/assets/{video_id}/
+{dataRoot}/input/assets/{video_id}/
 ```
 
 ### Direct Message
@@ -45,7 +52,7 @@ When the instruction says to send a direct message:
 4. Place it in:
 
 ```text
-data/input/assets/{video_id}/
+{dataRoot}/input/assets/{video_id}/
 ```
 
 ### Description Link
@@ -58,7 +65,7 @@ When the instruction says to use a description link:
 4. Place it in:
 
 ```text
-data/input/assets/{video_id}/
+{dataRoot}/input/assets/{video_id}/
 ```
 
 ### Member Area
@@ -71,7 +78,7 @@ When the instruction says to use a member area:
 4. Place it in:
 
 ```text
-data/input/assets/{video_id}/
+{dataRoot}/input/assets/{video_id}/
 ```
 
 ## File Naming
@@ -95,14 +102,14 @@ fixture001-refasset-0001__vsl-framework.pdf
 After placing files in the folder, run:
 
 ```powershell
-& 'C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' scripts\register_assets.py --episode-video-id {video_id} --input-dir data\input\assets\{video_id}
+.\.venv\Scripts\python.exe -B scripts\register_assets.py --episode-video-id {video_id} --input-dir "$dataRoot\input\assets\{video_id}"
 ```
 
 The script will:
 
 - calculate checksum;
 - create an `asset_id`;
-- preserve the original file under `data/raw/assets/{asset_id}/`;
+- preserve the original file under `{dataRoot}/raw/assets/{asset_id}/`;
 - write `metadata.json`;
 - avoid duplicate registrations for the same file.
 
@@ -119,4 +126,3 @@ Use these statuses:
 ## Important
 
 Do not commit private, paid, member-area, or copyrighted files. Raw assets are ignored by Git by default.
-

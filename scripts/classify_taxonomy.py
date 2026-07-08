@@ -13,6 +13,7 @@ from msf_common import (
     insight_text,
     load_json,
     normalize_text,
+    repo_data_path,
     unique_preserve_order,
     write_json,
     write_text,
@@ -271,7 +272,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", required=True, type=Path, help="Path to insights.json")
     parser.add_argument("--output", type=Path, help="Path to write classified insights.json")
-    parser.add_argument("--taxonomy", default=Path("data/processed/taxonomy_seed.json"), type=Path)
+    parser.add_argument("--taxonomy", default=repo_data_path("processed", "taxonomy_seed.json"), type=Path)
     parser.add_argument("--report", type=Path, help="Optional markdown report path")
     parser.add_argument("--process-review-queue", type=Path, help="Optional JSON file for insights without process_tags.")
     parser.add_argument("--max-process-tags", type=int, default=4)

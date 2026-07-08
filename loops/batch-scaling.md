@@ -4,13 +4,17 @@ Goal: keep expanding and processing the VTurb podcast inventory until a target n
 
 ## Steps
 
-1. Count complete videos with `scripts/run_episode_batch.py --target-complete 50 --status-only`.
-2. Discover more VTurb channel videos with `scripts/discover_vturb_youtube_videos.py --append --append-limit <n>`.
-3. Append only deduped URLs to `data/input/youtube_urls.csv`.
-4. Run `scripts/run_episode_batch.py --target-complete 50 --use-playwright-fallback`.
-5. Let blocked transcript videos remain blocked; continue with the next queued episode.
-6. Use `--start-priority` and `--max-attempts` to continue after known blocked ranges without repeating the whole queue.
-7. Consolidate exports and update `docs/execution-log.md` when the batch advances.
+1. Set the runtime data root when MSF-R03 external data is active:
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   ```
+2. Count complete videos with `scripts/run_episode_batch.py --target-complete 50 --status-only`.
+3. Discover more VTurb channel videos with `scripts/discover_vturb_youtube_videos.py --append --append-limit <n>`.
+4. Append only deduped URLs to `$dataRoot\input\youtube_urls.csv`.
+5. Run `scripts/run_episode_batch.py --target-complete 50 --use-playwright-fallback`.
+6. Let blocked transcript videos remain blocked; continue with the next queued episode.
+7. Use `--start-priority` and `--max-attempts` to continue after known blocked ranges without repeating the whole queue.
+8. Consolidate exports and update `docs/execution-log.md` when the batch advances.
 
 ## Complete Video Gate
 

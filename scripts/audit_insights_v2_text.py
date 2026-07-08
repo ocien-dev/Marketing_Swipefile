@@ -10,6 +10,7 @@ from typing import Any
 
 from msf_common import (
     broken_accent_deletion_matches,
+    data_path,
     load_json,
     normalize_text,
     orphan_question_mark_contexts,
@@ -145,8 +146,8 @@ def audit_duplicate_takeaways(paths: list[Path]) -> list[dict[str, Any]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="*", type=Path, help="Optional insights_v2.json files to audit.")
-    parser.add_argument("--processed-root", type=Path, default=Path("data/processed"))
-    parser.add_argument("--exports-root", type=Path, default=Path("data/exports"))
+    parser.add_argument("--processed-root", type=Path, default=data_path("processed"))
+    parser.add_argument("--exports-root", type=Path, default=data_path("exports"))
     parser.add_argument("--skip-generated-text-scan", action="store_true")
     args = parser.parse_args()
 

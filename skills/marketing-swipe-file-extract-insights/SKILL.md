@@ -11,16 +11,20 @@ Use this skill when turning content segments or extraction packets into `insight
 
 ## Workflow
 
-1. Prefer chunked packets for long episodes:
-   `data/processed/{video_id}/chunked_extraction_packets/{extractor}/chunk_###_packet.md`
-2. Save extractor outputs to:
-   `data/processed/{video_id}/chunked_insights/{extractor}/chunk_###_insights.json`
-3. For asset extraction packets, use `scripts/prepare_extraction_packet.py` with `--extractor asset`.
-4. After each `insights.json`, run:
+1. Set the runtime data root when MSF-R03 external data is active:
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   ```
+2. Prefer chunked packets for long episodes:
+   `$dataRoot\processed\{video_id}\chunked_extraction_packets\{extractor}\chunk_###_packet.md`
+3. Save extractor outputs to:
+   `$dataRoot\processed\{video_id}\chunked_insights\{extractor}\chunk_###_insights.json`
+4. For asset extraction packets, use `scripts/prepare_extraction_packet.py` with `--extractor asset`.
+5. After each `insights.json`, run:
    `scripts/classify_taxonomy.py --input <insights.json>`
    `scripts/dedupe_insights.py --input <insights.json>`
    `scripts/audit_insights.py --input <insights.json>`
-5. Consolidate accepted outputs with `scripts/consolidate_exports.py`.
+6. Consolidate accepted outputs with `scripts/consolidate_exports.py`.
 
 ## raw_insights_v2 Remediation Workflow
 
@@ -30,12 +34,12 @@ Use this path for MSF-R05/MSF-R06 and later R1 remediation. It does not replace 
    `scripts/validate_insights_v2.py schemas/examples/insights_v2.example.json`
 2. Prepare Codex-first packets from existing chunks:
    `scripts/extract_transcript_insights_llm.py prepare --video-id <video_id> --chunks <chunk_numbers>`
-3. Read each packet from `data/processed/{video_id}/llm_v2_packets/`.
+3. Read each packet from `$dataRoot\processed\{video_id}\llm_v2_packets\`.
 4. Extract at most 5 specific insights per chunk using `prompts/extraction/base_insight_extraction_v2.md`.
-5. Save chunk-level JSON to `data/processed/{video_id}/llm_v2_outputs/chunk_###_insights.json`.
+5. Save chunk-level JSON to `$dataRoot\processed\{video_id}\llm_v2_outputs\chunk_###_insights.json`.
 6. Merge and validate:
    `scripts/extract_transcript_insights_llm.py combine --video-id <video_id>`
-   `scripts/validate_insights_v2.py data/processed/{video_id}/insights_v2.json`
+   `scripts/validate_insights_v2.py "$dataRoot\processed\{video_id}\insights_v2.json"`
 
 ## Rules
 

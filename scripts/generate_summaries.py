@@ -8,7 +8,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from msf_common import as_list, first_evidence, load_json, write_text
+from msf_common import as_list, data_path, first_evidence, load_json, write_text
 
 
 def safe_load(path: Path) -> dict[str, Any] | None:
@@ -145,9 +145,9 @@ def main() -> int:
     parser.add_argument("--episode", help="Episode video id to summarize")
     parser.add_argument("--asset", help="Asset id to summarize")
     parser.add_argument("--all", action="store_true", help="Summarize all discovered episodes and assets")
-    parser.add_argument("--raw-youtube-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--raw-assets-root", default=Path("data/raw/assets"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
+    parser.add_argument("--raw-youtube-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--raw-assets-root", default=data_path("raw", "assets"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
     args = parser.parse_args()
 
     wrote = 0
@@ -177,4 +177,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

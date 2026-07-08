@@ -12,25 +12,28 @@ Use this skill to move an episode from URL or local `video_id` into the local Co
 ## Workflow
 
 1. Check `README.md`, `docs/marketing-swipe-file-handoff.md`, and `docs/execution-log.md` if the current state is unclear.
-2. Use bundled Python, not plain `python`, when PATH is uncertain:
-   `C:\Users\luish\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe`
-3. For a new URL, run:
+2. Set the runtime data root when MSF-R03 external data is active:
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   ```
+3. Use `.venv\Scripts\python.exe -B` by default.
+4. For a new URL, run:
    `scripts/run_episode_pipeline.py --url <youtube_url>`
-4. For an existing episode after Playwright transcript fallback, run:
+5. For an existing episode after Playwright transcript fallback, run:
    `scripts/run_episode_pipeline.py --video-id <video_id> --skip-metadata --skip-transcript`
-5. If the direct caption endpoint produces zero segments, do not fake a transcript. Use the Playwright fallback procedure in `docs/marketing-swipe-file-handoff.md`, then rerun the pipeline.
+6. If the direct caption endpoint produces zero segments, do not fake a transcript. Use the Playwright fallback procedure in `docs/marketing-swipe-file-handoff.md`, then rerun the pipeline.
 
 ## Outputs
 
-- `data/raw/youtube/{video_id}/metadata.json`
-- `data/raw/youtube/{video_id}/transcript_original.json`
-- `data/processed/{video_id}/content_segments.json`
-- `data/processed/{video_id}/chunks/chunk_index.json`
-- `data/processed/{video_id}/referenced_assets.json`
-- `data/processed/{video_id}/acquisition_tasks.json`
-- `data/processed/{video_id}/chunked_extraction_packets/`
-- `data/processed/{video_id}/episode_summary.md`
-- `data/logs/episode_pipeline_*.jsonl`
+- `$dataRoot\raw\youtube\{video_id}\metadata.json`
+- `$dataRoot\raw\youtube\{video_id}\transcript_original.json`
+- `$dataRoot\processed\{video_id}\content_segments.json`
+- `$dataRoot\processed\{video_id}\chunks\chunk_index.json`
+- `$dataRoot\processed\{video_id}\referenced_assets.json`
+- `$dataRoot\processed\{video_id}\acquisition_tasks.json`
+- `$dataRoot\processed\{video_id}\chunked_extraction_packets\`
+- `$dataRoot\processed\{video_id}\episode_summary.md`
+- `$dataRoot\logs\episode_pipeline_*.jsonl`
 
 ## Rules
 

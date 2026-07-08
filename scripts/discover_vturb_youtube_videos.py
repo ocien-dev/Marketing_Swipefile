@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import canonical_watch_url, extract_balanced_json
 
 
@@ -202,8 +203,8 @@ def main() -> int:
     parser.add_argument("--channel-id", default=DEFAULT_CHANNEL_ID)
     parser.add_argument("--max-videos", default=160, type=int)
     parser.add_argument("--max-pages", default=40, type=int)
-    parser.add_argument("--queue", default=Path("data/input/youtube_urls.csv"), type=Path)
-    parser.add_argument("--output", default=Path("data/exports/vturb_channel_discovered_videos.csv"), type=Path)
+    parser.add_argument("--queue", default=data_path("input", "youtube_urls.csv"), type=Path)
+    parser.add_argument("--output", default=data_path("exports", "vturb_channel_discovered_videos.csv"), type=Path)
     parser.add_argument("--append", action="store_true", help="Append discovered videos not already present in the queue")
     parser.add_argument("--append-limit", type=int, help="Maximum number of new queue rows to append")
     parser.add_argument("--source-priority", default="1")

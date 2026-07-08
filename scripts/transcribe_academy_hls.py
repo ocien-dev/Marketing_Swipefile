@@ -13,7 +13,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from msf_common import slugify, write_json
+from msf_common import data_path, slugify, write_json
 from transcribe_academy_videos import (
     load_whisper_model,
     run_post_pipeline,
@@ -328,8 +328,8 @@ def process_row(args: argparse.Namespace, row: dict[str, Any], model: Any | None
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", default=Path("data/exports/vturb_academy_lesson_media_manifest.json"), type=Path)
-    parser.add_argument("--queue", default=Path("data/input/academy_video_transcription_queue.csv"), type=Path)
+    parser.add_argument("--manifest", default=data_path("exports", "vturb_academy_lesson_media_manifest.json"), type=Path)
+    parser.add_argument("--queue", default=data_path("input", "academy_video_transcription_queue.csv"), type=Path)
     parser.add_argument("--limit", default=3, type=int)
     parser.add_argument("--max-download-mb", default=250, type=int)
     parser.add_argument("--max-duration-min", default=0, type=int)
@@ -338,11 +338,11 @@ def main() -> int:
     parser.add_argument("--chunk-duration-min", default=20, type=int)
     parser.add_argument("--model", default="tiny")
     parser.add_argument("--deps-dir", default=Path(".codex_deps/transcription"), type=Path)
-    parser.add_argument("--model-cache", default=Path("data/cache/faster_whisper"), type=Path)
-    parser.add_argument("--media-root", default=Path("data/raw/academy_hls"), type=Path)
-    parser.add_argument("--raw-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
-    parser.add_argument("--output-log", default=Path("data/logs/academy_hls_transcription_results.jsonl"), type=Path)
+    parser.add_argument("--model-cache", default=data_path("cache", "faster_whisper"), type=Path)
+    parser.add_argument("--media-root", default=data_path("raw", "academy_hls"), type=Path)
+    parser.add_argument("--raw-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
+    parser.add_argument("--output-log", default=data_path("logs", "academy_hls_transcription_results.jsonl"), type=Path)
     parser.add_argument("--max-chars", default=50000, type=int)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--force-download", action="store_true")

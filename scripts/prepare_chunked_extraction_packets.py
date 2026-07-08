@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from msf_common import repo_data_path
 from prepare_extraction_packet import EXTRACTOR_FILES, load_json, read_text, render_packet
 
 
@@ -42,7 +43,7 @@ def main() -> int:
     parser.add_argument("--extractors", default="vsl,ads", help="Comma-separated extractor names")
     parser.add_argument("--output-dir", required=True, type=Path, help="Directory for packet markdown files")
     parser.add_argument("--insights-dir", required=True, type=Path, help="Directory for expected insights JSON outputs")
-    parser.add_argument("--taxonomy", default=Path("data/processed/taxonomy_seed.json"), type=Path)
+    parser.add_argument("--taxonomy", default=repo_data_path("processed", "taxonomy_seed.json"), type=Path)
     parser.add_argument("--base-prompt", default=Path("prompts/extraction/base_insight_extraction.md"), type=Path)
     args = parser.parse_args()
 

@@ -140,7 +140,7 @@ Execucao 2026-07-07:
 
 Prioridade: `P1`
 Tipo: `ops`
-Status: `deferred`
+Status: `done`
 
 Escopo:
 
@@ -164,6 +164,32 @@ Execucao 2026-07-07:
 - Risco permanece documentado: o workspace e o Git estao funcionais, mas OneDrive ainda pode causar locks/permissoes em `.git`, `.pyc`, temp e milhares de JSONs pequenos.
 - Mitigacao aplicada nesta etapa: manter dados e exports ignorados pelo Git e usar validacao em memoria quando `py_compile`/`.pyc` bater em permissao.
 - Reabrir antes de escala pesada ou automacao longa.
+
+Execucao 2026-07-08:
+
+- Status atualizado para `done`.
+- Adicionados helpers de raiz de dados em `scripts/msf_common.py`: `repo_root`,
+  `repo_data_root`, `data_root`, `data_path` e `repo_data_path`.
+- Defaults runtime de scripts passaram a usar `data_path(...)`; validadores e
+  criadores que dependem da taxonomia usam `repo_data_path("processed",
+  "taxonomy_seed.json")`.
+- `MSF_DATA_DIR` foi persistido no usuario com
+  `setx MSF_DATA_DIR "C:\MSF-data\Marketing_Swipe_File"` e documentado em
+  `.env.example`, README, handoff, loops e skills.
+- Manifesto `git ls-files --others --ignored --exclude-standard data` validado
+  contra o external: 9.713 arquivos cobertos, 9.709 arquivos regulares com
+  byte-size identico e 4 symlinks de cache verificados por payload/hash
+  resolvido.
+- Removidos do repo somente os 9.713 arquivos ignored/local-only do manifesto.
+  Nenhum arquivo tracked foi deletado.
+- Pos-delete: `git ls-files --others --ignored --exclude-standard data` retorna
+  0; repo `data/` contem 31 arquivos reais e todos sao tracked.
+- Validacao pos-delete passou: 5 process skills `--require-done`, modulos
+  transversais, 5 strategy packs lendo curated externo, No Invention das 5
+  skills contra curated externo, guard de mojibake nos packs gerados e
+  `git diff --check`.
+- Relatorios: `docs/msf-r03-phase-1-3-report-2026-07-08.md` e
+  `docs/msf-r03-phase-4-report-2026-07-08.md`.
 
 ### MSF-R04 - Sincronizar documentacao com o estado real
 
@@ -576,19 +602,20 @@ Dependencias:
 
 - MSF-R11, MSF-R12.
 
-## EPIC R4 - Escala e proximas camadas (bloqueado pelos gates R1-R3)
+## EPIC R4 - Escala e proximas camadas (pos-gates)
 
 ### MSF-R14 - Retomar escala de episodios com pipeline v2
 
 Prioridade: `P2`
 Tipo: `data`
-Status: `blocked`
+Status: `not_started`
 
 Escopo:
 
 - Somente apos gates R1 e R2 aprovados.
 - Absorver a cobertura continua dos 50 episodios completos que deixou de ser requisito bloqueante do Gate R1 pela emenda de aceite do MSF-R07 em 2026-07-07.
-- Antes do backfill pos-gate dos chunks restantes, reabrir MSF-R03 para reduzir risco de locks/permissoes do OneDrive.
+- MSF-R03 ja foi concluido em 2026-07-08; executar o backfill usando
+  `MSF_DATA_DIR=C:\MSF-data\Marketing_Swipe_File`.
 - Processar os 110 episodios VTurb restantes com o pipeline v2 (metadata, transcript com fallback Playwright, chunks, extracao LLM).
 - Retentar os 6 videos bloqueados conhecidos (`YfI0CjI_XaE`, `Rz1Y7fhXGFI`, `0DlzYLUmKcU`, `wJincuVXxxc`, `FV-KR1eEbCw`, `sVUrU9gvxyk`); se o transcript da UI continuar indisponivel, avaliar transcricao de audio local (base ja existe em `scripts/transcribe_academy_hls.py`).
 - Registrar motivo de falha por video automaticamente (item ja recomendado no handoff).
@@ -600,7 +627,8 @@ Aceite:
 
 Dependencias:
 
-- Gates R1, R2 e R3 aprovados; MSF-R03 reaberto antes do backfill.
+- Gates R1, R2 e R3 aprovados; MSF-R03 done. Proximo marco, mas so iniciar
+  quando o owner mandar.
 
 ### MSF-R15 - Triagem das tarefas de materiais complementares
 
@@ -660,13 +688,16 @@ Ordem de ataque sugerida, em sessoes:
 3. Sessao 3: MSF-R07 e MSF-R08 done; Gate R1 aprovado em 2026-07-07 apos julgamento cego externo e verificacao independente da remediacao do batch 006.
 4. Sessao 4: MSF-R09 e MSF-R10 done; Gate R2 aprovado em 2026-07-07 apos julgamento cego externo.
 5. Sessao 5: MSF-R11/MSF-R12/MSF-R13 done; Gate R3 aprovado em 2026-07-07.
-6. Proxima sessao: iniciar EPIC MSF-S por MSF-S01 (contrato de skill) e MSF-S02 (retrieval por `process_tags`).
-7. Depois: MSF-R14, MSF-R15, MSF-R16 conforme gates e antes do backfill reabrir MSF-R03.
+6. EPIC MSF-S primeira leva concluida: S03/S04/S05/S06/S07 done/approved.
+7. MSF-R03 concluido em 2026-07-08; proximo marco e MSF-R14, sem iniciar ate
+   prompt explicito do owner.
 
 Regras permanentes durante a remediacao:
 
-- Nao iniciar o backfill MSF-R14 dos 508 chunks restantes antes de reabrir MSF-R03 e concluir a sequencia R2 acordada.
-- Com R3 aprovado, MSF-S esta destravado; manter MSF-R14 backfill, Supabase e MCP fora de escopo ate a ordem acordada e reabrir MSF-R03 antes do backfill.
+- Nao iniciar o backfill MSF-R14 dos 508 chunks restantes sem prompt explicito
+  do owner.
+- Com R3 aprovado, primeira leva MSF-S concluida e MSF-R03 done, manter
+  Supabase, MCP e agentes fora de escopo ate a ordem acordada.
 - Nao citar os scores antigos 39/40 e 37/40 como prova de valor.
 - Toda saida LLM validada contra schema antes de entrar na base.
 - Atualizar `docs/execution-log.md` ao fim de cada sessao, como ja e pratica do projeto.

@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json
+from msf_common import data_path, load_json
 
 
 def utc_now() -> str:
@@ -90,13 +90,13 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--episode-video-id", help="Episode/video id that owns assets")
     parser.add_argument("--input-dir", type=Path, help="Directory with files to register before processing")
-    parser.add_argument("--raw-assets-root", default=Path("data/raw/assets"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
+    parser.add_argument("--raw-assets-root", default=data_path("raw", "assets"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
     parser.add_argument("--log", type=Path, help="JSONL log path")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
-    log_path = args.log or Path("data/logs") / f"asset_pipeline_{utc_now().replace(':', '').replace('-', '')}.jsonl"
+    log_path = args.log or data_path("logs") / f"asset_pipeline_{utc_now().replace(':', '').replace('-', '')}.jsonl"
     logger = PipelineLogger(log_path)
 
     if args.input_dir:
@@ -128,4 +128,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

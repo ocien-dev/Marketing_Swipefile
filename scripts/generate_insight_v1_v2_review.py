@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import first_evidence, insight_text, jaccard, load_json, normalize_text, tokens, write_json, write_text
+from msf_common import data_path, first_evidence, insight_text, jaccard, load_json, normalize_text, tokens, write_json, write_text
 
 
 CRITERIA = ["specificity", "evidence_fidelity", "applicability", "quote_cleanliness"]
@@ -504,8 +504,8 @@ def score_mode(args: argparse.Namespace) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=["prepare", "score"], default="prepare")
-    parser.add_argument("--v1-master", type=Path, default=Path("data/exports/insights_master.json"))
-    parser.add_argument("--v2-master", type=Path, default=Path("data/exports/insights_v2_master.json"))
+    parser.add_argument("--v1-master", type=Path, default=data_path("exports", "insights_master.json"))
+    parser.add_argument("--v2-master", type=Path, default=data_path("exports", "insights_v2_master.json"))
     parser.add_argument("--date", default=utc_date())
     parser.add_argument("--sample-size", type=int, default=40)
     parser.add_argument("--target-pairs", type=int, default=40)
@@ -517,8 +517,8 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
-    args.blind_output = args.blind_output or Path("data/exports") / f"insight_v1_v2_blind_sample_{args.date}.csv"
-    args.key_output = args.key_output or Path("data/exports") / f"insight_v1_v2_blind_key_{args.date}.json"
+    args.blind_output = args.blind_output or data_path("exports", f"insight_v1_v2_blind_sample_{args.date}.csv")
+    args.key_output = args.key_output or data_path("exports", f"insight_v1_v2_blind_key_{args.date}.json")
     args.judgments = args.judgments or args.blind_output
     args.output = args.output or Path("docs") / f"insight-v1-vs-v2-review-{args.date}.md"
 

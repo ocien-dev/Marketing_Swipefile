@@ -75,7 +75,23 @@ Ja existe um MVP local operavel em arquivos:
 - 7 skills Codex locais.
 - 5 loops operacionais locais.
 
-Importante: Gate R1, Gate R2 e Gate R3 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. MSF-R11/MSF-R12/MSF-R13 estao done; o owner manteve a amostra R12 conforme as indicacoes, e a revisao tecnica externa aprovou R3. MSF-S esta destravado; MSF-S01, MSF-S02 e MSF-S08 estao done. MSF-S04 esta liberado como proxima skill real. Nao iniciar backfill MSF-R14, Supabase ou MCP antes da ordem pos-R3 acordada; antes do backfill, reabrir MSF-R03.
+Importante: Gate R1, Gate R2 e Gate R3 estao aprovados e registrados. Em 2026-07-07, MSF-R07 atingiu a cobertura emendada com 15 episodios completos e 246 chunks v2; MSF-R08 teve julgamento cego externo, remediacao do batch 006 e aprovacao formal do juiz externo. MSF-R09 tambem foi executado: `scripts/evaluate_output.py` agora separa `keyword_presence_check` do julgamento honesto, valida JSON por `schemas/output_evaluation.schema.json` e rebaixou os artefatos antigos para 30/40 `needs_revision` tanto em VSL quanto em ads. MSF-R10 foi julgado externamente e aprovado: `with_base_v2=14`, `baseline_no_base=0`, `tie=2`, com limitacao amostral de 1 briefing x 2 artefatos. MSF-R11/MSF-R12/MSF-R13 estao done; o owner manteve a amostra R12 conforme as indicacoes, e a revisao tecnica externa aprovou R3. MSF-S01/MSF-S02/MSF-S08 e a primeira leva de skills reais MSF-S03/MSF-S04/MSF-S05/MSF-S06/MSF-S07 estao done/approved. MSF-R03 tambem esta done: dados ignored/local-only sairam do OneDrive e vivem em `C:\MSF-data\Marketing_Swipe_File`. Nao iniciar backfill MSF-R14, Supabase, MCP ou agentes antes da ordem acordada; o proximo marco e MSF-R14 somente quando o owner mandar.
+
+## Raiz De Dados Local
+
+Scripts runtime leem e escrevem dados ignorados/local-only via `MSF_DATA_DIR`
+quando a variavel existe; se nao existir, caem no `data/` local do repo:
+
+```powershell
+$env:MSF_DATA_DIR = "C:\MSF-data\Marketing_Swipe_File"
+setx MSF_DATA_DIR "C:\MSF-data\Marketing_Swipe_File"
+```
+
+`data/processed/taxonomy_seed.json` fica como seed canonico rastreado no repo.
+Nao criar junction para `data/`; a arvore mistura arquivos versionados e
+artefatos ignorados. Apos MSF-R03, o repo `data/` deve conter 0 payload
+ignored/local-only; apenas scaffolding tracked, filas leves tracked,
+`taxonomy_seed.json` e artefatos S09 ja versionados permanecem no repo.
 
 ## Politica De Escrita Por Camada
 
@@ -104,7 +120,7 @@ bug corrigido no export do CSV de revisao:
 
 ## Lote VTurb
 
-Lista em `data/input/youtube_urls.csv`:
+Lista em runtime `input/youtube_urls.csv` sob `MSF_DATA_DIR`:
 
 - 160 URLs VTurb listadas.
 - 96 episodios com metadata coletada.
@@ -139,8 +155,8 @@ Artefatos de prova:
 - `docs/strategy-pack-r13-comparison-2026-07-07.md`: comparacao R13 e avaliacao honesta dos packs.
 - `data/exports/acquisition_tasks_master.csv`: 13 tarefas de materiais complementares.
 
-- `data/raw/**`, `data/processed/**`, `data/input/youtube_urls.csv` e assets locais sao ignorados pelo Git por politica de dados. Eles existem localmente nesta maquina, mas nao devem ser assumidos como versionados.
-- `data/input/academy_video_transcription_queue.csv` e `data/input/youtube_urls_academy_new.csv` sao filas leves rastreaveis; exports `vturb_academy_*` continuam locais em `data/exports/**`.
+- `raw/**`, `processed/**`, `exports/**`, `logs/**`, `cache/**`, `input/youtube_urls.csv` e assets locais sao ignorados pelo Git por politica de dados quando estao sob a raiz runtime (`MSF_DATA_DIR` ou fallback repo `data/`). Eles existem localmente nesta maquina, mas nao devem ser assumidos como versionados.
+- `data/input/academy_video_transcription_queue.csv` e `data/input/youtube_urls_academy_new.csv` sao filas leves rastreaveis no repo; exports `vturb_academy_*` continuam locais sob a raiz runtime.
 
 ## Scripts Principais
 
@@ -254,8 +270,12 @@ Validacao rapida:
 @'
 from pathlib import Path
 import json
+import sys
 root = Path('.')
-json_paths = list(root.glob('schemas/*.json')) + list(root.glob('data/**/*.json'))
+sys.path.insert(0, str(root / 'scripts'))
+from msf_common import data_root
+data = data_root()
+json_paths = list(root.glob('schemas/*.json')) + list(data.glob('**/*.json'))
 for path in json_paths:
     with path.open('r', encoding='utf-8') as f:
         json.load(f)
@@ -275,15 +295,19 @@ Conferir status do lote:
 from pathlib import Path
 import csv
 import json
+import sys
 root = Path('.')
-rows = list(csv.DictReader((root / 'data/input/youtube_urls.csv').open(encoding='utf-8-sig')))
+sys.path.insert(0, str(root / 'scripts'))
+from msf_common import data_root
+data = data_root()
+rows = list(csv.DictReader((data / 'input/youtube_urls.csv').open(encoding='utf-8-sig')))
 processed_count = 0
 blocked = 0
 transcript_insights = 0
 for row in rows:
     video_id = row['youtube_url'].split('v=')[-1].split('&')[0]
-    raw = root / 'data/raw/youtube' / video_id
-    processed_dir = root / 'data/processed' / video_id
+    raw = data / 'raw/youtube' / video_id
+    processed_dir = data / 'processed' / video_id
     transcript_count = 0
     if (raw / 'transcript_original.json').exists():
         transcript = json.loads((raw / 'transcript_original.json').read_text(encoding='utf-8'))

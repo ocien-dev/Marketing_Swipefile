@@ -11,6 +11,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import write_json
 
 
@@ -330,7 +331,7 @@ def main() -> int:
     args = parser.parse_args()
 
     metadata = load_json(args.metadata)
-    output_path = args.output or Path("data/processed/assets") / metadata["asset_id"] / "content_segments.json"
+    output_path = args.output or data_path("processed", "assets", metadata["asset_id"], "content_segments.json")
     payload = process_asset(args.metadata, output_path)
     print(f"Wrote {len(payload['segments'])} asset segment(s) to {output_path}")
     return 0

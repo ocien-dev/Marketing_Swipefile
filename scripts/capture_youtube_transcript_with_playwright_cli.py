@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from collect_youtube_transcript_from_playwright_snapshot import extract_segments
+from msf_common import data_path
 from youtube_common import canonical_watch_url, extract_video_id, write_json
 
 
@@ -376,7 +377,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", required=True, help="YouTube URL. Use this for ids beginning with '-' too.")
     parser.add_argument("--output", type=Path, help="Path to transcript_original.json")
-    parser.add_argument("--output-root", default=Path("data/raw/youtube"), type=Path)
+    parser.add_argument("--output-root", default=data_path("raw", "youtube"), type=Path)
     parser.add_argument("--session", default="msf-transcript")
     parser.add_argument("--snapshot-root", default=Path(".playwright-cli"), type=Path)
     parser.add_argument("--timeout", default=90, type=int)

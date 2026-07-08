@@ -2,6 +2,12 @@
 
 Source layer: `curated_insights`
 
+Data root:
+
+```powershell
+$dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+```
+
 Process tags:
 
 - __PROCESS_TAGS_INLINE__
@@ -15,7 +21,7 @@ Use search while exploring:
 Use strategy packs when producing an output:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\generate_strategy_pack.py --source curated --task __SLUG__ --process-tags __PROCESS_TAGS_CSV__ --product "<product>" --avatar "<avatar>" --market "<market>" --limit 20 --output-json data/exports/strategy_pack___SLUG__.json --output-md data/exports/strategy_pack___SLUG__.md
+.\.venv\Scripts\python.exe scripts\generate_strategy_pack.py --source curated --task __SLUG__ --process-tags __PROCESS_TAGS_CSV__ --product "<product>" --avatar "<avatar>" --market "<market>" --limit 20 --output-json "$dataRoot\exports\strategy_pack___SLUG__.json" --output-md "$dataRoot\exports\strategy_pack___SLUG__.md"
 ```
 
 Selection rules:

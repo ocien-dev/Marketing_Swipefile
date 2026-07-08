@@ -12,10 +12,14 @@ Use this skill after transcript normalization or whenever complementary material
 ## Workflow
 
 1. Confirm the episode has `metadata.json` and `content_segments.json`.
-2. Run:
-   `scripts/detect_assets.py --metadata data/raw/youtube/{video_id}/metadata.json --segments data/processed/{video_id}/content_segments.json --output-dir data/processed/{video_id}`
-3. Review `referenced_assets.json`, `acquisition_tasks.json`, and `manual_actions.md`.
-4. Refresh the global queue with:
+2. Set the runtime data root when MSF-R03 external data is active:
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   ```
+3. Run:
+   `scripts/detect_assets.py --metadata "$dataRoot\raw\youtube\{video_id}\metadata.json" --segments "$dataRoot\processed\{video_id}\content_segments.json" --output-dir "$dataRoot\processed\{video_id}"`
+4. Review `referenced_assets.json`, `acquisition_tasks.json`, and `manual_actions.md`.
+5. Refresh the global queue with:
    `scripts/consolidate_exports.py`
 
 ## Rules
@@ -27,7 +31,7 @@ Use this skill after transcript normalization or whenever complementary material
 
 ## Outputs
 
-- `data/processed/{video_id}/referenced_assets.json`
-- `data/processed/{video_id}/acquisition_tasks.json`
-- `data/processed/{video_id}/manual_actions.md`
-- `data/exports/acquisition_tasks_master.csv`
+- `$dataRoot\processed\{video_id}\referenced_assets.json`
+- `$dataRoot\processed\{video_id}\acquisition_tasks.json`
+- `$dataRoot\processed\{video_id}\manual_actions.md`
+- `$dataRoot\exports\acquisition_tasks_master.csv`

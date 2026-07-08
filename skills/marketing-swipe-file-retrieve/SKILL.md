@@ -11,12 +11,18 @@ Use this skill whenever an agent needs references from the local base before pro
 
 ## Workflow
 
+Set the runtime data root when MSF-R03 external data is active:
+
+```powershell
+$dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+```
+
 1. Refresh master exports:
    `scripts/consolidate_exports.py`
 2. Search directly when exploring:
    `scripts/search_insights.py --source curated --process-tags process-copy-vsl --query "lead mecanismo" --limit 10`
 3. Generate a task pack when creating an output:
-   `scripts/generate_strategy_pack.py --source curated --task vsl --process-tags process-copy-vsl,process-mecanismo-big-idea --product "<produto>" --avatar "<avatar>" --market "<mercado>" --output-json data/exports/strategy_pack_vsl.json --output-md data/exports/strategy_pack_vsl.md`
+   `scripts/generate_strategy_pack.py --source curated --task vsl --process-tags process-copy-vsl,process-mecanismo-big-idea --product "<produto>" --avatar "<avatar>" --market "<mercado>" --output-json "$dataRoot\exports\strategy_pack_vsl.json" --output-md "$dataRoot\exports\strategy_pack_vsl.md"`
 4. Use `prompts/retrieval/strategy_pack_retrieval.md` when a model needs to turn retrieved records into a structured context package.
 
 ## Rules

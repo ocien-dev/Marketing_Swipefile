@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import extract_video_id
 
 
@@ -194,12 +195,12 @@ def print_status(statuses: list[EpisodeStatus]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--csv", default=Path("data/input/youtube_urls.csv"), type=Path)
+    parser.add_argument("--csv", default=data_path("input", "youtube_urls.csv"), type=Path)
     parser.add_argument("--target-complete", default=50, type=int)
     parser.add_argument("--max-attempts", type=int, help="Maximum incomplete episodes to attempt in this run")
     parser.add_argument("--start-priority", type=int, help="Skip attempts before this episode_priority")
-    parser.add_argument("--raw-youtube-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
+    parser.add_argument("--raw-youtube-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
     parser.add_argument("--use-playwright-fallback", action="store_true")
     parser.add_argument("--playwright-session", default="msf-transcript-batch")
     parser.add_argument("--playwright-timeout", default=120, type=int)

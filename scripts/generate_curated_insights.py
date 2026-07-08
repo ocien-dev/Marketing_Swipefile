@@ -14,10 +14,12 @@ from typing import Any
 
 from msf_common import (
     as_list,
+    data_path,
     first_evidence,
     jaccard,
     load_json,
     normalize_text,
+    repo_data_path,
     slugify,
     tokens,
     unique_preserve_order,
@@ -560,10 +562,14 @@ def build_curated(args: argparse.Namespace) -> tuple[dict[str, Any], list[dict[s
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", default=Path("data/exports/insights_v2_master.json"), type=Path)
-    parser.add_argument("--taxonomy", default=Path("data/processed/taxonomy_seed.json"), type=Path)
-    parser.add_argument("--output", default=Path("data/exports/curated_insights.json"), type=Path)
-    parser.add_argument("--review-sample", default=Path("data/exports/curated_insights_owner_review_sample_2026-07-07.csv"), type=Path)
+    parser.add_argument("--input", default=data_path("exports", "insights_v2_master.json"), type=Path)
+    parser.add_argument("--taxonomy", default=repo_data_path("processed", "taxonomy_seed.json"), type=Path)
+    parser.add_argument("--output", default=data_path("exports", "curated_insights.json"), type=Path)
+    parser.add_argument(
+        "--review-sample",
+        default=data_path("exports", "curated_insights_owner_review_sample_2026-07-07.csv"),
+        type=Path,
+    )
     parser.add_argument("--report", default=Path("docs/curated-insights-r12-review-2026-07-07.md"), type=Path)
     parser.add_argument("--target-count", default=125, type=int)
     parser.add_argument("--min-count", default=100, type=int)

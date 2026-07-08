@@ -8,6 +8,7 @@ import csv
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import (
     canonical_watch_url,
     clean_html_text,
@@ -106,7 +107,7 @@ def main() -> int:
     parser.add_argument("--source", default="VTurb", help="Source/channel name")
     parser.add_argument("--notes", default=None, help="Optional notes for a single URL")
     parser.add_argument("--csv", type=Path, help="CSV with youtube_url and channel_name columns")
-    parser.add_argument("--output-root", default=Path("data/raw/youtube"), type=Path)
+    parser.add_argument("--output-root", default=data_path("raw", "youtube"), type=Path)
     args = parser.parse_args()
 
     rows: list[dict[str, str]]
@@ -136,4 +137,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

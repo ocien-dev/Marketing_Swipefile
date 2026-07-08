@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import extract_video_id, utc_now, write_json
 
 
@@ -128,7 +129,7 @@ def main() -> int:
     parser.add_argument("--video-id", help="YouTube video id")
     parser.add_argument("--language", default="pt", help="Transcript language code")
     parser.add_argument("--output", type=Path, help="Path to transcript_original.json")
-    parser.add_argument("--output-root", default=Path("data/raw/youtube"), type=Path)
+    parser.add_argument("--output-root", default=data_path("raw", "youtube"), type=Path)
     args = parser.parse_args()
 
     video_id = video_id_from_args(args.url, args.metadata, args.video_id)

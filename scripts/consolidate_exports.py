@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from msf_common import first_evidence, insight_text, load_json, normalize_text, slugify, write_json
+from msf_common import data_path, first_evidence, insight_text, load_json, normalize_text, slugify, write_json
 from validate_insights_v2 import validate_payload
 from youtube_common import extract_video_id
 
@@ -664,11 +664,11 @@ def insight_v2_csv_rows(insights: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--raw-youtube-root", default=Path("data/raw/youtube"), type=Path)
-    parser.add_argument("--raw-assets-root", default=Path("data/raw/assets"), type=Path)
-    parser.add_argument("--processed-root", default=Path("data/processed"), type=Path)
-    parser.add_argument("--output-dir", default=Path("data/exports"), type=Path)
-    parser.add_argument("--target-episode-csv", default=Path("data/input/youtube_urls.csv"), type=Path)
+    parser.add_argument("--raw-youtube-root", default=data_path("raw", "youtube"), type=Path)
+    parser.add_argument("--raw-assets-root", default=data_path("raw", "assets"), type=Path)
+    parser.add_argument("--processed-root", default=data_path("processed"), type=Path)
+    parser.add_argument("--output-dir", default=data_path("exports"), type=Path)
+    parser.add_argument("--target-episode-csv", default=data_path("input", "youtube_urls.csv"), type=Path)
     parser.add_argument("--r07-target-episode-count", default=R07_TARGET_EPISODE_COUNT, type=int)
     parser.add_argument("--r07-gate-min-complete-episodes", default=R07_GATE_MIN_COMPLETE_EPISODES, type=int)
     parser.add_argument("--r07-gate-max-complete-episodes", default=R07_GATE_MAX_COMPLETE_EPISODES, type=int)

@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from msf_common import repo_data_path
+
 
 EXTRACTOR_FILES = {
     "copy": "prompts/extraction/copy_extractor.md",
@@ -120,7 +122,7 @@ def main() -> int:
     parser.add_argument("--output-packet", required=True, type=Path, help="Path to write extraction packet markdown")
     parser.add_argument("--output-insights", required=True, type=Path, help="Expected insights.json output path")
     parser.add_argument("--metadata", type=Path, help="Optional metadata.json")
-    parser.add_argument("--taxonomy", default=Path("data/processed/taxonomy_seed.json"), type=Path)
+    parser.add_argument("--taxonomy", default=repo_data_path("processed", "taxonomy_seed.json"), type=Path)
     parser.add_argument("--base-prompt", default=Path("prompts/extraction/base_insight_extraction.md"), type=Path)
     args = parser.parse_args()
 
@@ -147,4 +149,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

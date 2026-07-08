@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
 
+from msf_common import data_path
 from youtube_common import (
     canonical_watch_url,
     extract_initial_player_response,
@@ -154,7 +155,7 @@ def main() -> int:
     parser.add_argument("--url", help="YouTube URL or video id")
     parser.add_argument("--metadata", type=Path, help="Path to metadata.json")
     parser.add_argument("--output", type=Path, help="Path to transcript_original.json")
-    parser.add_argument("--output-root", default=Path("data/raw/youtube"), type=Path)
+    parser.add_argument("--output-root", default=data_path("raw", "youtube"), type=Path)
     parser.add_argument("--languages", default="pt-BR,pt,en,es", help="Comma-separated preferred language order")
     args = parser.parse_args()
 

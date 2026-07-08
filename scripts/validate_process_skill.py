@@ -9,12 +9,12 @@ import re
 from pathlib import Path
 from typing import Any
 
-from msf_common import load_json
+from msf_common import load_json, repo_data_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCHEMA = ROOT / "schemas" / "msf_process_skill_contract.schema.json"
-DEFAULT_TAXONOMY = ROOT / "data" / "processed" / "taxonomy_seed.json"
+DEFAULT_TAXONOMY = repo_data_path("processed", "taxonomy_seed.json")
 REQUIRED_FILES = {
     "SKILL.md",
     "skill.contract.json",

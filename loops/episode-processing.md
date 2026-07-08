@@ -4,16 +4,20 @@ Goal: process one YouTube episode into local Marketing Swipe File artifacts.
 
 ## Steps
 
-1. Add or confirm URL in `data/input/youtube_urls.csv`.
-2. Run:
+1. Set the runtime data root when MSF-R03 external data is active:
+   ```powershell
+   $dataRoot = if ($env:MSF_DATA_DIR) { $env:MSF_DATA_DIR } else { "data" }
+   ```
+2. Add or confirm URL in `$dataRoot\input\youtube_urls.csv`.
+3. Run:
    `scripts/run_episode_pipeline.py --url <youtube_url>`
-3. If transcript fallback is needed, capture the YouTube transcript through Playwright as described in `docs/marketing-swipe-file-handoff.md`.
-4. Rerun:
+4. If transcript fallback is needed, capture the YouTube transcript through Playwright as described in `docs/marketing-swipe-file-handoff.md`.
+5. Rerun:
    `scripts/run_episode_pipeline.py --video-id <video_id> --skip-metadata --skip-transcript`
-5. Extract insights:
+6. Extract insights:
    - v1 heuristic/current path: run or update `scripts/extract_transcript_insights.py`.
    - v2 remediation path: use the Codex-first loop below to generate `insights_v2.json`.
-6. Run classification, dedupe, audit, summaries, and consolidation.
+7. Run classification, dedupe, audit, summaries, and consolidation.
 
 ## R06 raw_insights_v2 Codex-First Loop
 
@@ -22,14 +26,14 @@ Use this only after MSF-R05 schema validation passes.
 1. Prepare the Codex packets for selected chunks:
    `scripts/extract_transcript_insights_llm.py prepare --video-id <video_id> --chunks <chunk_numbers>`
 2. Read each generated packet under:
-   `data/processed/{video_id}/llm_v2_packets/`
+   `$dataRoot\processed\{video_id}\llm_v2_packets\`
 3. Extract at most 5 high-quality insights per chunk using `prompts/extraction/base_insight_extraction_v2.md`.
 4. Save chunk outputs to:
-   `data/processed/{video_id}/llm_v2_outputs/chunk_###_insights.json`
+   `$dataRoot\processed\{video_id}\llm_v2_outputs\chunk_###_insights.json`
 5. Combine and validate:
    `scripts/extract_transcript_insights_llm.py combine --video-id <video_id>`
 6. Validate final output explicitly:
-   `scripts/validate_insights_v2.py data/processed/{video_id}/insights_v2.json`
+   `scripts/validate_insights_v2.py "$dataRoot\processed\{video_id}\insights_v2.json"`
 
 Rules:
 
@@ -57,11 +61,11 @@ Session rules:
 - The text audit also scans generated CSV/MD exports for known accent-deletion artifacts such as `negcio`, `vdeo`, `contedo`, `possvel`, and `mtodo`.
 - At session close, run `scripts/consolidate_exports.py`.
 - After consolidation, run process-tag classification as post-processing over v1 and v2 exports, without changing the R07 extraction prompt:
-  - `.\.venv\Scripts\python.exe -B scripts/classify_taxonomy.py --input data/exports/insights_master.json --output data/exports/insights_master.json --report data/exports/process_tag_classification_v1.md --process-review-queue data/exports/process_tag_review_queue_v1.json`
-  - `.\.venv\Scripts\python.exe -B scripts/classify_taxonomy.py --input data/exports/insights_v2_master.json --output data/exports/insights_v2_master.json --report data/exports/process_tag_classification_v2.md --process-review-queue data/exports/process_tag_review_queue_v2.json`
+  - `.\.venv\Scripts\python.exe -B scripts/classify_taxonomy.py --input "$dataRoot\exports\insights_master.json" --output "$dataRoot\exports\insights_master.json" --report "$dataRoot\exports\process_tag_classification_v1.md" --process-review-queue "$dataRoot\exports\process_tag_review_queue_v1.json"`
+  - `.\.venv\Scripts\python.exe -B scripts/classify_taxonomy.py --input "$dataRoot\exports\insights_v2_master.json" --output "$dataRoot\exports\insights_v2_master.json" --report "$dataRoot\exports\process_tag_classification_v2.md" --process-review-queue "$dataRoot\exports\process_tag_review_queue_v2.json"`
 - Report the unmatched insight counts from both process-tag review queues. Do not assign a generic fallback process tag.
 - Record throughput in `docs/execution-log.md`: chunks processed, session time cost, episodes touched, insights added, validation status, and updated estimate to the amended R1 gate.
-- Commit the versioned docs/scripts changed in the session. Generated `data/processed/**` and `data/exports/**` remain local ignored artifacts unless policy changes.
+- Commit the versioned docs/scripts changed in the session. Generated runtime artifacts under `processed/**` and `exports/**` remain local ignored artifacts under the configured data root unless policy changes.
 
 Amended R1 gate for Route B:
 

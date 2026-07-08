@@ -30,11 +30,20 @@ Build in this order:
 
 Do not create autonomous agents before the underlying scripts, prompts, skills, and loops have been validated on real episodes or representative fixtures.
 
-Current remediation guardrail: Gates R1, R2, and R3 are approved. EPIC MSF-S is unblocked; MSF-S01/MSF-S02/MSF-S08 are complete, and MSF-S04 is the next real process skill. Do not run the MSF-R14 backfill, Supabase, or MCP before the agreed post-R3 order; reopen MSF-R03 before any backfill.
+Current remediation guardrail: Gates R1, R2, and R3 are approved. The first MSF-S skill wave is complete and approved. MSF-R03 is done: ignored/local-only data lives outside OneDrive under `C:\MSF-data\Marketing_Swipe_File`. Do not run the MSF-R14 backfill, Supabase, MCP, or agents until the owner explicitly starts that next step.
 
 ## Local Data Policy
 
 Raw transcripts, complementary files, member-area assets, PDFs, spreadsheets, and generated exports are ignored by Git by default. Keep source material local unless there is an explicit reason to publish it.
+
+Runtime scripts resolve ignored/local-only data through `MSF_DATA_DIR` when it is set. If it is unset, scripts fall back to the repo-local `data/` tree:
+
+```powershell
+$env:MSF_DATA_DIR = "C:\MSF-data\Marketing_Swipe_File"
+setx MSF_DATA_DIR "C:\MSF-data\Marketing_Swipe_File"
+```
+
+`data/processed/taxonomy_seed.json` remains the canonical repo-tracked taxonomy seed.
 
 Tracked files should be limited to:
 
@@ -59,15 +68,17 @@ The old Codex bundled Python path is only a fallback. The project runtime depend
 
 ## MVP Flow
 
-1. Add candidate episodes to `data/input/youtube_urls.csv`.
-2. Collect metadata into `data/raw/youtube/{video_id}/metadata.json`.
-3. Collect YouTube automatic transcript into `data/raw/youtube/{video_id}/transcript_original.json`.
+Use `$env:MSF_DATA_DIR` for runtime data after MSF-R03. If it is unset, the same paths resolve under repo-local `data/`.
+
+1. Add candidate episodes to `input/youtube_urls.csv` under the configured data root.
+2. Collect metadata into `raw/youtube/{video_id}/metadata.json`.
+3. Collect YouTube automatic transcript into `raw/youtube/{video_id}/transcript_original.json`.
    - If the direct caption endpoint fails but the YouTube UI exposes "Mostrar transcricao", use the Playwright DOM/snapshot fallback.
-4. Normalize transcript into `data/processed/{video_id}/content_segments.json`.
-5. Split long episodes into extraction chunks under `data/processed/{video_id}/chunks/`.
+4. Normalize transcript into `processed/{video_id}/content_segments.json`.
+5. Split long episodes into extraction chunks under `processed/{video_id}/chunks/`.
 6. Detect complementary materials into `referenced_assets.json`, `acquisition_tasks.json`, and `manual_actions.md`.
-7. Place obtained complementary files in `data/input/assets/{video_id}/`.
-8. Process assets into `data/processed/assets/{asset_id}/content_segments.json`.
+7. Place obtained complementary files in `input/assets/{video_id}/` under the configured data root.
+8. Process assets into `processed/assets/{asset_id}/content_segments.json`.
 9. Extract insights into `insights.json`.
 10. Consolidate master exports.
 11. Generate strategy packs and outputs such as VSLs, leads, and ads.
@@ -76,16 +87,18 @@ See `docs/asset-acquisition-procedure.md` for the manual procedure used when an 
 
 ## Current Execution Slice
 
-Current local state as of 2026-07-07:
+Current local state as of 2026-07-08:
 
-- 160 real VTurb URLs are listed in `data/input/youtube_urls.csv`.
+- Runtime ignored/local-only data resolves through `MSF_DATA_DIR` to `C:\MSF-data\Marketing_Swipe_File`.
+- Repo `data/` now contains only tracked scaffolding, tracked lightweight queues/examples, `taxonomy_seed.json`, and previously tracked S09 audit artifacts.
+- 160 real VTurb URLs are listed in the runtime `input/youtube_urls.csv`.
 - Metadata was collected for 96 listed episodes.
 - 50 episodes have usable transcripts, normalized segments, chunks, asset detection, extraction packets, transcript insights, summaries, and logs.
 - Remaining queued episodes without transcript/chunks should not be counted as fully processed yet.
 - Local exports consolidate 253 episode records, 46 registered assets, 1,406 insights, and 13 acquisition tasks.
 - The VTurb Academy layer added Drive/MP4 and HLS transcriptions through `scripts/transcribe_academy_videos.py` and `scripts/transcribe_academy_hls.py`.
-- `data/input/academy_video_transcription_queue.csv` and `data/input/youtube_urls_academy_new.csv` are lightweight tracked queues; generated Academy exports remain local under ignored `data/exports/**`.
-- `data/exports/acquisition_tasks_master.csv` contains 13 complementary-material acquisition tasks.
+- `data/input/academy_video_transcription_queue.csv` and `data/input/youtube_urls_academy_new.csv` are lightweight tracked queues; generated Academy exports remain local under the runtime `exports/**`.
+- Runtime `exports/acquisition_tasks_master.csv` contains 13 complementary-material acquisition tasks.
 - Search, strategy-pack generation, output evaluation, dedupe, taxonomy classification, summaries, and orchestration scripts exist.
 - 7 Codex skills and 5 operational loops exist for the local file-based workflow.
 - The Session 1 remediation environment is validated with `.venv`, `requirements.txt`, JSON parsing, script syntax compilation, and the status-only batch check.
@@ -100,6 +113,8 @@ Current local state as of 2026-07-07:
 - MSF-S01 is complete: `skills/_templates/msf-process-skill/`, `schemas/msf_process_skill_contract.schema.json`, `scripts/create_process_skill.py`, and `scripts/validate_process_skill.py` define the process-skill contract/template.
 - MSF-S02 is complete: `scripts/search_insights.py` and `scripts/generate_strategy_pack.py` default to `curated_insights` and support `--process-tags` filters.
 - MSF-S08 is complete: `skills/_modules/msf-transversal-copy/` defines approved `transversal:mecanismo-big-idea` and `transversal:prova-depoimentos` modules, with review notes in `docs/msf-s08-transversal-modules-review-2026-07-07.md`.
+- First-wave process skills are complete and approved: S04 offer, S03 VSL, S05 ads, S06 low-ticket, and S07 quiz.
+- MSF-R03 is complete: `scripts/msf_common.py` resolves runtime data through `MSF_DATA_DIR`, ignored/local-only data was copied to `C:\MSF-data\Marketing_Swipe_File`, and repo-local ignored payloads were deleted after validation.
 
 Proof-of-value artifacts generated locally:
 

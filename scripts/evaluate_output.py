@@ -21,6 +21,7 @@ from jsonschema import Draft202012Validator
 from msf_common import (
     as_list,
     broken_accent_deletion_matches,
+    data_path,
     first_evidence,
     load_json,
     normalize_text,
@@ -342,7 +343,10 @@ def build_honest_report(args: argparse.Namespace, text: str, keyword_check: dict
 
     judgment = load_json(args.judgment_json)
     strategy_pack = load_strategy_pack(args.strategy_pack)
-    insight_paths = args.insight_master or [Path("data/exports/insights_master.json"), Path("data/exports/insights_v2_master.json")]
+    insight_paths = args.insight_master or [
+        data_path("exports", "insights_master.json"),
+        data_path("exports", "insights_v2_master.json"),
+    ]
     index = load_insight_index(insight_paths, strategy_pack)
     ids = referenced_ids(text)
     criteria_scores = judgment.get("criteria_scores")

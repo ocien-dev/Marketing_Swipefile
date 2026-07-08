@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import unicodedata
 from pathlib import Path
@@ -41,6 +42,30 @@ ORPHAN_QUESTION_MARK_RE = re.compile(
     r"[A-Za-z]\?+[A-Za-z]|[A-Za-z]\?+(?![\s\"'\)\]\.,;:!]|$)",
     re.ASCII,
 )
+DATA_ROOT_ENV_VAR = "MSF_DATA_DIR"
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def repo_data_root() -> Path:
+    return repo_root() / "data"
+
+
+def data_root() -> Path:
+    configured = os.environ.get(DATA_ROOT_ENV_VAR)
+    if configured:
+        return Path(configured).expanduser()
+    return repo_data_root()
+
+
+def data_path(*parts: str) -> Path:
+    return data_root().joinpath(*parts)
+
+
+def repo_data_path(*parts: str) -> Path:
+    return repo_data_root().joinpath(*parts)
 
 
 def broken_accent_deletion_matches(value: Any) -> list[str]:
