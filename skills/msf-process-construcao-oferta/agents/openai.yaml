@@ -1,0 +1,4 @@
+interface:
+  display_name: "Construcao De Oferta"
+  short_description: "Build offer stacks, promises, pricing logic, proof, and backend paths from curated Marketing Swipe File insights."
+  default_prompt: "Use this skill to build an evidence-backed offer with promise, mechanism, stack, price, proof, CTA, and backend path."

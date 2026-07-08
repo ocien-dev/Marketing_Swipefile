@@ -3,7 +3,7 @@
 Module id: `mecanismo-big-idea`
 Import as: `transversal:mecanismo-big-idea`
 Process tag: `process-mecanismo-big-idea`
-Status: `ready_for_owner_audit`
+Status: `approved`
 
 ## Job
 

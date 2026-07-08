@@ -1,10 +1,12 @@
 {
   "schema_version": "1.0",
   "skill_type": "msf_process_skill",
-  "skill_name": "__SKILL_NAME__",
-  "display_name": "__DISPLAY_NAME__",
+  "skill_name": "msf-process-construcao-oferta",
+  "display_name": "Construcao De Oferta",
   "process_tags": [
-    "__PRIMARY_PROCESS_TAG__"
+    "process-construcao-oferta",
+    "process-mecanismo-big-idea",
+    "process-prova-depoimentos"
   ],
   "source_layer": "curated_insights",
   "citation_policy": {
@@ -35,9 +37,9 @@
     "agents/openai.yaml"
   ],
   "validation_checklist": {
-    "output_from_test_briefing": "pending",
-    "r09_rubric_evaluation": "pending",
-    "blind_baseline_test": "pending",
-    "playbook_claims_cited_or_generic": "pending"
+    "output_from_test_briefing": "pass",
+    "r09_rubric_evaluation": "pass",
+    "blind_baseline_test": "pass",
+    "playbook_claims_cited_or_generic": "pass"
   }
 }

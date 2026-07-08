@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-08",
+  "gate": "MSF-S09",
+  "skill_under_test": "msf-process-construcao-oferta",
+  "blind_sample": "data\\exports\\output_s09_blind_sample_2026-07-08.csv",
+  "warning": "Do not open before owner blind judgment is complete.",
+  "pairs": [
+    {
+      "pair_id": "S09-OFFER-001",
+      "briefing_id": "pilates-low-ticket",
+      "option_a_source": "no_skill_no_base",
+      "option_b_source": "with_s04_skill",
+      "with_s04_skill_citations": [
+        "mCaFyZpXJdE-v2-0001",
+        "mCaFyZpXJdE-v2-0006",
+        "TOW0sWhPaZw-v2-0007",
+        "TOW0sWhPaZw-v2-0018"
+      ],
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "offer_specific_logic_kept_in_skill": true
+      }
+    },
+    {
+      "pair_id": "S09-OFFER-002",
+      "briefing_id": "b2b-lgpd-diagnostico",
+      "option_a_source": "with_s04_skill",
+      "option_b_source": "no_skill_no_base",
+      "with_s04_skill_citations": [
+        "qj04cUeaRAw-v2-0010",
+        "mCaFyZpXJdE-v2-0003",
+        "L7u7r6rOl68-v2-0009",
+        "JF2oC44lBG8-v2-0003"
+      ],
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "offer_specific_logic_kept_in_skill": true
+      }
+    },
+    {
+      "pair_id": "S09-OFFER-003",
+      "briefing_id": "assinatura-violao",
+      "option_a_source": "no_skill_no_base",
+      "option_b_source": "with_s04_skill",
+      "with_s04_skill_citations": [
+        "8WEvN5T7J0U-v2-0002",
+        "TOW0sWhPaZw-v2-0007",
+        "mCaFyZpXJdE-v2-0014",
+        "wHdyTM-nVqg-v2-0002"
+      ],
+      "module_inheritance_policy_applied": {
+        "dedupe_insight_id_across_modules": true,
+        "known_overlap_ids_count_once": [
+          "zoChfFHnlOQ-v2-0008",
+          "mCaFyZpXJdE-v2-0011"
+        ],
+        "offer_specific_logic_kept_in_skill": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+pair_id,briefing_id,niche,briefing,output_a,output_b,offer_fit_score,promise_avatar_fit_score,mechanism_belief_bridge_score,stack_delivery_logic_score,pricing_anchoring_logic_score,proof_claim_control_score,funnel_backend_coherence_score,evidence_usability_score,winner_or_tie,judge_notes
+S09-OFFER-001,pilates-low-ticket,saude / pilates online,"Produto: desafio online de 10 dias para mulheres 35+ com dor lombar leve aprenderem rotina segura de mobilidade. Avatar: mulher ocupada, com medo de piorar a dor, que ja tentou videos soltos. Mercado: saude preventiva e pilates online. Objetivo: oferta low ticket ate R$ 47, sem promessa medica, com caminho para avaliacao individual.","Nome: Programa Coluna Sem Dor.
+Promessa: aprenda exercicios de pilates para melhorar sua coluna e se sentir melhor.
+Oferta: curso com videoaulas, apostila em PDF e grupo de suporte por 10 dias.
+Preco: R$ 47 com desconto de lancamento.
+Bonus: aula extra de alongamento e checklist de postura.
+Garantia: 7 dias.
+CTA: inscreva-se agora e comece a cuidar da sua coluna.
+Observacao: depois a professora pode oferecer uma consulta individual para alunas interessadas.","Nome: Coluna Leve Em 10 Dias.
+Promessa: em 10 dias, criar uma rotina curta e segura de mobilidade para reduzir a sensacao de travamento no dia a dia, sem prometer cura ou substituir acompanhamento medico.
+Mecanismo: a Matriz 3-2-1 de Mobilidade Segura: 3 movimentos de desbloqueio, 2 ajustes de postura cotidiana e 1 criterio simples para saber quando parar. O mecanismo vende clareza e controle, nao milagre.
+Stack: 10 aulas de 12 minutos; guia de sinais de alerta; calendario de acompanhamento; audio de rotina matinal; bonus de adaptacoes para cadeira e home office.
+Preco e ancora: R$ 37, ancorado contra consultas avulsas e contra semanas tentando videos aleatorios. Garantia de 7 dias se a aluna assistir as duas primeiras aulas e preencher o checklist de seguranca.
+Prova: usar antes/depois de rotina, depoimentos sobre consistencia e demonstracoes da professora corrigindo movimentos comuns. Evitar claims de cura.
+CTA: Comece hoje a sua rotina de 12 minutos. Backend: avaliacao individual paga para quem completar o desafio e quiser plano personalizado.
+Teste: rodar primeiro dois nomes, Coluna Leve Em 10 Dias contra Rotina Antitravamento, mantendo preco e stack iguais.",B,B,B,B,B,B,B,B,B,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] B vence os 8 criterios. B: mecanismo nomeado (Matriz 3-2-1 de Mobilidade Segura), ancoragem R$37 vs consultas avulsas e videos aleatorios, garantia condicional, backend gated (avaliacao paga pos-desafio), e controle de claim explicito (sem cura, sinais de alerta, quando parar) - atende a restricao dura do briefing ""sem promessa medica"". A viola essa restricao no nome (""Coluna Sem Dor"") e na promessa (""melhorar sua coluna""), nao tem mecanismo nem ancoragem, backend vago (""pode oferecer""). Scores A/B: offer_fit 3/5, promise 2/5, mechanism 1/5, stack 3/5, pricing 2/5, proof 1/5, funnel 3/5, evidence 2/5. Unica quase-paridade de A: estrutura crua de oferta low-ticket. Cegueira de rotulo, nao de estilo: julgamento ancora em substancia e na restricao violada."
+S09-OFFER-002,b2b-lgpd-diagnostico,B2B / compliance para clinicas,"Produto: diagnostico express de LGPD para clinicas odontologicas pequenas. Avatar: dono de clinica com receio de multa e vazamento, mas sem tempo para projeto juridico completo. Mercado: servico B2B consultivo. Objetivo: oferta de entrada de R$ 297 a R$ 497 que gere upsell para implementacao completa.","Nome: Diagnostico LGPD De Clinica Em 72 Horas.
+Promessa: em ate 72 horas uteis, mapear os 5 pontos de maior risco no fluxo de dados da clinica e entregar um plano de correcao priorizado. Nao promete conformidade total.
+Mecanismo: Raio-X de Fluxo Critico: recepcao, agenda, prontuario, WhatsApp e parceiros. A promessa fica crivel porque a oferta nao tenta resolver toda a LGPD; ela isola os pontos onde a clinica mais se expoe.
+Stack: formulario inicial; chamada de 45 minutos; checklist por area; relatorio de risco com prioridade alta/media/baixa; plano de proximos 30 dias.
+Preco e ancora: R$ 397, ancorado contra o custo de contratar um projeto juridico completo sem saber prioridades. Garantia: se o relatorio nao listar riscos acionaveis, devolucao integral.
+Prova: demonstrar relatorio anonimizado e historia curta de clinica que descobriu risco operacional concreto. Prova precisa sustentar diagnostico, nao promessa de blindagem juridica.
+CTA: Solicitar o diagnostico desta semana. Backend: pacote de implementacao para corrigir os riscos priorizados.
+Teste: validar primeiro a promessa 72 horas contra Mapa Dos 5 Riscos, antes de mexer no preco.","Nome: Consultoria LGPD Para Clinicas.
+Promessa: deixe sua clinica mais segura e preparada para a LGPD.
+Oferta: reuniao com especialista, analise dos documentos e entrega de relatorio.
+Preco: R$ 497.
+Bonus: checklist de boas praticas e modelo de politica de privacidade.
+Garantia: satisfacao ou dinheiro de volta.
+CTA: agende uma reuniao para entender como podemos ajudar sua clinica.
+Proximo passo: contratar a consultoria completa se quiser implementar tudo.",A,A,A,A,A,A,A,A,A,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] A vence os 8 criterios. A: escopo real (Raio-X de Fluxo Critico, 5 pontos de risco, ""nao promete conformidade total"") atende ""sem tempo para projeto completo""; ancora R$397 vs projeto juridico completo; garantia acionavel (devolucao se relatorio nao listar riscos); backend de implementacao a partir dos riscos priorizados. B e generico (""deixe sua clinica mais segura""), R$497 sem ancoragem, garantia ""satisfacao"" vazia, sem mecanismo. Scores A/B: offer_fit 5/3, promise 5/2, mechanism 5/1, stack 5/3, pricing 5/2, proof 5/2, funnel 5/3, evidence 5/2. Merito de B: 2 bonus concretos (checklist, modelo de politica) - nao compensam a genericidade nem o preco no topo da banda sem escopo."
+S09-OFFER-003,assinatura-violao,educacao musical / assinatura,"Produto: assinatura mensal para adultos iniciantes que querem tocar violao em encontros familiares. Avatar: adulto 40+, frustrado por comecar e parar, pouco tempo por dia. Mercado: educacao musical online. Objetivo: construir oferta recorrente com front de entrada ate R$ 29 e assinatura ate R$ 39/mes.","Nome: Clube Do Violao Facil.
+Promessa: aprenda violao com aulas simples e praticas para iniciantes.
+Oferta: assinatura mensal com videoaulas, cifras, grupo de alunos e lives.
+Preco: R$ 39 por mes, com promocao de entrada por R$ 19 no primeiro mes.
+Bonus: biblioteca de musicas populares e aula de postura.
+Garantia: 7 dias.
+CTA: entre para o clube e comece a tocar hoje.
+Proximo passo: renovar a assinatura para continuar recebendo aulas novas.","Nome: Violao De Domingo.
+Promessa: tocar 3 musicas simples em 30 dias com treinos de 20 minutos, mesmo recomecando do zero. Limite: nao promete tecnica avancada nem repertorio infinito.
+Mecanismo: Trilha 3 Musicas, 3 Acordes, 3 Encontros: o aluno aprende apenas os acordes que aparecem nas musicas-alvo e pratica em contexto de encontro familiar. O mecanismo reduz a ansiedade de estudar teoria demais antes de tocar.
+Stack front-end: desafio de R$ 19 com 7 aulas curtas, cifras simplificadas, treino de troca de acordes e audio guia.
+Assinatura: R$ 39/mes com uma musica nova por semana, plantao quinzenal e biblioteca por nivel.
+Preco e ancora: o front compra o primeiro avanco; a assinatura vende continuidade sem depender de aulas particulares.
+Prova: videos curtos de alunos tocando trechos simples, antes/depois de troca de acordes e depoimentos sobre consistencia, nao virtuosismo.
+CTA: Escolha sua primeira musica e comece hoje. Backend: assinatura oferecida no fim do desafio, quando o aluno ja tocou um trecho e quer continuar.
+Teste: validar primeiro os nomes Violao De Domingo e 3 Musicas Em 30 Dias; so depois testar preco da assinatura.",B,B,B,B,B,B,B,B,B,"[juiz: Claude Opus 4.8, cego de rotulo, key nao aberta, 2026-07-08] B vence os 8 criterios. B: ataca a dor ""comecar e parar"" (Trilha 3 Musicas 3 Acordes 3 Encontros, ""consistencia nao virtuosismo"") e o ""pouco tempo"" (treinos 20min); separa front de entrada R$19 e assinatura R$39/mes com logica de continuidade; backend cronometrado (assinatura ao fim do desafio quando ja tocou); limite de claim explicito. A e generico (""aprenda violao com aulas simples""), sem mecanismo, ""renovar"" como backend plano. Scores A/B: offer_fit 3/5, promise 2/5, mechanism 1/5, stack 3/5, pricing 3/5, proof 2/5, funnel 3/5, evidence 2/5. Merito de A: menciona lives e grupo (valor recorrente), mas B cobre recorrencia melhor (plantao quinzenal, musica nova por semana, biblioteca por nivel)."

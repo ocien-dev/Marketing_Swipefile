@@ -17,8 +17,8 @@ Este documento complementa:
   as camadas 6-8 do principio de execucao)
 
 Regra de execucao: gates R2 e R3 estao aprovados em 2026-07-07, entao EPIC
-MSF-S esta destravado. MSF-S01, MSF-S02 e MSF-S08 estao done; o proximo passo
-e MSF-S04. Skill alimentada por base nao curada reproduz o defeito v1; usar
+MSF-S esta destravado. MSF-S01, MSF-S02, MSF-S04 e MSF-S08 estao done; o
+proximo passo e MSF-S03. Skill alimentada por base nao curada reproduz o defeito v1; usar
 `curated_insights` como fonte candidata/default. Agentes so depois de skills
 validadas individualmente.
 
@@ -171,7 +171,7 @@ Execucao 2026-07-07:
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `blocked`
+Status: `not_started`
 
 Escopo: skill `msf-process-copy-vsl` conforme secao 2, consumindo
 `process-copy-vsl` + modulos transversais (MSF-S08). Inclui leads, estrutura,
@@ -179,13 +179,20 @@ mecanismo, prova e CTA.
 
 Aceite: Definition of Done da secao 2, incluindo teste cego contra baseline.
 
-Dependencias: MSF-S01, MSF-S02.
+Dependencias: MSF-S01, MSF-S02, MSF-S08, MSF-S09 parcial S04.
+
+Liberacao 2026-07-08:
+
+- MSF-S04 passou no S09 e validou o pipeline skill -> retrieval -> rubrica ->
+  teste cego para a primeira skill real.
+- S03 e a proxima skill real liberada; S05-S07 seguem blocked ate S03 passar
+  pelo proprio S09.
 
 ### MSF-S04 - Skill: construcao de oferta
 
 Prioridade: `P1`
 Tipo: `skill`
-Status: `not_started`
+Status: `done`
 
 Escopo: skill `msf-process-construcao-oferta` (promessa, stack, bonus,
 garantia, nome; absorve precificacao como capitulo do playbook).
@@ -203,6 +210,40 @@ Liberacao 2026-07-07:
   modulos, especialmente `zoChfFHnlOQ-v2-0008` e `mCaFyZpXJdE-v2-0011`.
 - Logica especifica de oferta, preco, stack, bonus, garantia e CTA fica na
   skill S04; os modulos transversais ficam no nivel de principio.
+
+Execucao 2026-07-08:
+
+- Criada `skills/msf-process-construcao-oferta/` via
+  `scripts/create_process_skill.py`.
+- Preenchidos os 8 arquivos da anatomia: `SKILL.md`,
+  `skill.contract.json`, `retrieval.md`, `rubric.md`,
+  `templates/output-template.md`, `examples/briefing.md`,
+  `examples/output-approved.md` e `agents/openai.yaml`.
+- Retrieval usa `curated_insights` com `process-construcao-oferta`,
+  `process-mecanismo-big-idea` e `process-prova-depoimentos`.
+- `module_inheritance_policy` aplicada: dedupe por `insight_id` entre modulos
+  e logica especifica de oferta mantida na skill.
+- Amostra cega S09 preparada com 3 pares variados em
+  `data/exports/output_s09_blind_sample_2026-07-08.csv`; chave separada em
+  `data/exports/output_s09_blind_key_2026-07-08.json`.
+- Sem veredito S09 nesta execucao; julgamento permanece externo.
+
+Apuracao S09 2026-07-08:
+
+- Relatorio: `docs/msf-s09-offer-gate-result-2026-07-08.md`.
+- Chave aberta somente depois do julgamento cego:
+  `data/exports/output_s09_blind_key_2026-07-08.json`.
+- Julgamento externo em
+  `data/exports/output_s09_blind_sample_2026-07-08_judged.csv`.
+- Resultado por par: com skill 3, sem skill 0, empates 0.
+- Resultado por criterio: com skill 24, sem skill 0, empates 0.
+- Criterio comercial combinado (`mechanism_belief_bridge`,
+  `pricing_anchoring`, `proof_claim_control`): com skill 3, sem skill 0,
+  empates 0.
+- Auditoria externa independente confirmou o PASS, a resolucao das 12 citacoes
+  para curated real com tag `process-construcao-oferta`, No Invention e a
+  politica de dedupe dos ids de overlap.
+- Veredito: PASS. `msf-process-construcao-oferta` aprovado.
 
 ### MSF-S05 - Skill: copy para anuncios
 
@@ -285,7 +326,7 @@ Execucao 2026-07-07:
 
 Prioridade: `P1`
 Tipo: `qa`
-Status: `blocked`
+Status: `in_progress`
 
 Escopo:
 
@@ -299,6 +340,19 @@ Aceite:
   playbook/retrieval antes de uso.
 
 Dependencias: MSF-R09, MSF-S03..S08.
+
+Execucao parcial 2026-07-08:
+
+- S09 preparado apenas para MSF-S04, com CSV cego sem vazamento de origem e
+  campos da rubrica de oferta em branco para juiz externo.
+- S04 aprovado: com skill venceu 3/3 pares, 24/24 criterios e 3/3 criterios
+  comerciais combinados.
+- Auditoria externa independente confirmou o PASS de S04, citacoes validas e
+  dedupe respeitado.
+- S03 liberado como proxima skill real.
+- S05-S07 continuam blocked ate S03 passar pelo proprio S09.
+- Para S03 em diante, variar mais os briefings (N > 3 quando viavel) e, se
+  possivel, alternar quem redige o baseline sem-skill.
 
 ### MSF-S10 - Agentes consumidores de skills
 
@@ -382,10 +436,9 @@ Dependencias: MSF-R16, MSF-S10.
 ## 5. Ordem executiva
 
 1. Gates R2 e R3 estao aprovados; MSF-S01 + MSF-S02 (fundacao) estao done.
-2. MSF-S08 esta aprovado; proximo passo e S04 (oferta) como primeira skill
-   real. Depois de S04 validar o pipeline skill -> retrieval -> rubrica ->
-   teste cego, seguir S03 (VSL), S05 (anuncios), S06 (low ticket), S07
-   (quiz).
+2. MSF-S04 esta aprovado por S09; proximo passo e S03 (VSL). S05 (anuncios),
+   S06 (low ticket) e S07 (quiz) seguem blocked ate S03 validar o proprio
+   pipeline skill -> retrieval -> rubrica -> teste cego.
 3. MSF-S09 valida a leva; MSF-S10 cria agentes; MSF-S11 liga a
    retroalimentacao.
 4. Segunda leva (S12) quando o backfill e os assets da academy elevarem a

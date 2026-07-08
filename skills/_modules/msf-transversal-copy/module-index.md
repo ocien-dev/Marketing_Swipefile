@@ -1,6 +1,6 @@
 # MSF Transversal Copy Modules
 
-Status: `ready_for_owner_audit`
+Status: `approved`
 
 These modules are shared retrieval and playbook fragments for the first
 process-skill wave. They are not standalone skills and must not be invoked as

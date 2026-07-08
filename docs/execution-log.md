@@ -1162,3 +1162,117 @@ Validation:
 - Non-ASCII scan passed on the changed internal files.
 - `git diff --check` passed.
 - Smoke packs generated 8 selected insights for each transversal tag, and all selected insights contained the requested tag.
+
+## 2026-07-08 - MSF-S04 offer-construction skill and S09 blind prepare
+
+Implementation:
+
+- Created `skills/msf-process-construcao-oferta/` with
+  `scripts/create_process_skill.py`.
+- Filled the 8-file process-skill anatomy: `SKILL.md`,
+  `skill.contract.json`, `retrieval.md`, `rubric.md`,
+  `templates/output-template.md`, `examples/briefing.md`,
+  `examples/output-approved.md`, and `agents/openai.yaml`.
+- Imported `transversal:mecanismo-big-idea` and
+  `transversal:prova-depoimentos` by reference.
+- Applied `module_inheritance_policy`: dedupe evidence counts by unique
+  `insight_id` across modules, especially `zoChfFHnlOQ-v2-0008` and
+  `mCaFyZpXJdE-v2-0011`; offer-specific pricing, anchoring, stack, bonus,
+  guarantee, value ladder, CTA, and backend logic remain in S04.
+- Updated `skills/_templates/msf-process-skill/skill.contract.json` so future
+  process skills require `agents/openai.yaml`.
+- Synced the text status of `skills/_modules/msf-transversal-copy/` module
+  docs to `approved`.
+
+S09 prepare:
+
+- Generated 3 varied blind offer pairs for owner judgment:
+  - health/pilates low ticket;
+  - B2B LGPD diagnostic offer;
+  - recurring guitar education subscription.
+- Wrote the blind sample to
+  `data/exports/output_s09_blind_sample_2026-07-08.csv`.
+- Wrote the hidden key to
+  `data/exports/output_s09_blind_key_2026-07-08.json`.
+- Generated audit strategy packs for each briefing:
+  - `data/exports/strategy_pack_s09_offer_001_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_offer_002_2026-07-08.*`
+  - `data/exports/strategy_pack_s09_offer_003_2026-07-08.*`
+- The CSV has blank offer-rubric fields and no source-label leakage
+  (`with_s04_skill`, `no_skill_no_base`, `with_base`, `baseline`, or
+  `insight:`).
+- No S09 verdict was generated. Judgment remains external.
+
+Decision state:
+
+- MSF-S04 moved to owner judgment with status `ready_for_owner_audit`.
+- MSF-S09 is `in_progress` for S04 only.
+- S03/S05-S07 remain blocked until S09 approves the offer skill.
+- No commit was created, per owner instruction.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-construcao-oferta` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- `.\.venv\Scripts\python.exe -B tests\test_process_skill_contract.py` -> `VALID process_skill_contract`.
+- `.\.venv\Scripts\python.exe -B tests\test_process_tag_retrieval.py` -> `VALID process_tag_retrieval`.
+- `.\.venv\Scripts\python.exe -B tests\test_transversal_modules_contract.py` -> `VALID transversal_modules_contract`.
+- `.\.venv\Scripts\python.exe -B tests\test_strategy_pack_diversity.py` -> `VALID strategy_pack_diversity_fixture`.
+- S09 blind CSV structural check passed: 3 pairs, 10 blank judging fields,
+  hidden key has 3 pairs.
+- Contract/key JSON parse passed.
+- Internal non-ASCII scan passed for S04 internal files, updated module docs,
+  template contract, and skills backlog.
+- `git diff --check` passed.
+
+## 2026-07-08 - MSF-S09 offer gate result
+
+Inputs:
+
+- Judged blind CSV:
+  `data/exports/output_s09_blind_sample_2026-07-08_judged.csv`.
+- Hidden key:
+  `data/exports/output_s09_blind_key_2026-07-08.json`.
+- Result report:
+  `docs/msf-s09-offer-gate-result-2026-07-08.md`.
+- Judge: Claude Opus 4.8, key not opened during judgment.
+- Blind caveat: blind de rotulo, nao de estilo.
+
+Apuration:
+
+- Pair winners after key mapping: com skill 3, sem skill 0, empates 0.
+- Criterion winners: com skill 24, sem skill 0, empates 0.
+- Commercial combined criterion (`mechanism_belief_bridge`,
+  `pricing_anchoring`, `proof_claim_control`): com skill 3, sem skill 0,
+  empates 0.
+- Weak recurring criteria: none.
+- Verdict: PASS.
+
+Decision state:
+
+- MSF-S04 is `done`.
+- `msf-process-construcao-oferta` is approved; its
+  `validation_checklist` is marked `pass`.
+- MSF-S03 is released as the next real process skill.
+- MSF-S05/MSF-S06/MSF-S07 remain blocked until S03 validates its own skill ->
+  retrieval -> rubric -> blind-test pipeline.
+- External independent audit confirmed PASS, citation resolution against
+  curated insights, No Invention, and overlap-id dedupe.
+- Owner requested commit + push of the approved S04/S09 trail, including the
+  judged CSV and ignored S09 exports for audit history.
+- Next S09 protocol note: vary briefings more (N > 3 when feasible) and
+  alternate the no-skill baseline author where possible.
+
+Validation:
+
+- `.\.venv\Scripts\python.exe -B scripts\validate_process_skill.py skills\msf-process-construcao-oferta --require-done` -> `VALID process_skill`.
+- `.\.venv\Scripts\python.exe -B scripts\validate_transversal_modules.py skills\_modules\msf-transversal-copy` -> `VALID transversal_modules`.
+- Regressions passed: `tests\test_process_skill_contract.py`,
+  `tests\test_process_tag_retrieval.py`,
+  `tests\test_transversal_modules_contract.py`, and
+  `tests\test_strategy_pack_diversity.py`.
+- S09 apuration check passed: verdict PASS, 3 pair wins with skill, 24
+  criterion wins with skill, and 3 commercial combined wins with skill.
+- Contract/key JSON parse passed.
+- Internal non-ASCII scan passed.
+- `git diff --check` passed.

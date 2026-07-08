@@ -3,7 +3,7 @@
 Module id: `prova-depoimentos`
 Import as: `transversal:prova-depoimentos`
 Process tag: `process-prova-depoimentos`
-Status: `ready_for_owner_audit`
+Status: `approved`
 
 ## Job
 
