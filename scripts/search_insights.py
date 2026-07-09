@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from msf_common import (
-    CURATED_UNAVAILABLE_STATE,
+    RETRIEVAL_AVAILABLE_STATE,
     UNFOUNDED_OUTPUT_BANNER,
     as_list,
     data_path,
@@ -31,6 +31,7 @@ DEFAULT_MASTERS = {
     "v1": data_path("exports", "insights_master.json"),
     "v2": data_path("exports", "insights_v2_master.json"),
     "curated": data_path("exports", "curated_insights.json"),
+    "pool": data_path("exports", "insights_v2_master.json"),
 }
 
 
@@ -76,6 +77,10 @@ def passes_filters(insight: dict[str, Any], args: argparse.Namespace) -> bool:
     confidence_value = float(confidence) if isinstance(confidence, (int, float)) else 0.0
     if confidence_value < args.min_confidence:
         return False
+    editorial_score = insight.get("editorial_score")
+    editorial_score_value = float(editorial_score) if isinstance(editorial_score, (int, float)) else 0.0
+    if editorial_score_value < args.min_editorial_score:
+        return False
     return True
 
 
@@ -108,7 +113,7 @@ def search(insights: list[dict[str, Any]], args: argparse.Namespace) -> list[dic
 
 def render_markdown(results: list[dict[str, Any]], args: argparse.Namespace) -> str:
     lines = []
-    if getattr(args, "retrieval_state", None) == CURATED_UNAVAILABLE_STATE:
+    if getattr(args, "retrieval_state", RETRIEVAL_AVAILABLE_STATE) != RETRIEVAL_AVAILABLE_STATE:
         lines.extend([UNFOUNDED_OUTPUT_BANNER, ""])
     lines.extend(
         [
@@ -119,6 +124,7 @@ def render_markdown(results: list[dict[str, Any]], args: argparse.Namespace) -> 
         f"- Source path: {resolve_master_path(args)}",
         f"- Retrieval state: {getattr(args, 'retrieval_state', 'available')}",
         f"- Process tags: {', '.join(args.process_tags) if args.process_tags else 'N/A'}",
+        f"- Min editorial score: {args.min_editorial_score}",
         f"- Results: {len(results)}",
         "",
         ]
@@ -162,6 +168,7 @@ def main() -> int:
     parser.add_argument("--process-tags", nargs="+", help="Filter by process-* tags. Accepts repeated values or comma-separated lists.")
     parser.add_argument("--process-tag-mode", choices=["any", "all"], default="any", help="Require any or all requested process tags.")
     parser.add_argument("--min-confidence", default=0.0, type=float)
+    parser.add_argument("--min-editorial-score", default=0.0, type=float)
     parser.add_argument("--limit", default=20, type=int)
     parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
     parser.add_argument("--output", type=Path, help="Optional output path")
@@ -170,17 +177,18 @@ def main() -> int:
 
     master_path = resolve_master_path(args)
     args.retrieval_state = retrieval_source_state(args.source, master_path)
-    insights = [] if args.retrieval_state == CURATED_UNAVAILABLE_STATE else load_master(master_path)
+    insights = [] if args.retrieval_state != RETRIEVAL_AVAILABLE_STATE else load_master(master_path)
     results = search(insights, args)
     if args.format == "json":
         payload = {
-            "banner": UNFOUNDED_OUTPUT_BANNER if args.retrieval_state == CURATED_UNAVAILABLE_STATE else None,
+            "banner": UNFOUNDED_OUTPUT_BANNER if args.retrieval_state != RETRIEVAL_AVAILABLE_STATE else None,
             "retrieval_state": args.retrieval_state,
             "query": args.query,
             "source": args.source,
             "source_path": str(master_path),
             "process_tags": args.process_tags,
             "process_tag_mode": args.process_tag_mode,
+            "min_editorial_score": args.min_editorial_score,
             "result_count": len(results),
             "results": results,
         }

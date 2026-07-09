@@ -43,7 +43,10 @@
       }
     },
     "source_layer": {
-      "const": "curated_insights"
+      "enum": [
+        "curated_insights",
+        "v2_master_pool"
+      ]
     },
     "citation_policy": {
       "type": "object",

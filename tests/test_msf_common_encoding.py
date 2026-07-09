@@ -72,6 +72,11 @@ def test_orphan_question_mark_allows_legitimate_final_question_marks() -> None:
     assert orphan_question_mark_contexts(text) == []
 
 
+def test_orphan_question_mark_allows_json_escaped_quotes_after_question_marks() -> None:
+    text = r'\"Qual que e mais facil?\" e \"Como e que pode?\"'
+    assert orphan_question_mark_contexts(text) == []
+
+
 def test_evidence_traceability_matches_segment_text() -> None:
     insights_payload = {
         "insights": [
@@ -132,6 +137,7 @@ if __name__ == "__main__":
     test_auditor_flags_repeated_mid_word_question_marks()
     test_auditor_flags_replacement_character()
     test_orphan_question_mark_allows_legitimate_final_question_marks()
+    test_orphan_question_mark_allows_json_escaped_quotes_after_question_marks()
     test_evidence_traceability_matches_segment_text()
     test_evidence_traceability_flags_non_matching_quote()
     print("VALID msf_common_encoding")

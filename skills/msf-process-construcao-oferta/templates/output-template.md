@@ -71,9 +71,9 @@ playbook interno.
 
 ## Evidence Binding
 
-- `[insight:<id>]`: claim grounded in a curated insight that directly supports it.
-- `[generic-practice]`: general marketing practice not directly grounded in the curated base.
-- If curated insights are unavailable, open with `SEM BASE - resposta nao fundamentada` and do not invent insight citations.
+- `[insight:<id>]`: claim grounded in a pool insight that directly supports it.
+- `[generic-practice]`: general marketing practice not directly grounded in the retrieval pool.
+- If retrieval pool insights are unavailable, open with `SEM BASE - resposta nao fundamentada` and do not invent insight citations.
 
 ## Claim Fence
 

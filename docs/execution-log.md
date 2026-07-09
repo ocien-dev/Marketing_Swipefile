@@ -2185,3 +2185,74 @@ Decision state:
 
 - MSF-R15 is `done`.
 - This was an additive contract hardening; no blind S09 gate was reopened.
+
+## 2026-07-09 - MSF-R16 retrieval pool consolidation
+
+Scope:
+
+- Executed the owner-approved option 2: keep the curated-125 gate snapshot as
+  audit reference and use the cleaned, re-scored v2 master as the broad
+  retrieval pool.
+- External data root was `C:\MSF-data\Marketing_Swipe_File`.
+- No curated rewrite was committed to git; external data remains local-only.
+
+External data state:
+
+- Backed up live external files before rewrite at
+  `C:\MSF-data\Marketing_Swipe_File\exports\_snapshots\msf-r16-option2-2026-07-09_113257`.
+- `insights_v2_master.json`: 207 + 436 R14 insights = 643 total, 0
+  `insight_id` collisions.
+- R14 manual scores were discarded; all 643 insights were re-scored through the
+  validated curated scorer on one scale.
+- Recomputed score distribution: min 88, median 96, max 100; 641/643 items are
+  at `editorial_score >= 90`.
+- `curated_insights_gate_snapshot_2026-07-08.json` was created as the
+  reference set that passed the blind gates.
+- SHA256 hashes:
+  - pre-R16 `insights_v2_master.json`:
+    `3f7167822feb4560b896ce3b9b364e1f8d27ac9071ca55a4bbcaeb4181084114`
+  - post-R16 `insights_v2_master.json`:
+    `89dfee939495417367a07b6d27307e3a68d9d6b8e3a7f8c6f81f781b2e6d5b50`
+  - `curated_insights.json` before/after and gate snapshot:
+    `1d9a7eaf291b1febb8db140d38fc1235807f37ba7c16df6248aa8787329d18e4`
+
+Implementation:
+
+- Added `pool` retrieval source for
+  `C:\MSF-data\Marketing_Swipe_File\exports\insights_v2_master.json`.
+- Added explicit `pool_unavailable` retrieval state.
+- Added `--min-editorial-score` to `search_insights.py` and
+  `generate_strategy_pack.py`.
+- The approved first-wave skills and template now use `--source pool
+  --min-editorial-score 90` in retrieval commands.
+- Skill contracts now allow `source_layer=v2_master_pool`.
+- Blind gate status was preserved: all five approved skills keep
+  `blind_baseline_test=pass`.
+
+Validation:
+
+- Final live master guards: internal non-ASCII 0, mojibake 0, missing
+  `process_tags` 0, missing `claim_risk` 0, missing evidence 0.
+- Evidence traceability passed: 1117/1117 quotes matched their referenced
+  transcript spans.
+- Coverage vs curated-125:
+  - `process-construcao-oferta`: 68 -> 207
+  - `process-copy-vsl`: 51 -> 253
+  - `process-copy-anuncios`: 18 -> 126
+  - `process-produto-low-ticket`: 29 -> 78
+  - `process-quiz`: 20 -> 36
+- Smoke strategy packs for all five skills passed with `--source pool
+  --min-editorial-score 90`, No Invention 0 missing / 0 wrong tag, encoding 0,
+  traceability 0 findings.
+- `tests/test_msf_common_encoding.py`, `tests/test_process_tag_retrieval.py`,
+  `tests/test_process_skill_contract.py`, five
+  `validate_process_skill.py --require-done` runs, and
+  `validate_transversal_modules.py` passed.
+- `git diff --check` passed with Windows LF/CRLF warnings only.
+
+Decision state:
+
+- MSF-R16 is `done`.
+- Retrieval migrated from the curated-only layer to the 643-item v2 master pool
+  with approved floor `--min-editorial-score 90`.
+- Supabase, pgvector, MCP, and agent-layer work were not started.

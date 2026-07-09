@@ -1,6 +1,6 @@
 # Retrieval Recipe
 
-Source layer: `curated_insights`
+Source layer: `v2_master_pool`
 
 Data root:
 
@@ -20,13 +20,13 @@ Imported transversal module tags:
 Use search while exploring:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\search_insights.py --source curated --process-tags process-construcao-oferta,process-mecanismo-big-idea,process-prova-depoimentos --query "<briefing terms>" --limit 20
+.\.venv\Scripts\python.exe scripts\search_insights.py --source pool --min-editorial-score 90 --process-tags process-construcao-oferta,process-mecanismo-big-idea,process-prova-depoimentos --query "<briefing terms>" --limit 20
 ```
 
 Use strategy packs when producing an output:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\generate_strategy_pack.py --source curated --task construcao-oferta --process-tags process-construcao-oferta,process-mecanismo-big-idea,process-prova-depoimentos --product "<product>" --avatar "<avatar>" --market "<market>" --limit 20 --output-json "$dataRoot\exports\strategy_pack_construcao-oferta.json" --output-md "$dataRoot\exports\strategy_pack_construcao-oferta.md"
+.\.venv\Scripts\python.exe scripts\generate_strategy_pack.py --source pool --min-editorial-score 90 --task construcao-oferta --process-tags process-construcao-oferta,process-mecanismo-big-idea,process-prova-depoimentos --product "<product>" --avatar "<avatar>" --market "<market>" --limit 20 --output-json "$dataRoot\exports\strategy_pack_construcao-oferta.json" --output-md "$dataRoot\exports\strategy_pack_construcao-oferta.md"
 ```
 
 Selection rules:
@@ -48,6 +48,9 @@ Selection rules:
 7. Keep quiz, low-ticket, CTA, pricing, bonus, guarantee, and value-ladder
    decisions inside this skill; transversal module claims stay at principle
    level.
+8. `--min-editorial-score 90` is the current R16 floor recommendation for
+   pool retrieval, pending owner approval; do not set a floor below 80 without
+   owner approval.
 
 Useful audit command for this skill:
 

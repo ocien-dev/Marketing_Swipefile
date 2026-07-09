@@ -1,6 +1,6 @@
 ---
 name: msf-process-copy-vsl
-description: Use this Marketing Swipe File process skill to create, critique, or improve VSL copy from curated insights. Trigger when the task asks for a VSL, mini VSL, video sales letter, lead, one belief, mechanism, proof sequence, objection handling, offer bridge, CTA, or an audit of whether a VSL is ready for a blind baseline test.
+description: Use this Marketing Swipe File process skill to create, critique, or improve VSL copy from the v2 master retrieval pool. Trigger when the task asks for a VSL, mini VSL, video sales letter, lead, one belief, mechanism, proof sequence, objection handling, offer bridge, CTA, or an audit of whether a VSL is ready for a blind baseline test.
 ---
 
 # Copy VSL
@@ -11,7 +11,7 @@ only `cansa?o` to `cansaco`, preserving the blind judgment.
 
 ## Workflow
 
-1. Read `retrieval.md` and retrieve curated insights matching
+1. Read `retrieval.md` and retrieve pool insights matching
    `process-copy-vsl`, plus imported transversal module tags when they support
    the briefing.
 2. Import `transversal:mecanismo-big-idea` and
@@ -117,7 +117,7 @@ Every VSL output should include:
 
 ## No Invention
 
-- Use only `curated_insights` as source material unless the owner explicitly
+- Use only `v2_master_pool` as source material unless the owner explicitly
   reopens curation.
 - Do not count the same `insight_id` twice when it appears in both imported
   modules.

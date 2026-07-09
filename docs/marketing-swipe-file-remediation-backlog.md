@@ -678,33 +678,49 @@ Execucao 2026-07-08:
 - Revalidado: cinco process skills `--require-done`, modulos transversais,
   smoke das cinco secoes por skill, smoke missing-curated e guard de encoding.
 
-### MSF-R16 - Decisao e desenho do Supabase (raw/curated + pgvector)
+### MSF-R16 - Consolidacao editorial e retrieval pool
 
 Prioridade: `P2`
-Tipo: `database`
-Status: `blocked`
+Tipo: `data/retrieval`
+Status: `done`
 
 Escopo:
 
-- Somente apos gate R3: nao industrializar formato instavel.
-- Desenhar schema com dois niveis desde o inicio: `raw_insights` e `curated_insights`, espelhando o contrato v2.
-- Incluir tabela de processos baseada nos ids `process-*` do `taxonomy_seed.json`, com FK a partir dos insights curados ou tabela de ligacao equivalente para tags multiprocessos.
-- Reservar tabela/campos para anotacoes de outcome ligadas a insights usados em outputs, permitindo registrar resultado observado, contexto, fonte e data sem sobrescrever o insight original.
-- Incluir `pgvector` para busca semantica de insights e evidencias (a busca por keywords degrada com a base crescendo).
-- Importadores idempotentes a partir dos exports locais.
-- RLS e politicas definidas antes de expor qualquer API, conforme Definition of Done do backlog mestre.
+- Consolidar o `insights_v2_master.json` externo com os 436 insights R14,
+  mantendo backup e rollback.
+- Re-scorar os 643 insights em escala unica pelo scorer validado.
+- Manter o curated-125 que passou gates cegos como snapshot de auditoria.
+- Migrar retrieval das cinco skills aprovadas para o v2 master pool com floor
+  aprovado `--min-editorial-score 90`.
+- Preservar status approved/done e `blind_baseline_test=pass` das skills; a
+  mudanca amplia evidencia e nao reabre gates cegos.
 
 Aceite:
 
-- Schema versionado em migrations.
-- Tabela de processos e FKs/relacionamentos de `process_tags` cobertos por migration e import idempotente.
-- Estrutura de outcome annotations versionada e ligada aos insights usados.
-- Import dos exports v2 completo e idempotente.
-- Uma query semantica real retornando insights com evidencia sem ler arquivos locais.
+- Backup externo criado antes da reescrita e hashes registrados.
+- Master final com 643 insights, 0 colisao de `insight_id`, 0 mojibake, 0
+  non-ASCII interno e rastreabilidade quote->segmento 100%.
+- Score recomputado em escala unica; floor aprovado `>=90` preserva 641/643.
+- Cinco skills + template usam `--source pool --min-editorial-score 90`.
+- Validadores das cinco skills aprovadas e dos modulos transversais passam.
+- Smokes por skill passam com No Invention, encoding e traceability limpos.
 
 Dependencias:
 
-- Gate R3 aprovado.
+- MSF-R03, MSF-R14, MSF-R15, MSF-S03, MSF-S04, MSF-S05, MSF-S06, MSF-S07.
+
+Execucao 2026-07-09:
+
+- Opcao 2 aprovada em auditoria externa e executada.
+- External `insights_v2_master.json`: 207 -> 643 insights, hash final
+  `89dfee939495417367a07b6d27307e3a68d9d6b8e3a7f8c6f81f781b2e6d5b50`.
+- External `curated_insights.json` preservado com hash
+  `1d9a7eaf291b1febb8db140d38fc1235807f37ba7c16df6248aa8787329d18e4`.
+- Snapshot `curated_insights_gate_snapshot_2026-07-08.json` criado no external.
+- Recuperacao por pool documentada em
+  `docs/msf-r16-pool-execution-report-2026-07-09.md`.
+- Supabase/pgvector nao foi iniciado nesta tarefa; fica para marco futuro
+  quando o owner pedir.
 
 ## 5. Resumo de prioridades para o Codex
 
@@ -716,15 +732,17 @@ Ordem de ataque sugerida, em sessoes:
 4. Sessao 4: MSF-R09 e MSF-R10 done; Gate R2 aprovado em 2026-07-07 apos julgamento cego externo.
 5. Sessao 5: MSF-R11/MSF-R12/MSF-R13 done; Gate R3 aprovado em 2026-07-07.
 6. EPIC MSF-S primeira leva concluida: S03/S04/S05/S06/S07 done/approved.
-7. MSF-R03 concluido em 2026-07-08; proximo marco e MSF-R14, sem iniciar ate
-   prompt explicito do owner.
+7. MSF-R03 concluido em 2026-07-08.
+8. MSF-R14 concluido por lotes auditaveis; R16 consolidou o v2 master externo
+   como pool de retrieval.
+9. MSF-R15 e MSF-R16 concluidos; proximo marco fica a criterio do owner
+   (agentes/Supabase/novo ciclo de curadoria), sem iniciar automaticamente.
 
 Regras permanentes durante a remediacao:
 
-- Nao iniciar o backfill MSF-R14 dos 508 chunks restantes sem prompt explicito
-  do owner.
-- Com R3 aprovado, primeira leva MSF-S concluida e MSF-R03 done, manter
-  Supabase, MCP e agentes fora de escopo ate a ordem acordada.
+- Nao iniciar Supabase, MCP ou agentes sem prompt explicito do owner.
+- Com R3 aprovado, primeira leva MSF-S concluida, MSF-R03 done e R16 done,
+  manter novos marcos fora de escopo ate a ordem acordada.
 - Nao citar os scores antigos 39/40 e 37/40 como prova de valor.
 - Toda saida LLM validada contra schema antes de entrar na base.
 - Atualizar `docs/execution-log.md` ao fim de cada sessao, como ja e pratica do projeto.

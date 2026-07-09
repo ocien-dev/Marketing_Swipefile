@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from msf_common import (
-    CURATED_UNAVAILABLE_STATE,
+    RETRIEVAL_AVAILABLE_STATE,
     UNFOUNDED_OUTPUT_BANNER,
     as_list,
     data_path,
@@ -33,6 +33,7 @@ DEFAULT_MASTERS = {
     "v1": data_path("exports", "insights_master.json"),
     "v2": data_path("exports", "insights_v2_master.json"),
     "curated": data_path("exports", "curated_insights.json"),
+    "pool": data_path("exports", "insights_v2_master.json"),
 }
 
 
@@ -42,6 +43,7 @@ TASK_THEMES = {
     "ads": ["anuncios", "criativos", "hooks", "copy", "avatar", "prova social", "ofertas"],
     "offer": ["ofertas", "preco", "prova social", "avatar", "funil"],
     "oferta": ["ofertas", "preco", "prova social", "avatar", "funil"],
+    "construcao-oferta": ["ofertas", "preco", "prova social", "avatar", "funil"],
     "quiz": ["quiz", "avatar", "ofertas", "copy", "funil"],
     "webinar": ["webinar", "copy", "ofertas", "prova social", "funil"],
 }
@@ -52,6 +54,7 @@ TASK_KEYWORDS = {
     "ads": ["anuncio", "hook", "criativo", "angulo", "script", "teste", "trafego"],
     "offer": ["oferta", "bonus", "garantia", "preco", "stack", "urgencia"],
     "oferta": ["oferta", "bonus", "garantia", "preco", "stack", "urgencia"],
+    "construcao-oferta": ["oferta", "bonus", "garantia", "preco", "stack", "urgencia"],
     "quiz": ["quiz", "diagnostico", "pergunta", "resultado", "ponte"],
     "webinar": ["webinar", "aula", "pitch", "apresentacao", "evento"],
 }
@@ -99,6 +102,11 @@ def confidence_score(insight: dict[str, Any]) -> float:
     return float(confidence) if isinstance(confidence, (int, float)) else 0.0
 
 
+def editorial_score(insight: dict[str, Any]) -> float:
+    score = insight.get("editorial_score")
+    return float(score) if isinstance(score, (int, float)) else 0.0
+
+
 def similarity_text(insight: dict[str, Any]) -> str:
     parts = [
         insight.get("canonical_title"),
@@ -138,6 +146,8 @@ def build_ranked_candidates(insights: list[dict[str, Any]], args: argparse.Names
             continue
         confidence = confidence_score(insight)
         if confidence < args.min_confidence:
+            continue
+        if editorial_score(insight) < args.min_editorial_score:
             continue
         score = (
             theme_score(insight, desired_themes)
@@ -253,6 +263,7 @@ def group_pack_items(insights: list[dict[str, Any]]) -> dict[str, list[dict[str,
             "level": insight.get("level"),
             "insight_type": insight.get("insight_type"),
             "confidence_score": insight.get("confidence_score"),
+            "editorial_score": insight.get("editorial_score"),
             "episode_video_id": insight.get("episode_video_id"),
             "episode_title": insight.get("episode_title"),
             "asset_id": insight.get("asset_id"),
@@ -304,17 +315,20 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
         open_questions.append("A diversidade/cap por episodio reduziu o top-N; revisar se o limite ou o cap devem ser ajustados.")
     if process_tags and not selected:
         open_questions.append("Nenhum insight curado encontrado para os process_tags pedidos; revisar tags ou aguardar novo lote curado.")
-    if getattr(args, "retrieval_state", None) == CURATED_UNAVAILABLE_STATE:
-        open_questions.insert(0, "Curated insights indisponivel; resposta nao fundamentada pela base.")
+    if getattr(args, "retrieval_state", RETRIEVAL_AVAILABLE_STATE) != RETRIEVAL_AVAILABLE_STATE:
+        open_questions.insert(0, "Fonte de retrieval indisponivel; resposta nao fundamentada pela base.")
 
     return {
         "schema_version": "1.0",
         "generated_at": utc_now(),
-        "banner": UNFOUNDED_OUTPUT_BANNER if getattr(args, "retrieval_state", None) == CURATED_UNAVAILABLE_STATE else None,
+        "banner": UNFOUNDED_OUTPUT_BANNER
+        if getattr(args, "retrieval_state", RETRIEVAL_AVAILABLE_STATE) != RETRIEVAL_AVAILABLE_STATE
+        else None,
         "retrieval_state": getattr(args, "retrieval_state", "available"),
         "task": args.task,
         "source": args.source,
         "source_path": str(resolve_master_path(args)),
+        "min_editorial_score": args.min_editorial_score,
         "process_tag_filter": {
             "process_tags": process_tags,
             "mode": process_tag_mode,
@@ -344,7 +358,7 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
 def render_markdown(pack: dict[str, Any]) -> str:
     briefing = pack["briefing"]
     lines = []
-    if pack.get("retrieval_state") == CURATED_UNAVAILABLE_STATE:
+    if pack.get("retrieval_state") != RETRIEVAL_AVAILABLE_STATE:
         lines.extend([UNFOUNDED_OUTPUT_BANNER, ""])
     lines.extend(
         [
@@ -355,6 +369,7 @@ def render_markdown(pack: dict[str, Any]) -> str:
         f"- Market: {briefing.get('market') or 'N/A'}",
         f"- Asset type: {briefing.get('asset_type') or 'N/A'}",
         f"- Source: {pack.get('source')} ({pack.get('source_path')})",
+        f"- Min editorial score: {pack.get('min_editorial_score')}",
         f"- Process tags: {', '.join(pack.get('process_tag_filter', {}).get('process_tags') or []) or 'N/A'}",
         f"- Retrieval state: {pack.get('retrieval_state')}",
         f"- Results: {pack.get('result_count')}",
@@ -372,6 +387,7 @@ def render_markdown(pack: dict[str, Any]) -> str:
                 f"- Level/type: {item.get('level')} / {item.get('insight_type')}",
                 f"- Episode: {item.get('episode_video_id')} - {item.get('episode_title')}",
                 f"- Confidence: {item.get('confidence_score')}",
+                f"- Editorial score: {item.get('editorial_score')}",
                 f"- Strategy score: {item.get('strategy_score')} | Selection score: {item.get('selection_score')} | Similarity: {item.get('similarity_to_selected')}",
                 "",
                 str(item.get("insight_ptbr") or ""),
@@ -407,6 +423,7 @@ def main() -> int:
     parser.add_argument("--process-tags", nargs="+", help="Filter by process-* tags. Accepts repeated values or comma-separated lists.")
     parser.add_argument("--process-tag-mode", choices=["any", "all"], default="any", help="Require any or all requested process tags.")
     parser.add_argument("--min-confidence", default=0.0, type=float)
+    parser.add_argument("--min-editorial-score", default=0.0, type=float)
     parser.add_argument("--limit", default=20, type=int)
     parser.add_argument("--diversity-weight", default=0.3, type=float, help="MMR Jaccard diversity penalty, 0.0 to 1.0.")
     parser.add_argument("--episode-cap", default=3, type=int, help="Maximum selected insights per episode in the top-N; use 0 to disable.")
@@ -418,7 +435,7 @@ def main() -> int:
 
     master_path = resolve_master_path(args)
     args.retrieval_state = retrieval_source_state(args.source, master_path)
-    insights = [] if args.retrieval_state == CURATED_UNAVAILABLE_STATE else load_insights(master_path)
+    insights = [] if args.retrieval_state != RETRIEVAL_AVAILABLE_STATE else load_insights(master_path)
     pack = build_pack(args, insights)
     markdown = render_markdown(pack)
     if args.output_json:

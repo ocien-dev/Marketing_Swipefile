@@ -1,6 +1,6 @@
 ---
 name: msf-process-construcao-oferta
-description: Use this Marketing Swipe File process skill to build, critique, or improve offer-construction outputs from curated insights. Trigger when the task asks for an offer, offer stack, promise, mechanism, pricing/anchoring logic, bonuses, guarantee, value ladder, backend path, or an audit of whether an offer is ready for validation.
+description: Use this Marketing Swipe File process skill to build, critique, or improve offer-construction outputs from the v2 master retrieval pool. Trigger when the task asks for an offer, offer stack, promise, mechanism, pricing/anchoring logic, bonuses, guarantee, value ladder, backend path, or an audit of whether an offer is ready for validation.
 ---
 
 # Construcao De Oferta
@@ -9,7 +9,7 @@ Status: approved by MSF-S09 on 2026-07-08.
 
 ## Workflow
 
-1. Read `retrieval.md` and retrieve curated insights matching
+1. Read `retrieval.md` and retrieve pool insights matching
    `process-construcao-oferta`, plus the imported transversal module tags when
    they support the briefing.
 2. Import `transversal:mecanismo-big-idea` and
@@ -98,7 +98,7 @@ Every offer output should include:
 
 ## No Invention
 
-- Use only `curated_insights` as source material unless the owner explicitly
+- Use only `v2_master_pool` as source material unless the owner explicitly
   reopens curation.
 - Do not count the same `insight_id` twice when it appears in both imported
   modules.

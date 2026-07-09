@@ -1,15 +1,15 @@
 ---
 name: __SKILL_NAME__
-description: Use this Marketing Swipe File process skill to create or critique __DISPLAY_NAME__ outputs from curated insights. Trigger when the task needs process-specific marketing execution, retrieval by process_tags, evidence-backed playbook guidance, citation of insight_id, and validation against the process rubric.
+description: Use this Marketing Swipe File process skill to create or critique __DISPLAY_NAME__ outputs from the v2 master retrieval pool. Trigger when the task needs process-specific marketing execution, retrieval by process_tags, evidence-backed playbook guidance, citation of insight_id, and validation against the process rubric.
 ---
 
 # __DISPLAY_NAME__
 
 ## Workflow
 
-1. Read `retrieval.md` and retrieve only curated insights matching:
+1. Read `retrieval.md` and retrieve only pool insights matching:
    __PROCESS_TAGS_INLINE__.
-2. Build or update the internal playbook from `curated_insights`, citing every
+2. Build or update the internal playbook from `v2_master_pool`, citing every
    non-obvious claim as `[insight:<insight_id>]`.
 3. Mark generic practices as `[generic-practice]`; do not present them as
    learned from the base.
@@ -49,7 +49,7 @@ shared copy modules from `skills/_modules/msf-transversal-copy/`.
 ## No Invention
 
 - Every non-obvious process rule must cite `[insight:<insight_id>]`.
-- If no curated insight supports a claim, mark it `[generic-practice]` or
+- If no pool insight supports a claim, mark it `[generic-practice]` or
   remove it.
 - Do not use raw/v1 insights as source material for this skill unless the owner
   explicitly reopens curation.

@@ -1,6 +1,6 @@
 # Retrieval Recipe
 
-Source layer: `curated_insights`
+Source layer: `v2_master_pool`
 
 Data root:
 
@@ -20,13 +20,13 @@ Imported transversal module tags:
 Use search while exploring:
 
 ```powershell
-.\.venv\Scripts\python.exe -B scripts\search_insights.py --source curated --process-tags process-produto-low-ticket,process-mecanismo-big-idea,process-prova-depoimentos --query "<briefing terms>" --limit 20
+.\.venv\Scripts\python.exe -B scripts\search_insights.py --source pool --min-editorial-score 90 --process-tags process-produto-low-ticket,process-mecanismo-big-idea,process-prova-depoimentos --query "<briefing terms>" --limit 20
 ```
 
 Use strategy packs when producing an output:
 
 ```powershell
-.\.venv\Scripts\python.exe -B scripts\generate_strategy_pack.py --source curated --task oferta --process-tags process-produto-low-ticket,process-mecanismo-big-idea,process-prova-depoimentos --product "<product>" --avatar "<avatar>" --market "<market>" --asset-type "low-ticket-product" --query "<briefing terms>" --limit 20 --output-json "$dataRoot\exports\strategy_pack_lowticket.json" --output-md "$dataRoot\exports\strategy_pack_lowticket.md"
+.\.venv\Scripts\python.exe -B scripts\generate_strategy_pack.py --source pool --min-editorial-score 90 --task oferta --process-tags process-produto-low-ticket,process-mecanismo-big-idea,process-prova-depoimentos --product "<product>" --avatar "<avatar>" --market "<market>" --asset-type "low-ticket-product" --query "<briefing terms>" --limit 20 --output-json "$dataRoot\exports\strategy_pack_lowticket.json" --output-md "$dataRoot\exports\strategy_pack_lowticket.md"
 ```
 
 Selection rules:
@@ -49,6 +49,9 @@ Selection rules:
 7. Do not import separate offer, quiz, VSL, pricing, or ads modules unless the
    owner requests it; this skill can use insights carrying those tags only when
    they also support low-ticket product decisions.
+8. `--min-editorial-score 90` is the current R16 floor recommendation for
+   pool retrieval, pending owner approval; do not set a floor below 80 without
+   owner approval.
 
 Useful audit command for this skill:
 

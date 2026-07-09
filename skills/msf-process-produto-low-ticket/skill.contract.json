@@ -8,7 +8,7 @@
     "process-mecanismo-big-idea",
     "process-prova-depoimentos"
   ],
-  "source_layer": "curated_insights",
+  "source_layer": "v2_master_pool",
   "citation_policy": {
     "insight_claim": "[insight:<insight_id>]",
     "generic_practice": "[generic-practice]"

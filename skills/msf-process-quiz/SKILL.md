@@ -1,6 +1,6 @@
 ---
 name: msf-process-quiz
-description: Use this Marketing Swipe File process skill to create, critique, or improve quiz funnels, diagnostic quizzes, segmentation quizzes, readiness quizzes, product-match quizzes, result pages, quiz-to-offer bridges, and quiz completion design from curated insights. Trigger when the task asks for quiz questions, personalized results, mechanism belief, proof control, offer bridge, completion flow, or an audit of whether a quiz funnel is ready for a blind baseline test.
+description: Use this Marketing Swipe File process skill to create, critique, or improve quiz funnels, diagnostic quizzes, segmentation quizzes, readiness quizzes, product-match quizzes, result pages, quiz-to-offer bridges, and quiz completion design from the v2 master retrieval pool. Trigger when the task asks for quiz questions, personalized results, mechanism belief, proof control, offer bridge, completion flow, or an audit of whether a quiz funnel is ready for a blind baseline test.
 ---
 
 # Quiz
@@ -12,7 +12,7 @@ guard and localized encoding-fixed sample.
 
 ## Workflow
 
-1. Read `retrieval.md` and retrieve curated insights matching `process-quiz`,
+1. Read `retrieval.md` and retrieve pool insights matching `process-quiz`,
    plus imported transversal module tags when they support the briefing.
 2. Import `transversal:mecanismo-big-idea` and
    `transversal:prova-depoimentos` by reference from
@@ -127,7 +127,7 @@ Every quiz output should include:
 
 ## No Invention
 
-- Use only `curated_insights` as source material unless the owner explicitly
+- Use only `v2_master_pool` as source material unless the owner explicitly
   reopens curation.
 - Do not count the same `insight_id` twice when it appears in both imported
   modules.

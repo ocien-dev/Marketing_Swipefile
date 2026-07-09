@@ -39,11 +39,12 @@ BROKEN_ACCENT_DELETION_RE = re.compile(
     re.IGNORECASE,
 )
 ORPHAN_QUESTION_MARK_RE = re.compile(
-    r"[A-Za-z]\?+[a-z]|[A-Za-z]\?+(?![\s\"'\)\]\.,;:!A-Z]|$)",
+    r"[A-Za-z]\?+[a-z]|[A-Za-z]\?+(?![\\\s\"'\)\]\.,;:!A-Z]|$)",
     re.ASCII,
 )
 DATA_ROOT_ENV_VAR = "MSF_DATA_DIR"
 CURATED_UNAVAILABLE_STATE = "curated_unavailable"
+POOL_UNAVAILABLE_STATE = "pool_unavailable"
 RETRIEVAL_AVAILABLE_STATE = "available"
 UNFOUNDED_OUTPUT_BANNER = "SEM BASE - resposta nao fundamentada"
 
@@ -75,9 +76,15 @@ def curated_insights_path() -> Path:
     return data_path("exports", "curated_insights.json")
 
 
+def insights_v2_master_path() -> Path:
+    return data_path("exports", "insights_v2_master.json")
+
+
 def retrieval_source_state(source: str, path: Path) -> str:
     if source == "curated" and not path.exists():
         return CURATED_UNAVAILABLE_STATE
+    if source == "pool" and not path.exists():
+        return POOL_UNAVAILABLE_STATE
     return RETRIEVAL_AVAILABLE_STATE
 
 

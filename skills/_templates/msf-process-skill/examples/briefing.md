@@ -6,4 +6,4 @@
 - Mercado: educação digital no Brasil.
 - Objetivo: criar um output final que possa ser avaliado pela rubrica da
   skill.
-- Restrição: usar apenas insights curados retornados por `retrieval.md`.
+- Restrição: usar apenas insights do pool retornados por `retrieval.md`.

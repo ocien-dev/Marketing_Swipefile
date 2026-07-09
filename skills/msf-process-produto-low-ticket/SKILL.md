@@ -1,6 +1,6 @@
 ---
 name: msf-process-produto-low-ticket
-description: Use this Marketing Swipe File process skill to create, critique, or improve low-ticket entry products, front-end offers, paid challenges, mini-courses, templates, kits, workshops, and product ladders from curated insights. Trigger when the task asks for an entry transformation, consumable low-ticket scope, price-value fit, backend ascension bridge, or an audit of whether a low-ticket product is ready for a blind baseline test.
+description: Use this Marketing Swipe File process skill to create, critique, or improve low-ticket entry products, front-end offers, paid challenges, mini-courses, templates, kits, workshops, and product ladders from the v2 master retrieval pool. Trigger when the task asks for an entry transformation, consumable low-ticket scope, price-value fit, backend ascension bridge, or an audit of whether a low-ticket product is ready for a blind baseline test.
 ---
 
 # Produto Low Ticket
@@ -11,7 +11,7 @@ encoding or No Invention defect.
 
 ## Workflow
 
-1. Read `retrieval.md` and retrieve curated insights matching
+1. Read `retrieval.md` and retrieve pool insights matching
    `process-produto-low-ticket`, plus imported transversal module tags when
    they support the briefing.
 2. Import `transversal:mecanismo-big-idea` and
@@ -123,7 +123,7 @@ Every low-ticket product output should include:
 
 ## No Invention
 
-- Use only `curated_insights` as source material unless the owner explicitly
+- Use only `v2_master_pool` as source material unless the owner explicitly
   reopens curation.
 - Do not count the same `insight_id` twice when it appears in both imported
   modules.

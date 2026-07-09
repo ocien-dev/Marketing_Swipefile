@@ -14,7 +14,7 @@ out of 40, no criterion is below 3, and citation fidelity passes.
 | Proof | Claims are supported by proof, expert story, demonstration, testimonial logic, or credible evidence. |
 | Objection handling | Likely objections are named and answered before they block the offer bridge. |
 | Offer bridge | The pitch connects naturally to the problem, mechanism, product logic, and CTA. |
-| Base usage | Non-obvious claims cite curated `insight_id` values and apply them instead of merely listing them. |
+| Base usage | Non-obvious claims cite pool `insight_id` values and apply them instead of merely listing them. |
 
 Commercial combined criterion for VSL:
 
@@ -24,7 +24,7 @@ Commercial combined criterion for VSL:
 
 Output contract checks:
 
-- Evidence binding: material claims are marked with `[insight:<id>]` or `[generic-practice]`, and unavailable curated data triggers `SEM BASE - resposta nao fundamentada`.
+- Evidence binding: material claims are marked with `[insight:<id>]` or `[generic-practice]`, and unavailable retrieval data triggers `SEM BASE - resposta nao fundamentada`.
 - Claim fence: money, health, esoteric, platform, and other high-risk claims state what cannot be promised.
 - Proof fit: each core claim or mechanism names the proof type or is marked proof-weak and reduced.
 - Testable bet: the output includes a falsifiable hypothesis, variants, metric, failure signal, and minimum read condition.
@@ -32,7 +32,7 @@ Output contract checks:
 
 Hard fails:
 
-- Uses non-curated insights as if they were curated.
+- Uses insights outside the retrieval pool as if they were grounded.
 - Omits `insight_id` citations for non-obvious playbook claims.
 - Counts the same `insight_id` twice across imported modules, especially
   `zoChfFHnlOQ-v2-0008` or `mCaFyZpXJdE-v2-0011`.

@@ -1,6 +1,6 @@
 ---
 name: msf-process-copy-anuncios
-description: Use this Marketing Swipe File process skill to create, critique, or improve paid-ad copy, hooks, angles, short scripts, platform-specific creative briefs, and test matrices from curated insights. Trigger when the task asks for Meta ads, Reels or short-video ads, Google search ads, Google display ads, hook testing, creative direction, paid-traffic angles, or an audit of whether ads are ready for a blind baseline test.
+description: Use this Marketing Swipe File process skill to create, critique, or improve paid-ad copy, hooks, angles, short scripts, platform-specific creative briefs, and test matrices from the v2 master retrieval pool. Trigger when the task asks for Meta ads, Reels or short-video ads, Google search ads, Google display ads, hook testing, creative direction, paid-traffic angles, or an audit of whether ads are ready for a blind baseline test.
 ---
 
 # Copy Anuncios
@@ -11,7 +11,7 @@ encoding defect.
 
 ## Workflow
 
-1. Read `retrieval.md` and retrieve curated insights matching
+1. Read `retrieval.md` and retrieve pool insights matching
    `process-copy-anuncios`, plus imported transversal module tags when they
    support the briefing.
 2. Import `transversal:mecanismo-big-idea` and
@@ -115,7 +115,7 @@ Every ads output should include:
 
 ## No Invention
 
-- Use only `curated_insights` as source material unless the owner explicitly
+- Use only `v2_master_pool` as source material unless the owner explicitly
   reopens curation.
 - Do not count the same `insight_id` twice when it appears in both imported
   modules.

@@ -6,7 +6,7 @@ out of 40, no criterion is below 3, and citation fidelity passes.
 | Criterion | What to verify |
 |---|---|
 | Process fit | The output solves the requested process, not a generic marketing task. |
-| Evidence use | Important claims cite curated `insight_id` values from the retrieval pack. |
+| Evidence use | Important claims cite pool `insight_id` values from the retrieval pack. |
 | Citation fidelity | Cited insights genuinely support the claim made in the output. |
 | Operational specificity | The output contains concrete steps, decisions, examples, or copy, not vague advice. |
 | Strategic coherence | The output is coherent with the product, avatar, market, and constraints. |
@@ -16,7 +16,7 @@ out of 40, no criterion is below 3, and citation fidelity passes.
 
 Output contract checks:
 
-- Evidence binding: material claims are marked with `[insight:<id>]` or `[generic-practice]`, and unavailable curated data triggers `SEM BASE - resposta nao fundamentada`.
+- Evidence binding: material claims are marked with `[insight:<id>]` or `[generic-practice]`, and unavailable retrieval data triggers `SEM BASE - resposta nao fundamentada`.
 - Claim fence: money, health, esoteric, platform, and other high-risk claims state what cannot be promised.
 - Proof fit: each core claim or mechanism names the proof type or is marked proof-weak and reduced.
 - Testable bet: the output includes a falsifiable hypothesis, variants, metric, failure signal, and minimum read condition.
@@ -24,7 +24,7 @@ Output contract checks:
 
 Hard fails:
 
-- Uses non-curated insights as if they were curated.
+- Uses insights outside the retrieval pool as if they were grounded.
 - Omits `insight_id` citations for non-obvious playbook claims.
 - Changes evidence quotes by stripping accents or rewriting the quote.
 - Produces a final output in broken Portuguese or ASCII-stripped wording.

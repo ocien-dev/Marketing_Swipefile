@@ -12,4 +12,4 @@
   - Preço até R$ 97.
   - Sem promessa de faturamento garantido.
   - Precisa ter mecanismo, bônus, prova necessária, garantia e próximo passo.
-  - Usar apenas insights curados retornados por `retrieval.md`.
+  - Usar apenas insights do pool retornados por `retrieval.md`.

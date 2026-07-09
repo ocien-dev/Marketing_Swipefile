@@ -1,6 +1,6 @@
 # Retrieval Recipe
 
-Source layer: `curated_insights`
+Source layer: `v2_master_pool`
 
 Data root:
 
@@ -15,13 +15,13 @@ Process tags:
 Use search while exploring:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\search_insights.py --source curated --process-tags __PROCESS_TAGS_CSV__ --query "<briefing terms>" --limit 20
+.\.venv\Scripts\python.exe scripts\search_insights.py --source pool --min-editorial-score 90 --process-tags __PROCESS_TAGS_CSV__ --query "<briefing terms>" --limit 20
 ```
 
 Use strategy packs when producing an output:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\generate_strategy_pack.py --source curated --task __SLUG__ --process-tags __PROCESS_TAGS_CSV__ --product "<product>" --avatar "<avatar>" --market "<market>" --limit 20 --output-json "$dataRoot\exports\strategy_pack___SLUG__.json" --output-md "$dataRoot\exports\strategy_pack___SLUG__.md"
+.\.venv\Scripts\python.exe scripts\generate_strategy_pack.py --source pool --min-editorial-score 90 --task __SLUG__ --process-tags __PROCESS_TAGS_CSV__ --product "<product>" --avatar "<avatar>" --market "<market>" --limit 20 --output-json "$dataRoot\exports\strategy_pack___SLUG__.json" --output-md "$dataRoot\exports\strategy_pack___SLUG__.md"
 ```
 
 Selection rules:
@@ -36,6 +36,9 @@ Selection rules:
 6. Cite the `insight_id` for any rule imported into the playbook.
 7. Keep quiz, low-ticket, CTA, and other process-specific logic in the process
    skill; transversal module claims stay at principle level.
+8. `--min-editorial-score 90` is the current R16 floor recommendation for
+   pool retrieval, pending owner approval; do not set a floor below 80 without
+   owner approval.
 
 Transversal module recipes live in
 `skills/_modules/msf-transversal-copy/retrieval.md`. Import those recipes by
