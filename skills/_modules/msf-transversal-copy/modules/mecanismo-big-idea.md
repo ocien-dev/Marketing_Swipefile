@@ -50,6 +50,18 @@ a real process skill, combine this tag with the primary process tag.
   buy, or request.
 - Mark unsupported mechanism claims as `[generic-practice]` or remove them.
 
+## Consumer Skill Output Contract Checklist
+
+When a process skill imports this module, it must answer these six questions in
+its final deliverable or internal strategy notes:
+
+- What belief does this mechanism need to create?
+- What evidence supports that belief?
+- What evidence would falsify or weaken that belief?
+- What claim is outside the allowed fence?
+- Does this mechanism conflict with another imported mechanism?
+- Is the mechanism process-specific or transversal?
+
 ## When Not To Use
 
 - Do not invent a mechanism when the curated pack only supports proof, pricing,

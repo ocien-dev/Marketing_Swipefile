@@ -14,6 +14,14 @@ out of 40, no criterion is below 3, and citation fidelity passes.
 | Funnel and backend coherence | The offer connects to CTA, checkout/application path, validation loop, and next monetization step. |
 | Evidence fidelity and usability | Non-obvious claims cite curated `insight_id` values, citations support the claims, and the final output is usable in pt-BR. |
 
+Output contract checks:
+
+- Evidence binding: material claims are marked with `[insight:<id>]` or `[generic-practice]`, and unavailable curated data triggers `SEM BASE - resposta nao fundamentada`.
+- Claim fence: money, health, esoteric, platform, and other high-risk claims state what cannot be promised.
+- Proof fit: each core claim or mechanism names the proof type or is marked proof-weak and reduced.
+- Testable bet: the output includes a falsifiable hypothesis, variants, metric, failure signal, and minimum read condition.
+- Coherence check: when more than one mechanism is combined, the output names one belief and flags conflicts.
+
 Hard fails:
 
 - Uses non-curated insights as if they were curated.

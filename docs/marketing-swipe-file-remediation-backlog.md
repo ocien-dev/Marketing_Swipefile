@@ -630,26 +630,53 @@ Dependencias:
 - Gates R1, R2 e R3 aprovados; MSF-R03 done. Proximo marco, mas so iniciar
   quando o owner mandar.
 
-### MSF-R15 - Triagem das tarefas de materiais complementares
+### MSF-R15 - Grounding hardening, limpeza de base e contrato de saida
 
 Prioridade: `P2`
-Tipo: `data`
-Status: `not_started`
+Tipo: `qa`
+Status: `done`
 
 Escopo:
 
-- Triar as 13 tarefas de `data/exports/acquisition_tasks_master.csv`: obter, descartar com motivo, ou adiar.
-- Processar os materiais obtidos com `scripts/run_asset_pipeline.py` e extrair insights v2 deles.
-- Respeitar a politica de dados locais para material de area de membros.
+- Falha-alta quando a curated base esta ausente: retrieval com estado
+  `curated_unavailable` e banner `SEM BASE - resposta nao fundamentada`.
+- Guard reutilizavel contra mojibake em campos internos e outputs gerados,
+  cobrindo `?` mid-word, `??` duplo e U+FFFD sem reprovar pergunta legitima.
+- Funcao de rastreabilidade: cada `evidence.quote_original` deve casar com o
+  `text_original` do segmento referenciado.
+- Limpeza deterministica dos tokens `?` em campos internos de
+  `C:\MSF-data\Marketing_Swipe_File\exports\curated_insights.json` e
+  `C:\MSF-data\Marketing_Swipe_File\exports\insights_v2_master.json`.
+- Contrato de saida aditivo para as cinco skills aprovadas, com evidence
+  binding, claim fence, proof fit, testable bet e coherence check.
+- Checklist de consumo do modulo transversal `mecanismo-big-idea`.
 
 Aceite:
 
-- Nenhuma tarefa sem decisao registrada.
-- Assets obtidos processados e consolidados na base v2.
+- Retrieval sem curated nao degrada em silencio e abre com banner explicito.
+- Guard de encoding encontra 0 mojibake nos artefatos limpos e outputs de smoke.
+- Evidencias verbatim permanecem intactas.
+- Contagens da base externa permanecem inalteradas: 125 curated insights e 207
+  insights v2 master.
+- `validate_process_skill.py --require-done` passa nas cinco skills aprovadas.
+- `validate_transversal_modules.py` passa.
+- `blind_baseline_test=pass` e status approved/done das skills sao preservados;
+  a mudanca nao reabre gate cego.
 
 Dependencias:
 
-- MSF-R06.
+- MSF-R03, MSF-R14, MSF-S03, MSF-S04, MSF-S05, MSF-S06, MSF-S07.
+
+Execucao 2026-07-08:
+
+- Frentes A+B aprovadas em auditoria externa, commitadas e enviadas para
+  `origin/main`.
+- Frente C aprovada em auditoria externa com diff aditivo: 341 insercoes, 0
+  delecoes, sem tocar retrieval, examples ou SKILL.md.
+- Schema, template, cinco skills aprovadas e modulo `mecanismo-big-idea`
+  atualizados.
+- Revalidado: cinco process skills `--require-done`, modulos transversais,
+  smoke das cinco secoes por skill, smoke missing-curated e guard de encoding.
 
 ### MSF-R16 - Decisao e desenho do Supabase (raw/curated + pgvector)
 

@@ -22,6 +22,14 @@ Commercial combined criterion for VSL:
 - `proof_score`
 - `objection_handling_score`
 
+Output contract checks:
+
+- Evidence binding: material claims are marked with `[insight:<id>]` or `[generic-practice]`, and unavailable curated data triggers `SEM BASE - resposta nao fundamentada`.
+- Claim fence: money, health, esoteric, platform, and other high-risk claims state what cannot be promised.
+- Proof fit: each core claim or mechanism names the proof type or is marked proof-weak and reduced.
+- Testable bet: the output includes a falsifiable hypothesis, variants, metric, failure signal, and minimum read condition.
+- Coherence check: when more than one mechanism is combined, the output names one belief and flags conflicts.
+
 Hard fails:
 
 - Uses non-curated insights as if they were curated.

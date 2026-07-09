@@ -41,5 +41,12 @@
     "r09_rubric_evaluation": "pass",
     "blind_baseline_test": "pass",
     "playbook_claims_cited_or_generic": "pass"
+  },
+  "output_contract": {
+    "evidence_binding": "claims_must_be_bound_to_insight_or_generic_practice",
+    "claim_fence": "state_what_cannot_be_promised_for_money_health_esoteric_and_platform_claims",
+    "proof_fit": "state_how_each_core_claim_or_mechanism_can_be_proven_or_mark_it_proof_weak",
+    "testable_bet": "include_falsifiable_hypothesis_variants_metric_failure_signal_and_read_condition",
+    "coherence_check": "name_the_single_belief_when_combining_more_than_one_mechanism"
   }
 }

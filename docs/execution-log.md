@@ -2136,3 +2136,52 @@ Decision state:
 
 - Fronts A+B are approved and ready to commit.
 - Front C remains proposal-first until implemented and returned for owner audit.
+
+## 2026-07-08 - MSF-R15 output contract Front C
+
+Scope:
+
+- Implemented the approved additive output contract from
+  `docs/msf-r15-output-contract-plan.md`.
+- No retrieval files, examples, or `SKILL.md` files were changed.
+- Blind gate status was preserved: every approved skill kept
+  `blind_baseline_test=pass`.
+
+Implementation:
+
+- Added `output_contract` to
+  `schemas/msf_process_skill_contract.schema.json`.
+- Added the five required sections to the process-skill template and the five
+  approved process skills:
+  - evidence binding
+  - claim fence
+  - proof fit
+  - testable bet
+  - coherence check
+- Added output-contract checks to the template rubric and the five approved
+  skill rubrics.
+- Added the six-question consumer checklist to
+  `skills/_modules/msf-transversal-copy/modules/mecanismo-big-idea.md`.
+
+Validation:
+
+- `scripts/validate_process_skill.py --require-done` passed for:
+  - `skills\msf-process-construcao-oferta`
+  - `skills\msf-process-copy-vsl`
+  - `skills\msf-process-copy-anuncios`
+  - `skills\msf-process-produto-low-ticket`
+  - `skills\msf-process-quiz`
+- `scripts/validate_transversal_modules.py skills\_modules\msf-transversal-copy`
+  passed.
+- Output-contract smoke confirmed all five sections render for each approved
+  skill.
+- Missing-curated smoke passed: generated output opens with
+  `SEM BASE - resposta nao fundamentada` and reports
+  `retrieval_state=curated_unavailable`.
+- Encoding guard on smoke outputs passed with 0 mojibake findings.
+- `git diff --check` passed.
+
+Decision state:
+
+- MSF-R15 is `done`.
+- This was an additive contract hardening; no blind S09 gate was reopened.
