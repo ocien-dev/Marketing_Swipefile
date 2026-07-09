@@ -2077,3 +2077,62 @@ Decision state:
 - MSF-R03 is `done`.
 - MSF-R14 backfill is the next milestone, but was not started; it remains
   waiting for an explicit owner prompt.
+
+## 2026-07-08 - MSF-R15 grounding hardening A+B
+
+Scope:
+
+- Executed the approved low-risk portions of MSF-R15 before the additive output
+  contract rollout.
+- Front A hardened retrieval and encoding guards.
+- Front B cleaned mojibake tokens in the live external base.
+- Front C was documented as a proposal only in
+  `docs/msf-r15-output-contract-plan.md`; skill files were not changed in this
+  commit.
+
+Implementation:
+
+- Added explicit curated retrieval states in `scripts/msf_common.py`.
+- `scripts/search_insights.py` and `scripts/generate_strategy_pack.py` now
+  return `curated_unavailable` when `--source curated` cannot resolve
+  `exports/curated_insights.json`, and markdown output opens with
+  `SEM BASE - resposta nao fundamentada`.
+- Centralized the mojibake guard to detect mid-word `?` runs and U+FFFD while
+  preserving legitimate question marks.
+- Added reusable evidence traceability checking: every
+  `evidence.quote_original` must match the referenced segment's
+  `text_original` span.
+- Extended tests for missing curated state, mojibake detection, legitimate
+  questions, U+FFFD, and evidence traceability.
+
+External data cleanup:
+
+- Cleaned internal editorial fields in
+  `C:\MSF-data\Marketing_Swipe_File\exports\curated_insights.json`.
+- Cleaned internal editorial fields in
+  `C:\MSF-data\Marketing_Swipe_File\exports\insights_v2_master.json`.
+- Evidence quotes remained verbatim UTF-8; `evidence.quote_original` was not
+  normalized or rewritten.
+- Post-cleanup counts remained unchanged: 125 curated insights and 207 v2 master
+  insights.
+- Post-cleanup mojibake guard result: 0 `?` artifacts and 0 U+FFFD in the
+  targeted internal fields of both external files.
+
+Validation:
+
+- `tests/test_msf_common_encoding.py` passed.
+- `tests/test_process_tag_retrieval.py` passed.
+- `tests/test_strategy_pack_diversity.py` passed.
+- Missing-curated smoke test passed: outputs open with
+  `SEM BASE - resposta nao fundamentada`.
+- Curated real smoke test passed with `retrieval_state=available`, reading from
+  `C:\MSF-data\Marketing_Swipe_File\exports\curated_insights.json`.
+- `scripts/audit_insights_v2_text.py` passed separately on external curated and
+  external v2 master.
+- Internal non-ASCII scan passed on touched repo files.
+- `git diff --check` passed with LF/CRLF warnings only.
+
+Decision state:
+
+- Fronts A+B are approved and ready to commit.
+- Front C remains proposal-first until implemented and returned for owner audit.

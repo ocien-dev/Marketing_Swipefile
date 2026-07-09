@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 
 from msf_common import (
+    CURATED_UNAVAILABLE_STATE,
+    UNFOUNDED_OUTPUT_BANNER,
     as_list,
     data_path,
     first_evidence,
@@ -19,6 +21,7 @@ from msf_common import (
     matches_process_tags,
     normalize_process_tags,
     normalize_text,
+    retrieval_source_state,
     tokens,
     write_json,
     write_text,
@@ -301,10 +304,14 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
         open_questions.append("A diversidade/cap por episodio reduziu o top-N; revisar se o limite ou o cap devem ser ajustados.")
     if process_tags and not selected:
         open_questions.append("Nenhum insight curado encontrado para os process_tags pedidos; revisar tags ou aguardar novo lote curado.")
+    if getattr(args, "retrieval_state", None) == CURATED_UNAVAILABLE_STATE:
+        open_questions.insert(0, "Curated insights indisponivel; resposta nao fundamentada pela base.")
 
     return {
         "schema_version": "1.0",
         "generated_at": utc_now(),
+        "banner": UNFOUNDED_OUTPUT_BANNER if getattr(args, "retrieval_state", None) == CURATED_UNAVAILABLE_STATE else None,
+        "retrieval_state": getattr(args, "retrieval_state", "available"),
         "task": args.task,
         "source": args.source,
         "source_path": str(resolve_master_path(args)),
@@ -336,7 +343,11 @@ def build_pack(args: argparse.Namespace, insights: list[dict[str, Any]]) -> dict
 
 def render_markdown(pack: dict[str, Any]) -> str:
     briefing = pack["briefing"]
-    lines = [
+    lines = []
+    if pack.get("retrieval_state") == CURATED_UNAVAILABLE_STATE:
+        lines.extend([UNFOUNDED_OUTPUT_BANNER, ""])
+    lines.extend(
+        [
         f"# Strategy Pack - {pack['task']}",
         "",
         f"- Product: {briefing.get('product') or 'N/A'}",
@@ -345,11 +356,13 @@ def render_markdown(pack: dict[str, Any]) -> str:
         f"- Asset type: {briefing.get('asset_type') or 'N/A'}",
         f"- Source: {pack.get('source')} ({pack.get('source_path')})",
         f"- Process tags: {', '.join(pack.get('process_tag_filter', {}).get('process_tags') or []) or 'N/A'}",
+        f"- Retrieval state: {pack.get('retrieval_state')}",
         f"- Results: {pack.get('result_count')}",
         "",
         "## Priority Insights",
         "",
-    ]
+        ]
+    )
     for item in pack.get("usable_insights", []):
         lines.extend(
             [
@@ -403,7 +416,9 @@ def main() -> int:
     args = parser.parse_args()
     args.process_tags = normalize_process_tags(args.process_tags)
 
-    insights = load_insights(resolve_master_path(args))
+    master_path = resolve_master_path(args)
+    args.retrieval_state = retrieval_source_state(args.source, master_path)
+    insights = [] if args.retrieval_state == CURATED_UNAVAILABLE_STATE else load_insights(master_path)
     pack = build_pack(args, insights)
     markdown = render_markdown(pack)
     if args.output_json:

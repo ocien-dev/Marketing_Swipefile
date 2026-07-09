@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any
 
 from msf_common import (
+    CURATED_UNAVAILABLE_STATE,
+    UNFOUNDED_OUTPUT_BANNER,
     as_list,
     data_path,
     first_evidence,
@@ -17,6 +19,7 @@ from msf_common import (
     matches_process_tags,
     normalize_process_tags,
     normalize_text,
+    retrieval_source_state,
     tokens,
     write_json,
     write_text,
@@ -104,16 +107,22 @@ def search(insights: list[dict[str, Any]], args: argparse.Namespace) -> list[dic
 
 
 def render_markdown(results: list[dict[str, Any]], args: argparse.Namespace) -> str:
-    lines = [
+    lines = []
+    if getattr(args, "retrieval_state", None) == CURATED_UNAVAILABLE_STATE:
+        lines.extend([UNFOUNDED_OUTPUT_BANNER, ""])
+    lines.extend(
+        [
         "# Marketing Swipe File Search Results",
         "",
         f"- Query: {args.query or 'N/A'}",
         f"- Source: {args.source}",
         f"- Source path: {resolve_master_path(args)}",
+        f"- Retrieval state: {getattr(args, 'retrieval_state', 'available')}",
         f"- Process tags: {', '.join(args.process_tags) if args.process_tags else 'N/A'}",
         f"- Results: {len(results)}",
         "",
-    ]
+        ]
+    )
     for index, insight in enumerate(results, start=1):
         evidence = first_evidence(insight)
         themes = ", ".join(str(item) for item in as_list(insight.get("themes")))
@@ -159,13 +168,17 @@ def main() -> int:
     args = parser.parse_args()
     args.process_tags = normalize_process_tags(args.process_tags)
 
-    insights = load_master(resolve_master_path(args))
+    master_path = resolve_master_path(args)
+    args.retrieval_state = retrieval_source_state(args.source, master_path)
+    insights = [] if args.retrieval_state == CURATED_UNAVAILABLE_STATE else load_master(master_path)
     results = search(insights, args)
     if args.format == "json":
         payload = {
+            "banner": UNFOUNDED_OUTPUT_BANNER if args.retrieval_state == CURATED_UNAVAILABLE_STATE else None,
+            "retrieval_state": args.retrieval_state,
             "query": args.query,
             "source": args.source,
-            "source_path": str(resolve_master_path(args)),
+            "source_path": str(master_path),
             "process_tags": args.process_tags,
             "process_tag_mode": args.process_tag_mode,
             "result_count": len(results),

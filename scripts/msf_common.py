@@ -39,10 +39,13 @@ BROKEN_ACCENT_DELETION_RE = re.compile(
     re.IGNORECASE,
 )
 ORPHAN_QUESTION_MARK_RE = re.compile(
-    r"[A-Za-z]\?+[A-Za-z]|[A-Za-z]\?+(?![\s\"'\)\]\.,;:!]|$)",
+    r"[A-Za-z]\?+[a-z]|[A-Za-z]\?+(?![\s\"'\)\]\.,;:!A-Z]|$)",
     re.ASCII,
 )
 DATA_ROOT_ENV_VAR = "MSF_DATA_DIR"
+CURATED_UNAVAILABLE_STATE = "curated_unavailable"
+RETRIEVAL_AVAILABLE_STATE = "available"
+UNFOUNDED_OUTPUT_BANNER = "SEM BASE - resposta nao fundamentada"
 
 
 def repo_root() -> Path:
@@ -68,6 +71,25 @@ def repo_data_path(*parts: str) -> Path:
     return repo_data_root().joinpath(*parts)
 
 
+def curated_insights_path() -> Path:
+    return data_path("exports", "curated_insights.json")
+
+
+def retrieval_source_state(source: str, path: Path) -> str:
+    if source == "curated" and not path.exists():
+        return CURATED_UNAVAILABLE_STATE
+    return RETRIEVAL_AVAILABLE_STATE
+
+
+def retrieval_unavailable_payload(source: str, path: Path) -> dict[str, Any]:
+    return {
+        "state": retrieval_source_state(source, path),
+        "source": source,
+        "source_path": str(path),
+        "banner": UNFOUNDED_OUTPUT_BANNER,
+    }
+
+
 def broken_accent_deletion_matches(value: Any) -> list[str]:
     text = "" if value is None else str(value)
     return sorted({match.group(1).lower() for match in BROKEN_ACCENT_DELETION_RE.finditer(text)})
@@ -88,6 +110,71 @@ def orphan_question_mark_contexts(value: Any, window: int = 40) -> list[str]:
         end = min(len(text), match.end() + window)
         contexts.append(" ".join(text[start:end].split()))
     return contexts
+
+
+def mojibake_artifact_contexts(value: Any, window: int = 40) -> list[dict[str, str]]:
+    text = "" if value is None else str(value)
+    contexts: list[dict[str, str]] = []
+    for context in orphan_question_mark_contexts(text, window=window):
+        contexts.append({"finding_type": "orphan_question_mark", "excerpt": context})
+    for index, char in enumerate(text):
+        if char != "\ufffd":
+            continue
+        start = max(0, index - window)
+        end = min(len(text), index + 1 + window)
+        contexts.append(
+            {
+                "finding_type": "replacement_character",
+                "excerpt": " ".join(text[start:end].split()),
+            }
+        )
+    return contexts
+
+
+def has_mojibake_artifact(value: Any) -> bool:
+    return bool(mojibake_artifact_contexts(value))
+
+
+def evidence_traceability_findings(
+    insights_payload: dict[str, Any],
+    content_segments_payload: dict[str, Any],
+) -> list[dict[str, Any]]:
+    segments = {
+        str(segment.get("segment_id")): segment
+        for segment in as_list(content_segments_payload.get("segments"))
+        if isinstance(segment, dict) and segment.get("segment_id")
+    }
+    findings: list[dict[str, Any]] = []
+    for insight in as_list(insights_payload.get("insights")):
+        if not isinstance(insight, dict):
+            continue
+        insight_id = str(insight.get("insight_id") or "")
+        for evidence in as_list(insight.get("evidence")):
+            if not isinstance(evidence, dict):
+                continue
+            segment_id = str(evidence.get("segment_id") or "")
+            quote = str(evidence.get("quote_original") or "")
+            segment = segments.get(segment_id)
+            if not segment:
+                findings.append(
+                    {
+                        "finding_type": "missing_segment",
+                        "insight_id": insight_id,
+                        "segment_id": segment_id,
+                    }
+                )
+                continue
+            source_text = str(segment.get("text_original") or "")
+            if not quote or quote not in source_text:
+                findings.append(
+                    {
+                        "finding_type": "quote_not_in_segment",
+                        "insight_id": insight_id,
+                        "segment_id": segment_id,
+                        "quote_original": quote,
+                    }
+                )
+    return findings
 
 
 def load_json(path: Path) -> dict[str, Any]:

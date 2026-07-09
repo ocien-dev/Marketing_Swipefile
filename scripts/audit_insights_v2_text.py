@@ -12,8 +12,8 @@ from msf_common import (
     broken_accent_deletion_matches,
     data_path,
     load_json,
+    mojibake_artifact_contexts,
     normalize_text,
-    orphan_question_mark_contexts,
 )
 
 
@@ -51,16 +51,20 @@ def audit_payload(path: Path) -> list[dict[str, Any]]:
             if not isinstance(value, str):
                 continue
             non_ascii = has_non_ascii(value)
-            orphan_question = "?" in value
+            mojibake_findings = mojibake_artifact_contexts(value)
             broken_accent_patterns = broken_accent_deletion_matches(value)
-            if non_ascii or orphan_question or broken_accent_patterns:
+            if non_ascii or mojibake_findings or broken_accent_patterns:
                 findings.append(
                     {
                         "path": str(path),
                         "insight_id": insight_id,
                         "field": field,
                         "non_ascii": non_ascii,
-                        "orphan_question": orphan_question,
+                        "orphan_question": any(
+                            item["finding_type"] == "orphan_question_mark"
+                            for item in mojibake_findings
+                        ),
+                        "mojibake_artifacts": mojibake_findings,
                         "broken_accent_patterns": broken_accent_patterns,
                         "value": value,
                     }
@@ -78,12 +82,12 @@ def read_generated_text(path: Path) -> str:
 def audit_generated_text(path: Path) -> list[dict[str, Any]]:
     text = read_generated_text(path)
     findings: list[dict[str, Any]] = []
-    for context in orphan_question_mark_contexts(text):
+    for item in mojibake_artifact_contexts(text):
         findings.append(
             {
-                "finding_type": "orphan_question_mark",
+                "finding_type": item["finding_type"],
                 "path": str(path),
-                "excerpt": context,
+                "excerpt": item["excerpt"],
             }
         )
     for pattern in broken_accent_deletion_matches(text):
@@ -183,10 +187,16 @@ def main() -> int:
                     f"orphan_question_mark path={item['path']} "
                     f"excerpt={item['excerpt']!r}"
                 )
+            elif item.get("finding_type") == "replacement_character":
+                print(
+                    f"replacement_character path={item['path']} "
+                    f"excerpt={item['excerpt']!r}"
+                )
             else:
                 print(
                     f"{item['path']} {item['insight_id']} {item['field']} "
                     f"non_ascii={item['non_ascii']} orphan_question={item['orphan_question']} "
+                    f"mojibake_artifacts={item.get('mojibake_artifacts', [])} "
                     f"broken_accent_patterns={item['broken_accent_patterns']} "
                     f"value={item['value']!r}"
                 )

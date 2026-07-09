@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from generate_strategy_pack import build_pack, load_insights, rank_insights  # noqa: E402
+from msf_common import CURATED_UNAVAILABLE_STATE, UNFOUNDED_OUTPUT_BANNER, retrieval_source_state  # noqa: E402
+from search_insights import render_markdown as render_search_markdown  # noqa: E402
 from search_insights import search  # noqa: E402
 
 
@@ -79,7 +81,18 @@ def test_strategy_pack_filters_by_process_tags() -> None:
     assert [item["insight_id"] for item in pack["usable_insights"]] == ["fixture-v2-0005"]
 
 
+def test_missing_curated_source_returns_explicit_unavailable_state() -> None:
+    missing = ROOT / "tests" / "fixtures" / "missing_curated_insights.json"
+    assert retrieval_source_state("curated", missing) == CURATED_UNAVAILABLE_STATE
+
+    args = search_args(master=missing, retrieval_state=CURATED_UNAVAILABLE_STATE)
+    markdown = render_search_markdown([], args)
+    assert markdown.startswith(UNFOUNDED_OUTPUT_BANNER)
+    assert "Retrieval state: curated_unavailable" in markdown
+
+
 if __name__ == "__main__":
     test_search_filters_by_process_tags()
     test_strategy_pack_filters_by_process_tags()
+    test_missing_curated_source_returns_explicit_unavailable_state()
     print("VALID process_tag_retrieval")
