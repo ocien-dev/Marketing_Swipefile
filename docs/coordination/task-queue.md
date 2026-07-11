@@ -3,10 +3,11 @@
 Central human-readable queue. Only the coordinator edits this file; workers
 report events but never change queue state.
 
-Production status: `pre_production`. Release gates are separate. The coordinator
-approved the commit gate after quality review; execution is pending. Push remains
-pending commit execution, and deploy requires an identified non-production
-destination. The worker job has no release authority.
+Production status: `pre_production`. Release gates are separate. Commit gate was
+executed as `3d224f7`; post-commit validation passed. Push is approved for
+`main -> origin/main` and pending execution. Deploy has no gate because no
+non-production destination was identified. The worker job has no release
+authority.
 
 Worker context status: `Extração Padrão-Ouro`
 (`019f4c90-b9dc-7e32-8ff1-57f8896386d3`) completed its job with the owner

@@ -2413,3 +2413,21 @@ Owner policies recorded:
   coordinator must confirm idle/checkpoint state, test isolated `/compactar`,
   fall back to isolated `/compact`, verify the real task result, and otherwise
   remain `awaiting_compaction`. No successor worker is created.
+
+Release gates:
+
+- `APROVADO PARA COMMIT`: executed locally as `3d224f7` (`feat: harden
+  MSF-R20 Codex quality gate`). The staged set contained 30 reviewed project
+  files and excluded `.codex-work`, `C:\MSF-data`, generated exports, secrets,
+  and bytecode.
+- Post-commit validation: all four real-data validators passed again with
+  `--require-external-audit`. The pre-existing local R18 commit `db42b0c` was
+  inspected and its three direct citation-audit tests passed.
+- `APROVADO PARA PUSH`: approved for the current `main` range to
+  `origin/main`, including the already-local R18 commit, the R20 implementation,
+  and this release record. Required post-action validation is remote/local ref
+  equality and a clean tracked worktree.
+- Rollback strategy: use additive `git revert` for the published commit(s); no
+  force push, destructive reset, rebase, or history rewrite.
+- `APROVADO PARA DEPLOY`: not granted. No preview/staging/pre-production deploy
+  destination was identified, and no deploy was invented.
