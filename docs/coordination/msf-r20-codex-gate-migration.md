@@ -69,27 +69,23 @@ autonomous commit/push/deploy and restores separate owner approval for each.
 
 ## Context continuity
 
-Coordinator and worker contracts apply the 30-percent context hygiene rule.
-Before compaction they preserve a durable checkpoint with job state, decisions,
-artifacts, validations, blockers, and next action. They compact only at a safe
-boundary, then reread `AGENTS.md`, the active checkpoint, queue, and job.
+Coordinator and worker preserve durable checkpoints at safe job boundaries
+with job state, decisions, artifacts, validations, blockers, and next action.
+These checkpoints support continuity but are not a gate for new work.
 
-If the surface does not expose the metric or `/Compactar`/`/compact`
-programmatically, no success is claimed. A `COMPACTION_REQUIRED` event points to
-the checkpoint and records `awaiting_surface_action`. Truncation warnings invoke
-the same policy.
+Preventive compaction is prohibited: do not use App Server calls, CLI helpers,
+scripts, hooks, automations, slash-command messages, or worker rotation. Do not
+block work at any context percentage. Keep the same coordinator and the same
+designated worker; neither is retired or replaced for context reasons.
 
-Slash commands sent between tasks may be plain messages and never count as
-compaction without verified evidence. `COMPACTION_REQUIRED` blocks new
-substantial work for the designated worker but does not retire or replace it.
-Before the next job, the coordinator confirms idle state and checkpoint, sends
-isolated `/compactar`, falls back to isolated `/compact`, and verifies the real
-thread result. Work is released only after real compaction evidence or owner UI
-confirmation. If both aliases are plain messages, the state is
-`awaiting_compaction`; no successor is created.
+The App Server experiment reported a completed internal item but did not reduce
+the context window displayed by the Codex app, which remained at 68 percent.
+Therefore it is not accepted as compaction evidence and must not be repeated as
+a preventive workflow.
 
-If the coordinator's own context surface crosses the threshold and native
-compaction is unavailable, it checkpoints and ends in
-`awaiting_owner_surface_action`. Compaction changes neither audit independence,
-job identity, ownership, acceptance criteria, queue order, provenance, nor
-release gates.
+Codex may compact automatically when it reaches its own native limit. No manual,
+preventive, or automatic compaction is claimed without confirmation in the real
+Codex interface or event. After native compaction, reread `AGENTS.md`, the
+active checkpoint, queue, and job. Compaction changes neither audit
+independence, job identity, ownership, acceptance criteria, queue order,
+provenance, nor release gates.

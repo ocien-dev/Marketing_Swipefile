@@ -10,14 +10,13 @@ non-production destination was identified. The worker job has no release
 authority.
 
 Worker context status: `Extração Padrão-Ouro`
-(`019f4c90-b9dc-7e32-8ff1-57f8896386d3`) completed its job with the owner
-observing 68% context usage. Its `COMPACTION_REQUIRED` gate is open. The same
-worker remains designated, but any next substantial job requires the separate
-pre-compaction gate and is blocked as `awaiting_compaction` until verified.
+(`019f4c90-b9dc-7e32-8ff1-57f8896386d3`) remains the designated worker and is
+idle. There is no context gate: new work is not blocked by percentage, no
+preventive compaction is attempted, and no successor worker is created.
 
 | Job | Worker | Scope | Status | Last event | Gate |
 | --- | --- | --- | --- | --- | --- |
-| `MSF-R20-GATE-001` | `Extração Padrão-Ouro` (`019f4c90-b9dc-7e32-8ff1-57f8896386d3`, `gpt-5.6-terra/high`) | Gate hardening plus correction and packet rebuild for the four pending R20 episodes | `approved` | `MSF-R20-GATE-001-004` (`completed`, confirmed in worker task) | approved |
+| `MSF-R20-GATE-001` | `Extração Padrão-Ouro` (`019f4c90-b9dc-7e32-8ff1-57f8896386d3`, `gpt-5.6-terra/high`) | Gate hardening plus correction and packet rebuild for the four pending R20 episodes | `done` | `MSF-R20-GATE-001-004` (`completed`, confirmed in worker task) | approved |
 
 ## Context checkpoint — 2026-07-11 final gate
 
@@ -32,19 +31,17 @@ pre-compaction gate and is blocked as `awaiting_compaction` until verified.
   blocked by OneDrive permissions, while the worker passed all 23. The
   coordinator independently ran deterministic validation before and after audit
   registration for all four real episode directories; all passed.
-- Blockers: none for the quality gate. A pre-compaction gate remains required
-  before any new substantial worker job.
+- Blockers: none for the quality gate or current worker context.
 - Next action: execute only the independently approved release gates; no gold
   consolidation, Supabase, or deploy without a functional destination gate.
-- Context: platform context compaction occurred and the coordinator reread
-  `AGENTS.md`, this checkpoint, and the operational queue. No slash-command
-  success is claimed.
+- Context: durable checkpoint preserved. No manual, preventive, or automatic
+  compaction is claimed.
 
-Native-surface correction: aliases sent between tasks may be plain messages and
-do not prove compaction. Before future work, the coordinator must test isolated
-`/compactar`, then isolated `/compact`, verify the source task, and proceed only
-on real evidence or owner UI confirmation. The same worker is retained; no
-successor is created.
+Context policy: keep the same coordinator and worker. Do not use App Server,
+CLI, scripts, hooks, automations, slash messages, or rotation for preventive
+compaction, and do not block new work by context percentage. Codex may compact
+automatically only at its own native limit; no compaction is claimed without a
+real Codex interface or event.
 
 ## Processing rule
 

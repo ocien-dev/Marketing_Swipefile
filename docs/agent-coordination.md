@@ -115,35 +115,20 @@ revoked and each action requires separate owner approval.
 
 ## Context hygiene and compaction
 
-After each substantial turn, the coordinator and every worker check the context
-indicator when visible. Above 30 percent, they checkpoint job ID, state,
-decisions, artifacts, validations, blockers, and next action in the durable
-queue/handoff; `docs/execution-log.md` is updated when the checkpoint is a
-project decision or completed execution record.
+At safe job boundaries, preserve a durable checkpoint with job ID, state,
+decisions, artifacts, validations, blockers, and next action. Update
+`docs/execution-log.md` when it is a project decision or completed execution
+record. Checkpoints are recommended for continuity, not required to start the
+next job.
 
-Compaction occurs only at a safe boundary and never during a write, Git action,
-deploy, migration, or transaction. After `/Compactar` or `/compact`, reread
-`AGENTS.md`, the checkpoint/handoff, queue, and job instructions. No scope,
-ownership, acceptance criterion, queue order, or gate changes through
-compaction.
+Do not attempt preventive context compaction through App Server calls, CLI
+helpers, scripts, hooks, automations, slash-command messages, or worker
+rotation. Context percentage does not block new work. Keep the same coordinator
+and the same `Extração Padrão-Ouro` worker; never mark it retired or exhausted
+for context reasons.
 
-When the metric or command is not programmatically available, do not claim
-compaction. Emit `COMPACTION_REQUIRED` with threshold, checkpoint path, and
-`awaiting_surface_action`. Any truncation/continuity warning is treated as above
-threshold.
-
-`COMPACTION_REQUIRED` blocks new substantial jobs for that worker. Slash
-commands are native UI actions; inter-task messages containing `/Compactar` or
-`/compact` may be plain messages and must be verified in the source task.
-
-Keep the designated worker. Before its next substantial job, confirm it is idle
-and has a durable checkpoint, then send isolated `/compactar`; if that fails,
-send isolated `/compact`. Never combine either alias with work. Verify the real
-result in the worker task and release work only with evidence of compaction or
-owner confirmation from the UI. If both aliases are plain messages, mark
-`awaiting_compaction`, leave the job blocked, and do not create a successor.
-
-If the coordinator's own surface reports above 30 percent and it cannot compact
-natively, it writes a full checkpoint, changes to
-`awaiting_owner_surface_action`, and asks the owner for native compaction or a
-new authorized coordinator.
+Codex may compact automatically only when it reaches its own native limit. Do
+not claim manual, preventive, or automatic compaction without a real Codex
+interface or event. After a native compaction, reread `AGENTS.md`, the active
+checkpoint/handoff, the queue, and the job instructions. Compaction does not
+change job identity, ownership, acceptance criteria, queue order, or gate state.

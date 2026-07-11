@@ -136,48 +136,19 @@ quality gating remain autonomous.
 
 ## Context hygiene
 
-After every substantial execution or turn, check the Codex context-window
-indicator when the surface exposes it. Above 30 percent, first write a durable
-checkpoint containing job ID, state, decisions, artifacts, validations,
-blockers, and next action in the queue/handoff and, when applicable,
-`docs/execution-log.md`. Never copy secrets or ignored local data.
+Keep durable checkpoints or handoffs at safe boundaries, especially after a
+job, recording job ID, state, decisions, artifacts, validations, blockers, and
+next action. Never copy secrets or ignored local data. A checkpoint is useful
+for continuity but is not a precondition for starting the next job.
 
-Compact only at a safe boundary, never during a write, Git operation, deploy,
-migration, or transaction. Use `/Compactar` or `/compact` only when the surface
-provides it. After compaction, reread `AGENTS.md`, the active checkpoint/handoff,
-the queue, and the job instructions. Compaction never changes job ID,
-ownership, acceptance criteria, queue order, or gate state.
+Do not attempt preventive context compaction through App Server calls, CLI
+helpers, scripts, hooks, automations, slash-command messages, or worker
+rotation. Do not block a new job because of context percentage and do not mark
+the designated worker retired or exhausted. Keep the same coordinator and the
+same designated worker.
 
-If the exact metric or command is not programmatically available, do not claim
-success. Preserve the checkpoint and emit:
-
-```text
-WORKER_EVENT or COORD_EVENT
-event_type: COMPACTION_REQUIRED
-threshold: >30%
-checkpoint: <file>
-status: awaiting_surface_action
-```
-
-Treat a context/truncation warning as above threshold even without a visible
-percentage. `COMPACTION_REQUIRED` is an open operational gate, not a warning.
-The affected worker receives no new substantial job until the pre-compaction
-gate succeeds.
-
-Slash commands are native surface actions. Sending `/Compactar` or `/compact`
-through inter-task messaging only sends text and must never be reported as
-compaction.
-
-Keep using the designated worker task. Before any next substantial job, the
-coordinator must run a separate pre-compaction gate: confirm the worker is idle
-and has a durable checkpoint; send isolated `/compactar`; if it does not work,
-send isolated `/compact`; then verify the real result in the worker task. Never
-combine either alias with work instructions. Release the job only with evidence
-of real compaction or owner confirmation from the UI. If both aliases are plain
-messages, set `awaiting_compaction`, send no substantial work, and do not create
-a successor worker.
-
-If the coordinator's own UI/context exceeds 30 percent and no native
-compaction is available, it must checkpoint fully, set
-`awaiting_owner_surface_action`, and ask the owner to compact in the UI or
-create/authorize a new coordinator.
+Codex may compact context automatically when it reaches its own native limit.
+Do not claim manual, preventive, or automatic compaction unless the real Codex
+interface or event confirms it. If native compaction occurs, reread
+`AGENTS.md`, the active checkpoint/handoff, the queue, and the job instructions
+before continuing.

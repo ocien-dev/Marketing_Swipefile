@@ -2408,11 +2408,10 @@ Owner policies recorded:
 - `production_status=pre_production`; only the owner can declare production.
   Commit, push, and deploy are independent gates and may be executed
   autonomously only after their own criteria pass.
-- Context slash commands are surface actions. `COMPACTION_REQUIRED` is an open
-  gate. The designated worker is retained: before any next substantial job, the
-  coordinator must confirm idle/checkpoint state, test isolated `/compactar`,
-  fall back to isolated `/compact`, verify the real task result, and otherwise
-  remain `awaiting_compaction`. No successor worker is created.
+- Context does not create a preventive gate. The same coordinator and designated
+  worker are retained. No App Server, CLI, helper, hook, automation, slash
+  message, or worker rotation is used to compact preventively, and new work is
+  not blocked by context percentage.
 
 Release gates:
 
@@ -2431,3 +2430,18 @@ Release gates:
   force push, destructive reset, rebase, or history rewrite.
 - `APROVADO PARA DEPLOY`: not granted. No preview/staging/pre-production deploy
   destination was identified, and no deploy was invented.
+
+### 2026-07-11 - Preventive context compaction revoked
+
+- The owner tested the App Server experiment on worker
+  `019f4c90-b9dc-7e32-8ff1-57f8896386d3`. Although an internal completion item
+  was reported, the Codex app continued to display 68 percent context usage.
+- The experiment is not accepted as evidence of actual app-context compaction.
+  Do not call `thread/compact/start` or use CLI helpers, scripts, hooks,
+  automations, slash messages, or worker rotation for preventive compaction.
+- Keep the same coordinator and the same `Extração Padrão-Ouro` worker. Context
+  percentage does not block a new job, and checkpoints remain recommended but
+  are not a precondition.
+- Codex may compact automatically when it reaches its own native limit. Do not
+  claim manual, preventive, or automatic compaction without confirmation from
+  the real Codex interface or event.

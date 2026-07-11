@@ -24,26 +24,17 @@ Send WORKER_EVENT to the coordinator and publish the full result in the worker
 task. Deduplicate by event_id/job_id.
 
 CONTEXT HYGIENE:
-After every substantial turn, check context usage when visible. Above 30%, or
-on any truncation warning, first checkpoint job_id, state, decisions, artifacts,
-validations, blockers, and next action in the coordinator-defined handoff/log.
-Do not include secrets or ignored local data. Compact only at a safe boundary,
-never during writes, Git, deploy, migration, or transaction. After compaction,
-reread AGENTS.md, checkpoint/handoff, queue, and this job. Compaction changes no
-scope, ownership, acceptance criteria, queue order, or gate.
-If metric/command is unavailable programmatically, do not claim success. Send:
-WORKER_EVENT
-event_type: COMPACTION_REQUIRED
-threshold: >30%
-checkpoint: <file>
-status: awaiting_surface_action
+At the end of a job, preserve a checkpoint with job_id, state, decisions,
+artifacts, validations, blockers, and next action. Do not include secrets or
+ignored local data. A checkpoint is recommended, not a precondition for the
+next job.
 
-COMPACTION_REQUIRED is an open operational gate. Do not accept another
-substantial job and do not treat an inter-task alias as successful without
-evidence. The coordinator keeps this same worker, confirms it is idle with a
-durable checkpoint, sends isolated `/compactar`, falls back to isolated
-`/compact`, and verifies the source task. If both are plain messages, remain
-`awaiting_compaction`; no successor worker is created.
+Do not attempt preventive compaction through App Server calls, CLI helpers,
+scripts, hooks, automations, slash-command messages, or worker rotation. Do not
+block work because of context percentage and do not mark this worker retired or
+exhausted. Codex may compact automatically at its own native limit; claim no
+compaction without a real Codex interface or event. After native compaction,
+reread AGENTS.md, checkpoint/handoff, queue, and this job.
 
 FINAL DELIVERY:
 STATUS: completed | blocked
