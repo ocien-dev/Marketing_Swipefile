@@ -2256,3 +2256,160 @@ Decision state:
 - Retrieval migrated from the curated-only layer to the 643-item v2 master pool
   with approved floor `--min-editorial-score 90`.
 - Supabase, pgvector, MCP, and agent-layer work were not started.
+
+## 2026-07-10 - L7 gold-standard isolated transcript reprocessing
+
+Scope:
+
+- Reprocessed only `L7u7r6rOl68` into the separate external-data directory
+  `processed/L7u7r6rOl68/gold_extraction`.
+- Preserved `insights_v2.json`, curated exports, and master exports unchanged.
+- Did not use Supabase or make any remote change.
+
+Implementation:
+
+- Added `scripts/reprocess_gold_episode.py` for deterministic transcript cleanup,
+  chronological chunks, and a recall-oriented lexical signal inventory. The
+  1,504 lexical signals are explicitly not an insight layer.
+- Added `scripts/build_gold_semantic_extraction.py` for reviewed semantic specs,
+  multisegment evidence, structured numbers, parent/child relations, semantic
+  calibration, editorial-audit enforcement, and final artifact generation.
+- Added focused tests in `tests/test_reprocess_gold_episode.py` and
+  `tests/test_build_gold_semantic_extraction.py`.
+
+Validation:
+
+- The two focused test files passed: 6 tests.
+- The episode run retained 1,941 segments, removed 39 recommendation segments,
+  and created 35 chronological chunks.
+- Full-chunk semantic review produced 139 insights: 139 unique titles, 139
+  unique takeaways, 247 structured quantitative claims, 104 parent relations,
+  and 15 records with explicit child relations.
+- The lexical coverage ledger has 1,230 captured, 5 merged, and 269 excluded
+  entries; all 1,504 lexical signals have a disposition.
+- Independent editorial audit closed four recovered omissions and finished with
+  zero open findings. Semantic calibration passed 12/12.
+- Protected transcript, v2, curated, and master fingerprints match the
+  preprocessing snapshot; no remote system or master export was changed.
+
+## 2026-07-10 - MSF-R20 pilot gold tooling and external-audit preparation
+
+Scope:
+
+- Added generic, local-only gold extraction tooling for the Route B workflow.
+- Kept the frozen v2, curated, and master layers unchanged. No API, Supabase,
+  commit, push, or remote operation was used.
+
+Implementation:
+
+- Added schema validation, canonical themes, structured numbers, relation
+  symmetry and cycle checks, calibration deduplication, categorized ledger
+  exclusions, idempotent checkpoint state, and blind audit-packet export.
+- Added an idempotency guard that reuses a compatible reviewed signal inventory
+  when transcript input is unchanged, preventing a rerun from narrowing ledger
+  coverage.
+- Recorded the external blind approval of `awbrqeqq-io` and exported its packet
+  retroactively. Every pilot episode that is awaiting audit now has an isolated
+  packet under `C:\MSF-data\Marketing_Swipe_File\exports`.
+
+Validation:
+
+- Direct gold-tooling tests passed: 16. Python compilation passed.
+- L7 and awbr rerun proof: candidate IDs, layered evidence, and protected v2,
+  curated, and master fingerprints remained unchanged.
+- L7 and awbr are complete after their passed external audits. The four new
+  pilot episodes are deterministic-pass and awaiting blind external audit.
+- Historical note: the approved pre-R20 L7 ledger reported 1,504 entries. Its
+  local pre-rerun inventory was replaced before the preservation guard existed;
+  the reconstructed report has 1,410 entries. Insight IDs and evidence are
+  unchanged, but this count discrepancy remains explicitly recorded rather
+  than treated as an equivalent coverage rerun.
+
+## 2026-07-11 - MSF-R20 Codex coordinator quality gate
+
+Scope and independence:
+
+- The Codex coordinator audited the four pending pilot packets in order:
+  `35uL_nCmZ0k`, `_hXmiIEac6w`, `aSFAve1klsc`, and `cL3FuW8bAMA`.
+- Initial judgments were sealed before reading worker history, manual reviews,
+  editorial reports, validation reports, or dedupe queues. The review was blind
+  to generation history and internal decisions, but not blind to episode or
+  style.
+- Initial verdicts were `changes_requested`: six, two, four, and four findings,
+  respectively. Findings covered ledger orphans, calibration duplication,
+  omitted quantitative context, number normalization, editorial corruption,
+  missing caveats, duplicated editorial claims, and one promotional item.
+- Sealed audits and reaudits are local under
+  `.codex-work/msf-r20-coordinator-audits`; they are intentionally excluded from
+  Git together with the operational queue.
+
+Implementation and migration:
+
+- Worker `019f4c90-b9dc-7e32-8ff1-57f8896386d3` (`gpt-5.6-terra/high`)
+  hardened audit provenance and the complete gate, corrected the four episodes,
+  regenerated isolated packets, and did not self-approve or write the sealed
+  coordinator audits.
+- `status=passed` now rejects open or malformed findings. Completion derives
+  from a valid `editorial_audit_report.json`, requires a reviewer task separate
+  from the executor, zero open findings, deterministic validation, and preserved
+  fingerprints.
+- Future review is provider-neutral and uses a separate Codex coordinator.
+  Historical Claude references remain truthful records. The compatibility name
+  `awaiting_external_audit` remains, with external meaning external to the
+  executor task.
+- Added the durable coordination contract, queue, worker event template, owner
+  decision gate, and separate pre-production commit/push/deploy gates.
+
+Reaudit result:
+
+- All 16 initial findings were verified resolved. The four coordinator reaudits
+  passed with zero open findings and were registered through the hardened audit
+  script.
+- All four episodes now report `status=complete`, `audit_status=passed`, a
+  separate coordinator reviewer, and `open_findings=0`.
+- No gold was consolidated into v2, curated, pool, or master, and Supabase was
+  not started.
+
+Coordinator validation:
+
+- Real-data deterministic validation passed for all four episode directories
+  before audit registration and again with `--require-external-audit` after
+  registration/build.
+- Packet inspection confirmed JSON integrity, candidate-to-ledger coverage,
+  evidence and context ranges, relation symmetry/no cycles, calibration target
+  separation, corrected numeric ranges, removal of the promotional `cL3` item,
+  and no remaining corrupted editorial question marks.
+- Direct pure-function tests passed 18. Five filesystem-isolation cases could
+  not create temporary directories under OneDrive or the alternate local
+  visualization root due `PermissionError`; no lock was forced or cleaned. The
+  worker's same suite passed all 23 before delivery.
+- Python source compilation and `git diff --check` passed.
+
+Protected fingerprint proof:
+
+- `35uL_nCmZ0k/insights_v2.json`:
+  `500a7c243975b98604b19a5faa49269187fa4cedf63a7c0c58265095e8300a0d`
+- `_hXmiIEac6w/insights_v2.json`:
+  `9e349b7e87bab72ec711bf700a09def4e83b8df6e3abc9e5e906b7cc5228d8f4`
+- `aSFAve1klsc/insights_v2.json`:
+  `68222ab8072c75958d5490e2409ac92dd75ec32a847f4b73084b28f00ffb866c`
+- `cL3FuW8bAMA/insights_v2.json`:
+  `129e799f5a6929fc3ab7a6818a24b923e7f33acbbd98f5b5bf77311a4672e582`
+- `curated_insights.json`:
+  `1d9a7eaf291b1febb8db140d38fc1235807f37ba7c16df6248aa8787329d18e4`
+- `insights_v2_master.json`:
+  `67eb13df5b26bf7bde95711a8c1bd108ffeaed897b181378b70fb7ade536e53e`
+- `insights_master.json`:
+  `2b0639f7b957d3b63c977abbda2e86ba392964281e6c6b26dce5782a20c7710e`
+- All values matched the pre-worker snapshot after final builds.
+
+Owner policies recorded:
+
+- `production_status=pre_production`; only the owner can declare production.
+  Commit, push, and deploy are independent gates and may be executed
+  autonomously only after their own criteria pass.
+- Context slash commands are surface actions. `COMPACTION_REQUIRED` is an open
+  gate. The designated worker is retained: before any next substantial job, the
+  coordinator must confirm idle/checkpoint state, test isolated `/compactar`,
+  fall back to isolated `/compact`, verify the real task result, and otherwise
+  remain `awaiting_compaction`. No successor worker is created.

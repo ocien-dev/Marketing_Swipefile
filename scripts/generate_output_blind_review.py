@@ -321,7 +321,7 @@ def render_scored_report(args: argparse.Namespace, score: dict[str, Any]) -> str
         f"- Local de-anonymization key: `{args.key_output}`",
         f"- Pairs scored: {score['pair_count']}",
         f"- Criterion cells scored: {score['criterion_cell_count'] - score['pending_cells']} / {score['criterion_cell_count']}",
-        "- Judge: Claude, blind to source label.",
+        "- Reviewer: external blind reviewer, blind to source label.",
         "- Source labels were de-anonymized only after the judged CSV was returned.",
         "",
         "## Verdict",

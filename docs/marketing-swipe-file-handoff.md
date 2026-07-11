@@ -35,16 +35,33 @@ Nao criar agentes autonomos antes dos scripts, prompts, skills e loops estarem v
 
 Leia nesta ordem:
 
-1. `README.md`
-2. `docs/marketing-swipe-file-prd.md`
-3. `docs/marketing-swipe-file-architecture.md`
-4. `docs/marketing-swipe-file-full-backlog.md`
-5. `docs/marketing-swipe-file-remediation-backlog.md`
-6. `docs/marketing-swipe-file-skills-backlog.md`
-7. `docs/execution-log.md`
-8. `docs/asset-acquisition-procedure.md`
-9. `docs/insight-quality-checklist.md`
-10. `docs/output-evaluation-rubric.md`
+1. `AGENTS.md`
+2. `README.md`
+3. `docs/agent-coordination.md`
+4. `docs/coordination/msf-r20-codex-gate-migration.md`
+5. `docs/marketing-swipe-file-prd.md`
+6. `docs/marketing-swipe-file-architecture.md`
+7. `docs/marketing-swipe-file-full-backlog.md`
+8. `docs/marketing-swipe-file-remediation-backlog.md`
+9. `docs/marketing-swipe-file-skills-backlog.md`
+10. `docs/execution-log.md`
+11. `docs/asset-acquisition-procedure.md`
+12. `docs/insight-quality-checklist.md`
+13. `docs/output-evaluation-rubric.md`
+
+## Coordenacao E Gate MSF-R20
+
+O R20 usa dois papeis: um worker executa dentro de ownership explicito e um
+coordenador Codex separado planeja, audita, reproduz validacoes e decide o gate.
+O worker nunca aprova o proprio output. A fila central e os docs de coordenacao
+sao ownership exclusivo do coordenador.
+
+O nome `awaiting_external_audit` permanece por compatibilidade e significa
+externo a tarefa executora, nao externo ao Codex. Auditorias historicas do
+Claude permanecem como provenance verdadeira. Auditorias futuras registram
+thread, modelo, effort e rota do revisor Codex. Mesmo com gate verde, commit,
+push, deploy, Supabase e consolidacao continuam proibidos sem liberacao do
+owner.
 
 ## Estado Atual Em 2026-07-07
 

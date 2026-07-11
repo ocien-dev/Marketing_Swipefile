@@ -1,0 +1,4 @@
+interface:
+  display_name: "MSF YouTube Transcripts"
+  short_description: "Capture YouTube transcripts via UI fallback"
+  default_prompt: "Use $marketing-swipe-file-youtube-transcripts to capture YouTube podcast transcripts with the validated description-button fallback."
