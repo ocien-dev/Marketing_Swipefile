@@ -79,6 +79,25 @@ churn, and avoidable I/O latency. OneDrive is suitable for an immutable,
 closed backup archive created after the pipeline is idle, not for the live
 working tree.
 
+### Sharing exports with other Windows projects
+
+Other local projects may consume a read-only, verified export snapshot without
+touching the active WSL data root. Set `MSF_PUBLISHED_DIR` to a OneDrive-visible
+directory (the WSL example uses `/mnt/c/Users/luish/OneDrive/Marketing_Swipe_File_Published`)
+and publish explicitly after the pipeline is idle:
+
+```bash
+python -m scripts.publish_shared_exports --check
+python -m scripts.publish_shared_exports --publish
+```
+
+The published directory contains `published_manifest.json` plus an `exports/`
+tree with the current derived JSON, CSV, Markdown and checksum files. It
+excludes historical `_snapshots/`, raw media, raw transcripts, `processed/`,
+receipts, and all active working directories. Consumers should read from this
+snapshot only; they must never write back into it or use it as the active
+pipeline data root.
+
 GitHub protects versioned code only. Raw media, transcripts, reviews, packets,
 receipts, and other ignored data under `MSF_DATA_DIR` need a separate private
 backup policy. Supabase is a future serving layer, not a file-level backup of
