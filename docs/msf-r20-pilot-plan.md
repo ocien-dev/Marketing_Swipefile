@@ -24,5 +24,13 @@ packet is exported after deterministic validation. It remains
 valid independent audit with zero open findings. The coordinator must not be the
 executor, and the report preserves reviewer task, model, effort, and audit
 route. `External` is the compatibility name for external to the executor task;
-it is not a provider requirement. Historical Claude audits remain unchanged.
+it is not a provider requirement. Future audit and gate work is Codex-only;
+Claude is neither a required reviewer nor an execution dependency. Historical
+Claude audits remain unchanged.
 No pilot artifact can update v2, curated, or master exports.
+
+## Pilot Closeout
+
+All five selected episodes are complete and passed with zero open findings.
+The measured outcome, finding profile, and mandatory next-wave adjustments are
+recorded in `docs/coordination/msf-r20-pilot-retrospective.md`.

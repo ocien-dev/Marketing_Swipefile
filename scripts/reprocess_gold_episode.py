@@ -78,9 +78,48 @@ def chunk_work_order(video_id: str, chunk: dict[str, Any], signals: list[dict[st
             "evidence": "minimal_quote + context_range + support_segments; quotes must remain verbatim UTF-8",
             "ledger": "every listed signal must be captured, merged, or excluded with a reason",
         },
+        # Segment text lives once in chunks/chunk_###.json.  The work order
+        # preserves chronology and review targets through stable references.
+        "chunk_source": f"chunks/chunk_{chunk['chunk_number']:03d}.json",
+        "segment_refs": [{
+            "segment_id": item["segment_id"], "clean_index": item["clean_index"],
+            "start_seconds": item["start_seconds"], "end_seconds": item["start_seconds"] + item["duration_seconds"],
+        } for item in chunk_segments],
+        "calibration_target_ids": [item["calibration_id"] for item in calibrations if set(item["segment_ids"]) & segment_ids],
+        "signal_segment_ids": [item["segment_id"] for item in signals if item["segment_id"] in segment_ids],
+    }
+
+
+def legacy_chunk_work_order(video_id: str, chunk: dict[str, Any], signals: list[dict[str, Any]], calibrations: list[dict[str, Any]]) -> dict[str, Any]:
+    """Historical representation retained only for deterministic metrics/tests."""
+    chunk_segments = chunk["segments"]
+    segment_ids = {item["segment_id"] for item in chunk["segments"]}
+    return {
+        "schema_version": "1.0.0", "episode_video_id": video_id, "chunk_id": chunk["chunk_id"],
+        "input_hash": sha256_json(chunk_segments), "route": "codex_manual_no_paid_api",
+        "required_passes": ["numbers", "experiments", "procedures", "copy_vsl", "funnel", "traffic_creatives", "caveats", "gap_reread"],
+        "completion_contract": {
+            "write_review_file": "manual_reviews/chunk_###_review.json", "candidate_fields": "gold_insights.schema.json",
+            "zero_insight_allowed_only_after_full_read": True,
+            "evidence": "minimal_quote + context_range + support_segments; quotes must remain verbatim UTF-8",
+            "ledger": "every listed signal must be captured, merged, or excluded with a reason",
+        },
         "calibration_targets": [item for item in calibrations if set(item["segment_ids"]) & segment_ids],
         "signals": [item for item in signals if item["segment_id"] in segment_ids],
         "segments": chunk_segments,
+    }
+
+
+def work_order_metrics(video_id: str, chunks: list[dict[str, Any]], signals: list[dict[str, Any]], calibrations: list[dict[str, Any]]) -> dict[str, Any]:
+    """Read-only byte baseline comparing legacy and compact work orders."""
+    legacy = compact = 0
+    for chunk in chunks:
+        legacy += len(json.dumps(legacy_chunk_work_order(video_id, chunk, signals, calibrations), ensure_ascii=False).encode("utf-8"))
+        compact += len(json.dumps(chunk_work_order(video_id, chunk, signals, calibrations), ensure_ascii=False).encode("utf-8"))
+    return {
+        "legacy_bytes": legacy, "compact_bytes": compact,
+        "reduction_bytes": legacy - compact,
+        "reduction_percent": round((1 - compact / legacy) * 100, 2) if legacy else 0.0,
     }
 
 
@@ -135,6 +174,54 @@ def archive_legacy_gold_once(out: Path) -> None:
                 shutil.copy2(source, snapshot / name)
             except PermissionError as exc:
                 raise GoldPauseError(f"filesystem permission/lock while snapshotting {source}") from exc
+
+
+def raw_preflight(video_id: str, data_root: Path) -> dict[str, Any]:
+    """Validate the raw inputs needed by preparation without writing anything."""
+    raw_dir = data_root / "raw" / "youtube" / video_id
+    metadata_path = raw_dir / "metadata.json"
+    transcript_path = raw_dir / "transcript_original.json"
+    errors: list[str] = []
+    metadata: dict[str, Any] = {}
+    transcript: dict[str, Any] = {}
+    if not metadata_path.exists():
+        errors.append(f"missing raw metadata: {metadata_path}")
+    else:
+        try:
+            metadata = load_json(metadata_path)
+        except (json.JSONDecodeError, OSError) as exc:
+            errors.append(f"invalid raw metadata: {exc}")
+    if not transcript_path.exists():
+        errors.append(f"missing raw transcript: {transcript_path}")
+    else:
+        try:
+            transcript = load_json(transcript_path)
+        except (json.JSONDecodeError, OSError) as exc:
+            errors.append(f"invalid raw transcript: {exc}")
+    if metadata and metadata.get("youtube_video_id") not in {None, video_id}:
+        errors.append("raw metadata video id mismatch")
+    metadata_transcript_status = metadata.get("transcript_status")
+    if metadata_transcript_status not in {None, "available"}:
+        errors.append(f"raw metadata transcript unavailable: {metadata_transcript_status}")
+    if transcript and transcript.get("youtube_video_id") not in {None, video_id}:
+        errors.append("raw transcript video id mismatch")
+    transcript_status = transcript.get("transcript_status")
+    if transcript_status not in {None, "available"}:
+        errors.append(f"raw transcript unavailable: {transcript_status}")
+    if transcript and not isinstance(transcript.get("segments"), list):
+        errors.append("raw transcript segments must be a list")
+    elif transcript and not transcript.get("segments"):
+        errors.append("raw transcript has no segments")
+    return {
+        "status": "pass" if not errors else "error",
+        "video_id": video_id,
+        "metadata_path": str(metadata_path),
+        "transcript_path": str(transcript_path),
+        "segment_count": len(transcript.get("segments") or []),
+        "errors": errors,
+    }
+
+
 def prepare_episode(video_id: str, data_root: Path) -> dict[str, Any]:
     raw_dir = data_root / "raw" / "youtube" / video_id
     out = data_root / "processed" / video_id / "gold_extraction"
@@ -219,7 +306,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--video-id", required=True)
     parser.add_argument("--data-root", required=True, type=Path)
+    parser.add_argument("--preflight-raw", action="store_true", help="Validate raw inputs without writing gold artifacts.")
     args = parser.parse_args()
+    if args.preflight_raw:
+        result = raw_preflight(args.video_id, args.data_root)
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if not result["errors"] else 1
     try:
         result = prepare_episode(args.video_id, args.data_root)
     except GoldPauseError as exc:

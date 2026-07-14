@@ -35,10 +35,13 @@ source. Preserve it unchanged for comparison.
 - Generated gold-standard artifacts must remain separate from the current v1
   and v2 sources.
 - Preserve unrelated user changes already present in the worktree.
-- This prompt defines executor work. A separate coordinator task owns the
-  independent quality gate; the executor must not approve its own output.
-- `awaiting_external_audit` means external to this executor task and remains the
-  lifecycle name for compatibility. Do not rename it.
+- This prompt defines the complete executor phase in the active chat. Do not
+  create coordinator/worker tasks or intermediate review handoffs.
+- `awaiting_external_audit` means external to the executor phase and remains the
+  lifecycle name for compatibility. The only review boundary is the final audit
+  after the whole epic is ready. Do not rename it.
+- The future gate is Codex-only. Do not request Claude permission, execution,
+  or audit; preserve any historical provider provenance without rewriting it.
 
 ## Required Reading
 
@@ -85,7 +88,41 @@ them as a focused starting point:
 
 ## Execution Protocol
 
-Work in small, persistent batches so this task can survive context limits.
+Work through the complete epic in the active chat. Batches are atomic
+persistence units, not handoff or review boundaries.
+
+### Episode Finalization Guardrails
+
+For a Fast Path episode, retain the full reading and semantic-recall standard
+while minimizing duplicated context. When the episode fits the active context,
+produce one complete episode payload and run `run_gold_episode_fast.py --check`.
+Repair the complete in-memory inventory before the first write, then use one
+`--apply` to persist and finalize. Use review batches of 8-12 chunks only as a
+fallback for an episode that cannot fit safely in one semantic pass.
+Before the packet, finish the episode through one consolidated diagnostic and
+source-backed remediation. A post-persistence correction uses a transactional patch with a
+non-empty `revision_id`, `revision_kind`, and `reason`, followed by one
+read-only check and one atomic apply. Preserve assertions, provenance and
+idempotence; do not create an artificial patch-count gate. Keep physical file
+hashes for provenance, but compare parsed JSON semantically so CRLF and LF
+alone do not create a false editorial delta.
+
+Hard blockers such as unsupported evidence, invalid ledger destinations,
+relations, or calibration targets stop finalization. Editorial ambiguity,
+possible promo/interviewer support, overlap, caveats, and semantic calibration
+uncertainty remain audit warnings. Warnings stay visible in the five-file
+packet manifest for the final audit; they are not a reason to stop or emit an
+intermediate handoff.
+
+For a multi-episode wave, batch and episode completion remain internal to the
+active execution. Compile each complete episode read-only first, repair the
+consolidated source-backed inventory, persist one atomic clean episode payload,
+and continue to the next episode. The final audit begins only after a
+consolidated wave receipt proves every manifest episode final-packet ready or
+terminally blocked. An in-progress wave is read-only at this gate: it never
+creates or overwrites a delivery receipt. The finalization receipt must point
+to the manifest export destination and to a five-file packet whose manifest
+identifies the same episode.
 
 ### Phase 1 - Inspect And Clean The Source
 
@@ -122,8 +159,9 @@ root.
 
 ### Phase 3 - Build A Recall-First Candidate Inventory
 
-Process one chunk at a time. Save each chunk result immediately. Update a status
-file after every chunk and run a checkpoint after every four chunks.
+Read chunks chronologically, then persist each complete review range atomically
+after a read-only compiler check. Continue immediately after each range; do not
+emit a handoff for a chunk, range, or finished episode.
 
 For each chunk, perform all of these passes in order:
 
@@ -247,8 +285,8 @@ After all chunks are inventoried:
 ### Phase 7 - Executor Coverage Check
 
 Run a second transcript-to-output pass whose only job is to find omissions.
-This is deterministic/executor-side coverage validation, not the independent
-editorial approval owned by the coordinator.
+This is deterministic coverage validation inside the executor phase, not the
+final Sol audit.
 
 The audit must explicitly check:
 
@@ -263,6 +301,13 @@ The audit must explicitly check:
 
 Any omission found must be added to the inventory and the audit rerun. Stop only
 when the audit reports zero uncovered high-signal claims.
+
+This pass must validate semantic destination, not only ledger presence. For
+each `captured` or `merged` signal, confirm that the referenced candidate states
+the same useful proposition. A candidate about the same topic or a nearby
+number is not sufficient. Read adjacent chunk boundaries together to catch a
+claim whose setup is a story, mechanism, or example and whose conclusion is an
+offer transition, pitch, result, retention effect, condition, or caveat.
 
 ## Mandatory Calibration Checks
 
@@ -308,8 +353,8 @@ Required files:
 11. `validation_report.md`
 
 If repository code or tests are changed, report the exact changes, validations,
-remaining risks, and scope to the coordinator. The coordinator owns and updates
-`docs/execution-log.md` after independent review.
+remaining risks, and scope in the active chat. Update `docs/execution-log.md`
+when the epic contract requires it.
 
 ## Validation Requirements
 
@@ -322,11 +367,11 @@ Before declaring completion, verify:
 - every evidence quote exactly matches the clean transcript;
 - every numeric claim in the inventory appears in the quantitative CSV;
 - every high-signal segment has a ledger disposition;
-- the independent omission audit reports zero uncovered high-signal claims;
+- the executor coverage pass reports zero uncovered high-signal claims;
 - current `insights_v2.json` and curated/master exports are unchanged;
 - focused tests and existing relevant validators pass.
-- the episode remains `awaiting_external_audit` until a separate coordinator
-  records a valid passed report with zero open findings.
+- the episode remains `awaiting_external_audit` until the dedicated final Sol
+  audit records a valid passed report with zero open findings.
 
 ## Final Response
 

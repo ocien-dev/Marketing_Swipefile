@@ -1,0 +1,45 @@
+{
+  "active_budget": {
+    "max_raw_segments": 9000,
+    "max_chunks": 160,
+    "max_episodes": 5
+  },
+  "review_range_size": 10,
+  "episodes": [
+    {
+      "video_id": "zoChfFHnlOQ",
+      "mode": "auto",
+      "executor_thread_id": "019f4c90-b9dc-7e32-8ff1-57f8896386d3",
+      "export_suffix": "msf_r20_wave_005_zoChfFHnlOQ",
+      "revision_id": "wave005-zoChfFHnlOQ-final-001"
+    },
+    {
+      "video_id": "JF2oC44lBG8",
+      "mode": "auto",
+      "executor_thread_id": "019f4c90-b9dc-7e32-8ff1-57f8896386d3",
+      "export_suffix": "msf_r20_wave_005_JF2oC44lBG8",
+      "revision_id": "wave005-JF2oC44lBG8-final-001"
+    },
+    {
+      "video_id": "qohJceyapS0",
+      "mode": "auto",
+      "executor_thread_id": "019f4c90-b9dc-7e32-8ff1-57f8896386d3",
+      "export_suffix": "msf_r20_wave_005_qohJceyapS0",
+      "revision_id": "wave005-qohJceyapS0-final-001"
+    },
+    {
+      "video_id": "wHdyTM-nVqg",
+      "mode": "auto",
+      "executor_thread_id": "019f4c90-b9dc-7e32-8ff1-57f8896386d3",
+      "export_suffix": "msf_r20_wave_005_wHdyTM-nVqg",
+      "revision_id": "wave005-wHdyTM-nVqg-final-001"
+    },
+    {
+      "video_id": "BbhJn8NXRso",
+      "mode": "auto",
+      "executor_thread_id": "019f4c90-b9dc-7e32-8ff1-57f8896386d3",
+      "export_suffix": "msf_r20_wave_005_BbhJn8NXRso",
+      "revision_id": "wave005-BbhJn8NXRso-final-001"
+    }
+  ]
+}

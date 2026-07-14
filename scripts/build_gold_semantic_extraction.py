@@ -21,6 +21,7 @@ from scripts.gold_extraction_common import (
     GoldPauseError,
     SCHEMA_VERSION,
     calibration_coverage,
+    calibration_target_errors,
     canonical_themes,
     citation,
     context_range,
@@ -204,8 +205,68 @@ def normalize_candidate(raw: dict[str, Any], video_id: str, segments_by_id: dict
     return candidate
 
 
-def build_from_reviews(video_id: str, data_root: Path, reviews_dir: Path, legacy_audit_status: str | None = None, executor_thread_id: str | None = None) -> dict[str, Any]:
+def readiness_check(video_id: str, data_root: Path, reviews_dir: Path) -> dict[str, Any]:
+    """Check final-build inputs without changing episode state or artifacts."""
     out = data_root / "processed" / video_id / "gold_extraction"
+    transcript = load_json(out / "transcript_clean.json")["segments"]
+    chunks = load_json(out / "chunks" / "chunk_index.json")["chunks"]
+    status = load_json(out / "gold_extraction_status.json")
+    calibration = load_json(out / "calibration_tests.json")
+    segments_by_id = {item["segment_id"]: item for item in transcript}
+    reviews = {item.get("chunk_id"): item for item in read_reviews(reviews_dir)}
+    errors: list[str] = []
+    candidates: list[dict[str, Any]] = []
+    for chunk in status.get("chunks", []):
+        review = reviews.get(chunk["chunk_id"])
+        if review is None:
+            errors.append(f"missing review for {chunk['chunk_id']}")
+            continue
+        if review.get("episode_video_id") != video_id:
+            errors.append(f"{chunk['chunk_id']}: review episode mismatch")
+        if review.get("input_hash") != chunk["input_hash"]:
+            errors.append(f"{chunk['chunk_id']}: review input hash mismatch")
+        if not review.get("full_chunk_reviewed"):
+            errors.append(f"{chunk['chunk_id']}: review did not confirm full chunk read")
+        candidates.extend(normalize_candidate(item, video_id, segments_by_id) for item in review.get("candidates", []))
+    document = {
+        "schema_version": SCHEMA_VERSION,
+        "insight_layer": "gold_extraction",
+        "episode_video_id": video_id,
+        "audit": {"status": "pending_external", "open_findings": 0},
+        "insights": candidates,
+    }
+    errors.extend(normalize_relations(candidates))
+    errors.extend(validate_document(document, transcript, chunks, require_external_audit=False))
+    covered_calibration = calibration_coverage(calibration, candidates)
+    errors.extend(calibration_target_errors(calibration, segments_by_id))
+    if covered_calibration["status"] != "pass":
+        errors.append("calibration coverage below episode minimum")
+    return {
+        "status": "ready" if not errors else "not_ready",
+        "candidates": len(candidates),
+        "errors": sorted(set(errors)),
+        "calibration": covered_calibration["status"],
+    }
+
+
+def build_from_reviews(
+    video_id: str,
+    data_root: Path,
+    reviews_dir: Path,
+    legacy_audit_status: str | None = None,
+    executor_thread_id: str | None = None,
+    export_suffix: str | None = None,
+    *,
+    audit_warnings: list[dict[str, Any]] | None = None,
+    revision_id: str | None = None,
+    defer_packet: bool = False,
+) -> dict[str, Any]:
+    out = data_root / "processed" / video_id / "gold_extraction"
+    # Fast Path invariant: deterministic review defects are reported before
+    # this builder writes candidate chunks, ledgers, status or packets.
+    preflight = readiness_check(video_id, data_root, reviews_dir)
+    if preflight["errors"]:
+        return {"status": "validation_failed", "candidates": preflight["candidates"], "errors": preflight["errors"], "calibration": preflight["calibration"]}
     transcript = load_json(out / "transcript_clean.json")["segments"]
     chunks = load_json(out / "chunks" / "chunk_index.json")["chunks"]
     signals = load_json(out / "signal_inventory.json")["signals"]
@@ -287,6 +348,7 @@ def build_from_reviews(video_id: str, data_root: Path, reviews_dir: Path, legacy
                 ledger_signal_ids.add(item["segment_id"])
     ledger = ledger_for_signals(ledger_signals, candidates, manual_decisions)
     errors.extend(ledger_errors(ledger, {item["candidate_id"] for item in candidates}, {item["segment_id"] for item in ledger}))
+    errors.extend(calibration_target_errors(calibration, segments_by_id))
     covered_calibration = calibration_coverage(calibration, candidates)
     if covered_calibration["status"] != "pass":
         errors.append("calibration coverage below episode minimum")
@@ -339,8 +401,14 @@ def build_from_reviews(video_id: str, data_root: Path, reviews_dir: Path, legacy
         "updated_at": now(), "errors": sorted(set(errors)),
     }
     write_json(out / "gold_extraction_status.json", updated_status)
-    if lifecycle == "awaiting_external_audit":
-        packet = export_packet(video_id, data_root, f"msf_r20_piloto_{video_id}")
+    if lifecycle == "awaiting_external_audit" and not defer_packet:
+        packet = export_packet(
+            video_id,
+            data_root,
+            export_suffix or f"msf_r20_piloto_{video_id}",
+            audit_warnings=audit_warnings,
+            revision_id=revision_id,
+        )
         updated_status["audit_packet"] = packet["packet"]
         updated_status["updated_at"] = now()
         write_json(out / "gold_extraction_status.json", updated_status)
@@ -353,10 +421,16 @@ def main() -> int:
     parser.add_argument("--data-root", required=True, type=Path)
     parser.add_argument("--reviews-dir", type=Path)
     parser.add_argument("--executor-thread-id")
+    parser.add_argument("--export-suffix", help="Override the audit-packet suffix for awaiting-external-audit builds.")
+    parser.add_argument("--check-readiness", action="store_true", help="Validate reviews and candidates without writing artifacts.")
     args = parser.parse_args()
     reviews = args.reviews_dir or args.data_root / "processed" / args.video_id / "gold_extraction" / "manual_reviews"
+    if args.check_readiness:
+        result = readiness_check(args.video_id, args.data_root, reviews)
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if not result["errors"] else 1
     try:
-        result = build_from_reviews(args.video_id, args.data_root, reviews, executor_thread_id=args.executor_thread_id)
+        result = build_from_reviews(args.video_id, args.data_root, reviews, executor_thread_id=args.executor_thread_id, export_suffix=args.export_suffix)
     except GoldPauseError as exc:
         print(json.dumps({"status": "paused_filesystem", "error": str(exc)}))
         return 75

@@ -11,7 +11,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import re
+import tempfile
 import unicodedata
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
@@ -143,6 +145,31 @@ def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def sha256_semantic_json(value: Any) -> str:
+    """Hash JSON by parsed value, deliberately ignoring CRLF/LF serialization."""
+    encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def json_hashes(path: Path) -> dict[str, str]:
+    """Expose both physical and semantic hashes for a JSON artifact."""
+    raw = path.read_bytes()
+    return {
+        "physical_sha256": hashlib.sha256(raw).hexdigest(),
+        "semantic_sha256": sha256_semantic_json(json.loads(raw.decode("utf-8"))),
+    }
+
+
+def record_operation_event(out: Path, operation: str, event_key: str, metadata: dict[str, Any] | None = None) -> None:
+    """Persist an idempotent measured operation receipt for Fast Path metrics."""
+    path = out / "fastpath_operation_receipt.json"
+    receipt = load_json(path) if path.exists() else {"events": []}
+    if any(event.get("operation") == operation and event.get("event_key") == event_key for event in receipt["events"]):
+        return
+    receipt["events"].append({"operation": operation, "event_key": event_key, "metadata": metadata or {}})
+    write_json(path, receipt)
+
+
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -151,6 +178,52 @@ def write_json(path: Path, value: Any) -> None:
         temporary.replace(path)
     except PermissionError as exc:
         raise GoldPauseError(f"filesystem permission/lock while writing {path}") from exc
+
+
+def write_json_batch(values: dict[Path, Any]) -> None:
+    """Stage JSON files beside their destinations before replacing any target.
+
+    Validation callers use this after building every payload in memory.  It
+    prevents malformed later reviews from leaving an earlier review persisted.
+    The small restore path handles an interruption during the replace phase.
+    """
+    staged: list[tuple[Path, Path, bytes | None]] = []
+    replaced: list[tuple[Path, bytes | None]] = []
+    try:
+        for path, value in values.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+            temporary = Path(temporary_name)
+            with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+                json.dump(value, handle, ensure_ascii=False, indent=2)
+                handle.write("\n")
+            staged.append((path, temporary, path.read_bytes() if path.exists() else None))
+        for path, temporary, previous in staged:
+            os.replace(temporary, path)
+            replaced.append((path, previous))
+    except Exception as exc:
+        for path, previous in reversed(replaced):
+            if previous is not None:
+                path.write_bytes(previous)
+            elif path.exists():
+                path.unlink()
+        for path, temporary, _previous in staged:
+            if temporary.exists():
+                temporary.unlink()
+        if isinstance(exc, PermissionError):
+            raise GoldPauseError(f"filesystem permission/lock while writing batch") from exc
+        raise
+
+
+def editorial_ascii_errors(candidate: dict[str, Any]) -> list[str]:
+    """Enforce ASCII only for internal editorial fields, never verbatim quotes."""
+    fields = ("title", "source_claim", "takeaway_applicavel")
+    errors: list[str] = []
+    for field in fields:
+        value = str(candidate.get(field, ""))
+        if any(ord(char) > 127 for char in value) or re.search(r"\w\?\w", value):
+            errors.append(f"{candidate.get('candidate_id', '<unknown>')}: editorial encoding issue in {field}")
+    return errors
 
 
 def validate_external_audit_report(report: Any, executor_thread_id: str | None = None, allow_legacy: bool = False, require_executor_provenance: bool = True) -> list[str]:
@@ -208,7 +281,13 @@ def validate_external_audit_report(report: Any, executor_thread_id: str | None =
     if report.get("status") == "passed" and require_executor_provenance and not executor_thread_id:
         errors.append("passed external audit requires executor provenance")
     if report.get("status") == "passed" and executor_thread_id and report.get("reviewer_thread_id") == executor_thread_id:
-        errors.append("external reviewer must be separate from executor")
+        same_thread_final_phase = (
+            report.get("audit_route") == "final_model_review"
+            and report.get("reviewer_model") == "gpt-5.6-sol"
+            and report.get("reasoning_effort") in {"high", "xhigh", "max", "ultra"}
+        )
+        if not same_thread_final_phase:
+            errors.append("same-thread final audit requires final_model_review with gpt-5.6-sol/high or above")
     return errors
 
 
@@ -621,7 +700,7 @@ def validate_document(document: dict[str, Any], segments: list[dict[str, Any]], 
     audit = document.get("audit", {})
     if require_external_audit and audit.get("status") != "passed":
         errors.append("external audit has not passed")
-    if audit.get("open_findings", 0):
+    if require_external_audit and audit.get("open_findings", 0):
         errors.append(f"external audit has {audit['open_findings']} open finding(s)")
     return sorted(set(errors))
 
@@ -700,6 +779,34 @@ def ledger_errors(ledger: list[dict[str, Any]], candidate_ids: set[str], expecte
             errors.append(f"ledger invalid exclusion category for {item['segment_id']}")
         if item.get("reason_code") == "duplicate_of" and item.get("reason_reference") not in candidate_ids:
             errors.append(f"ledger duplicate reference missing for {item['segment_id']}")
+    return errors
+
+
+def calibration_target_errors(calibration: dict[str, Any], segments_by_id: dict[str, dict[str, Any]] | set[str]) -> list[str]:
+    """Return deterministic calibration-target errors before semantic matching."""
+    errors: list[str] = []
+    segment_map = segments_by_id if isinstance(segments_by_id, dict) else {segment_id: {} for segment_id in segments_by_id}
+    seen: set[str] = set()
+    tests = calibration.get("tests", [])
+    if not isinstance(tests, list):
+        return ["calibration tests must be a list"]
+    for item in tests:
+        calibration_id = item.get("calibration_id", "<unknown>")
+        segment_ids = item.get("segment_ids")
+        if not isinstance(segment_ids, list) or not segment_ids:
+            errors.append(f"{calibration_id}: calibration target needs segment_ids")
+            continue
+        quote = item.get("quote_verbatim", item.get("quote"))
+        if not isinstance(quote, str) or not quote.strip():
+            errors.append(f"{calibration_id}: calibration target needs a non-empty quote_verbatim")
+        for segment_id in segment_ids:
+            if segment_id not in segment_map:
+                errors.append(f"{calibration_id}: calibration target references unknown segment {segment_id}")
+            if segment_id in seen:
+                errors.append(f"{calibration_id}: calibration target duplicates segment {segment_id}")
+            seen.add(segment_id)
+        if isinstance(quote, str) and quote.strip() and not any(quote == str(segment_map.get(segment_id, {}).get("text", "")) for segment_id in segment_ids):
+            errors.append(f"{calibration_id}: calibration quote_verbatim does not match a referenced segment")
     return errors
 
 

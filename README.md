@@ -7,8 +7,7 @@ The first source is VTurb. After the VTurb backlog is processed, the planned ord
 ## Canonical Docs
 
 - `AGENTS.md`
-- `docs/agent-coordination.md`
-- `docs/coordination/msf-r20-codex-gate-migration.md`
+- `docs/gold-extraction-contract.md`
 - `docs/marketing-swipe-file-handoff.md`
 - `docs/marketing-swipe-file-prd.md`
 - `docs/marketing-swipe-file-architecture.md`
@@ -35,14 +34,14 @@ Do not create autonomous agents before the underlying scripts, prompts, skills, 
 
 Current remediation guardrail: Gates R1, R2, and R3 are approved. The first MSF-S skill wave is complete and approved. MSF-R03 is done: ignored/local-only data lives outside OneDrive under `C:\MSF-data\Marketing_Swipe_File`. Do not run the MSF-R14 backfill, Supabase, MCP, or agents until the owner explicitly starts that next step.
 
-MSF-R20 gold extraction uses a coordinator/worker quality gate. The worker
-implements and validates within explicit ownership; a separate Codex coordinator
-performs the independent audit and is the only role that can approve the gate.
-The lifecycle name `awaiting_external_audit` is preserved for compatibility:
-`external` means external to the executor task. Historical Claude audit records
-remain unchanged, while future audits are provider-neutral and carry explicit
-reviewer task/model/effort provenance. See `AGENTS.md` and
-`docs/agent-coordination.md`.
+MSF-R20 gold extraction runs end to end in the active chat. The same execution
+handles planning, extraction, routine corrections, deterministic validation and
+final packets without delegation or intermediate review. Only after the whole
+epic is ready does a dedicated final audit phase run with `gpt-5.6-sol` at high
+reasoning or above. The lifecycle name `awaiting_external_audit` is preserved
+for compatibility: `external` means external to the executor phase. Historical
+audit records remain unchanged. See `AGENTS.md` and
+`docs/gold-extraction-contract.md`.
 
 ## Local Data Policy
 

@@ -2445,3 +2445,1771 @@ Release gates:
 - Codex may compact automatically when it reaches its own native limit. Do not
   claim manual, preventive, or automatic compaction without confirmation from
   the real Codex interface or event.
+
+## 2026-07-11 - R20 external-audit follow-up paused on filesystem lock
+
+- An independently supplied external audit handoff identified a recall and
+  ledger gap in `_hXmiIEac6w`, clean indices 740--745: the guest says story
+  connects the lead to the offer/pitch and is the main driver of pitch
+  retention. The coordinator independently read those transcript segments and
+  confirmed neither a candidate nor a specific ledger disposition covered the
+  claim.
+- The coordinator sealed `MSF-R20-HX-003` as a minor, open,
+  `changes_requested` finding in local coordinator provenance. The proposed
+  execution job is `MSF-R20-EXTERNAL-FINDING-001` and is limited to that
+  episode's gold-extraction directory and isolated audit packet.
+- Registering the sealed finding through
+  `record_gold_external_audit.py` stopped at a `GoldPauseError` caused by a
+  filesystem `PermissionError` replacing
+  `C:\MSF-data\Marketing_Swipe_File\processed\_hXmiIEac6w\gold_extraction\editorial_audit_report.json`.
+  No retry, forced write, worker delegation, consolidation, push, or deploy
+  occurred. The existing package validator still passes, but its passed audit
+  state is treated as stale until the follow-up audit can be recorded.
+
+## 2026-07-11 - Codex-only autonomy and R20 follow-up dispatch
+
+- Owner policy now makes future Marketing Swipe File coordination Codex-only.
+  No Claude audit, permission, execution, or approval is required for future
+  queue transitions or gates. Historical Claude records remain immutable
+  provenance; later Claude material is optional supplementary evidence only.
+- The local data-root audit record for `_hXmiIEac6w` was subsequently written
+  through the hardened recorder with `status=changes_requested`, one open
+  minor finding (`MSF-R20-HX-003`), and Codex coordinator provenance. The
+  required-audit validator fails with `external audit has not passed`, as it
+  must until the correction is independently reaudited.
+- `MSF-R20-EXTERNAL-FINDING-001` was dispatched to the designated
+  `gpt-5.6-terra/high` worker. Its scope is only the `_hXmiIEac6w` gold
+  extraction and isolated packet; no Claude task is part of the execution or
+  quality gate.
+
+## 2026-07-11 - R20 `_hXmiIEac6w` Codex-only repair approved
+
+- The coordinator independently confirmed the missing story-to-pitch retention
+  claim at clean indices 740--744 and sealed `MSF-R20-HX-003` as an open minor
+  finding. The worker added `G028` with verbatim evidence from segments 0741,
+  0742, 0744, and 0745; its ledger entries are all `captured` for that
+  candidate.
+- The correction exposed a gate defect: non-required deterministic validation
+  incorrectly failed whenever an otherwise valid audit had open findings. The
+  minimal fix makes that error conditional on `require_external_audit`; the
+  new focused regression covers a `changes_requested` report with an open
+  finding. Eleven focused tests passed using the existing installed Python
+  3.12 and an explicitly scoped local data-root basetemp; no dependency was
+  installed.
+- The coordinator reaudited the rebuilt blind packet independently and recorded
+  `passed` with zero open findings. The worker then rebuilt from that sealed
+  report without editing audit provenance. Coordinator final validation passed
+  with `--require-external-audit`: `_hXmiIEac6w` is `complete`,
+  `audit_status=passed`, and `open_audit_findings=0`. It has 28 distinct
+  candidates, calibration `6/4 pass`, an exported packet, and equal protected
+  before/after fingerprints.
+- Future workflow remains Codex-only. Historical Claude provenance is retained
+  but has no approval, execution, or gate role. No commit, push, deploy,
+  consolidation, or Supabase action occurred in this repair.
+
+## 2026-07-11 - Worker stall escape policy
+
+- Owner policy: after three consecutive returns of the same job/subtask without
+  material progress, the coordinator must stop repeating the same instruction,
+  diagnose the common cause, record the attempts, and send a bounded alternative
+  path. Material progress is a new artifact, validated outcome,
+  decision-resolving evidence, or safe state transition.
+- A worker stalled for more than 30 minutes on one installation, command, or
+  other indivisible action must report timing and output. The coordinator then
+  provides a different command/path; the 30-minute limit is per action, not the
+  total job. Existing lock, permission, and damage-risk pauses remain in force.
+
+## 2026-07-11 - MSF-R20 pilot retrospective and next-wave hardening
+
+- Closed coordinator job `MSF-R20-PILOT-LEARNINGS-001` after measuring the five
+  episodes selected by the R20 pilot plan. Together they contain 5,608 clean
+  segments, 97 chunks, 195 gold candidates, and 3,769 ledger entries; all five
+  are `complete/passed` with zero open findings and calibration 32/19 pass.
+- Recorded the pilot evidence and decisions in
+  `docs/coordination/msf-r20-pilot-retrospective.md`. `L7u7r6rOl68` remains a
+  separate pre-pilot baseline and is not counted in the five-episode table.
+- Classified 17 audit-cycle findings: 8 major and 9 minor; 7 editorial, 4
+  calibration, 3 numeric, and 3 involving recall or ledger coverage.
+- Preserved the existing architecture and added two mandatory next-wave gates:
+  one technical preflight per job and an executor-side adversarial semantic
+  recall pass before blind packet export. Ledger presence now explicitly does
+  not count as coverage unless the destination candidate expresses the same
+  useful proposition, including claims split across adjacent chunks.
+- Updated the gold contract, coordination protocol, worker template, extraction
+  prompt, scale-batch skill, pilot plan, AGENTS protocol, and durable queues. No
+  episode artifact, audit report, protected layer, remote system, or Supabase
+  state was changed.
+
+## 2026-07-11 - Execução enxuta de épico/story na wave 001 do R20
+
+- O owner pediu menor uso de contexto e tokens depois que o processamento
+  contínuo por micro-checkpoints do primeiro episódio da wave de dois episódios
+  se mostrou caro demais.
+- O coordenador pausou o worker em checkpoint seguro depois do reparo de
+  evidência numérica 025-036. Ele não iniciou a faixa seguinte, builder,
+  validador, export, auditoria ou o segundo episódio.
+- docs/coordination/msf-r20-wave-001-lean-plan.md passou a ser o plano durável:
+  um épico é delegado por vez, suas stories internas documentadas são executadas
+  sequencialmente pelo worker e, depois, o coordenador revisa o épico antes do
+  próximo. A remediação numérica começa por diagnóstico residual determinístico
+  e limita cada story de correção direcionada a doze candidatos ou oito chunks.
+- As atribuições de modelo/esforço do coordenador e worker não mudaram. Não
+  houve commit, push, deploy, consolidação ou ação no Supabase.
+- O plano foi corrigido para um épico por vez: as stories documentadas são
+  concluídas sequencialmente antes de o coordenador revisar o épico e liberar o
+  próximo. Depois o owner pediu somente planejamento; o Epic E1 ficou
+  explicitamente retido até nova liberação de execução.
+- Uma breve delegação de E1 foi revogada antes de qualquer comando. O worker
+  confirmou awaiting_owner_execution_release e permanece idle.
+
+## 2026-07-11 - Registro simples obrigatório antes de delegar
+
+- Owner policy: imediatamente antes de cada delegação ao worker, o coordenador
+  deve publicar na conversa um registro completo em linguagem simples do que
+  será executado. O registro explica objetivo, sequência de ações, arquivos
+  que podem mudar, artefatos e validações esperados, exclusões, condições de
+  parada e o próximo quality gate.
+- O texto é um plano, nunca uma alegação de que o trabalho já foi executado.
+  Sua versão concisa também fica no plano do épico e no campo
+  `pre_delegation_brief` da fila durável. Mudança material de escopo exige um
+  novo registro antes de uma nova delegação.
+
+## 2026-07-11 - Liberação do Epic E1 da wave 001
+
+- O owner liberou a execução do Epic E1 para `mCaFyZpXJdE`. O ponto de partida
+  continua sendo o checkpoint seguro do reparo 025-036, confirmado pelo evento
+  `MSF-R20-WAVE-001-018`; a delegação anterior foi revogada antes de qualquer
+  comando.
+- Antes do envio ao worker, o coordenador publicará o EXECUTION BRIEF em pt-BR
+  simples, conforme o protocolo. O Epic E1 permanece restrito ao diagnóstico
+  residual, correções planejadas e prontidão do packet cego; não autoriza
+  auditoria, consolidação, release, Supabase nem início de `TOW0sWhPaZw`.
+
+## 2026-07-11 - Diagnóstico do E1 e exceção única de escopo
+
+- O primeiro build do E1 encontrou 18 erros de raw ausente na evidência mínima,
+  em 13 candidatos distintos: G058, G059, G060, G061, G063, G066, G068, G069,
+  G070, G071, G073, G075 e G076. Ele preservou 79 candidatos e calibração
+  aprovada; nenhuma correção, segundo build, validação normal ou export foi
+  iniciado.
+- O limite padrão do plano é 12 candidatos por story. Como os 13 pertencem à
+  mesma causa conhecida e o excedente é de um único candidato, o coordenador
+  autorizou exceção única documentada dentro do mesmo Epic E1. Isso evita um
+  novo diagnóstico e não amplia ownership, episódio, dados consolidados ou
+  privilégio de release.
+
+## 2026-07-11 - Auditoria do coordenador do packet E1 de mCaFyZpXJdE
+
+- O worker entregou packet cego de cinco arquivos com 79 candidatos, 2.106
+  entradas no ledger e calibração 10/7 pass. O coordenador fez a auditoria
+  independente e selou
+  `.codex-work/msf-r20-coordinator-audits/mCaFyZpXJdE_audit.json` como
+  `changes_requested`.
+- A auditoria confirmou IDs e JSONs consistentes; 0 quote, tempo ou contexto
+  inválidos; ledger com 976 captured, 1.130 excluded, reasons válidos e todos
+  os candidatos referenciados; 28 calibrações sem target semântico duplicado;
+  relações vazias sem assimetria/ciclo; e editorial específico com risco de
+  claim coerente.
+- O único finding aberto é `MSF-R20-MCA-001` (major): quatro `numbers.raw`
+  perderam acentos em G009, G035 e G042 e não são exatamente verbatim da
+  evidência. E1-S06 está limitado a corrigir esses quatro strings e a
+  reconstruir/validar/exportar o packet; E1-S07 será uma nova auditoria do
+  coordenador.
+- Os cinco fingerprints protegidos da wave permanecem iguais ao snapshot.
+  Não houve commit, push, deploy, consolidação ou ação no Supabase.
+
+## 2026-07-11 - Reauditoria E1 aprovada; registro determinístico pendente
+
+- O worker aplicou exclusivamente as quatro correções verbatim de
+  `MSF-R20-MCA-001`, e o novo packet manteve 79 candidatos, 2.106 entradas no
+  ledger, calibração 10/7 pass e lifecycle `awaiting_external_audit`.
+- O coordenador selou
+  `.codex-work/msf-r20-coordinator-audits/mCaFyZpXJdE_reaudit_001.json` como
+  `passed`: os quatro `numbers.raw` agora são literais, não há quote, tempo,
+  contexto ou raw inválido e não há finding aberto. Os cinco fingerprints
+  protegidos continuam iguais ao snapshot.
+- Próximo passo estreito: E1-S08 usa o script endurecido para registrar o
+  julgamento aprovado, derivar `complete/passed` e executar a validação final.
+  O worker não pode alterar o julgamento; `TOW0sWhPaZw` continua bloqueado.
+
+## 2026-07-11 - Coordenação por evento sem acompanhamento ativo
+
+- O owner definiu que, depois de delegar um job, o coordenador deve encerrar o
+  próprio turno. Enquanto o worker executa, não há polling, heartbeat, leitura
+  do chat, monitoramento nem processamento paralelo pelo coordenador.
+- A retomada ocorre somente por `WORKER_EVENT` final de conclusão, bloqueio ou
+  decisão necessária — ou por nova instrução do owner. Checkpoints de progresso
+  ficam apenas no chat do worker e não reativam o coordenador. Nesse retorno, o
+  coordenador deduplica `event_id/job_id`, lê a entrega e então faz o quality
+  gate sequencial.
+- O contrato do worker foi ajustado para deixar explícito que o evento final é o
+  canal de retomada. A falta de evento não autoriza acompanhamento ativo; o
+  worker deve reenviá-lo no próximo ponto seguro.
+
+## 2026-07-11 - E1-S08 bloqueada por envelope de auditoria e retomada segura
+
+- A tentativa 21 de registrar a reauditoria de `mCaFyZpXJdE` parou antes de
+  build ou validação. O registrador rejeitou
+  `mCaFyZpXJdE_reaudit_001.json` exclusivamente porque faltavam `audit_route` e
+  `open_findings`; nenhum artefato editorial, packet ou julgamento foi alterado
+  pelo worker.
+- O coordenador criou e selou
+  `.codex-work/msf-r20-coordinator-audits/mCaFyZpXJdE_reaudit_002.json`. O novo
+  envelope acrescenta `audit_route=codex_coordinator_blind_reaudit_after_worker_correction`
+  e `open_findings=0`, e normaliza `segment_range` para `[322, 1724]`, como o
+  contrato exige. Preserva o julgamento `passed`, o finding resolvido, reviewer,
+  data de revisão, evidências e resumo de `_reaudit_001.json`.
+- A tentativa 22, E1-S08-b, fica limitada a registrar esse relatório, executar
+  um build e uma validação final com `--require-external-audit`. O worker não
+  pode alterar o relatório selado nem dados editoriais. E2 continua bloqueado.
+
+## 2026-07-11 - Epic E1 de mCaFyZpXJdE aprovado
+
+- O worker entregou `MSF-R20-WAVE-001-025` como `completed`. O registrador
+  retornou `passed/open_findings=0`; o builder derivou `complete` com 79
+  candidatos; e a validação com `--require-external-audit` passou.
+- O coordenador confirmou o evento no chat do worker e reproduziu a validação
+  exigida. O relatório derivado preserva reviewer separado, rota Codex, status
+  `passed`, `MSF-R20-MCA-001` como `resolved`, `open_findings=0` e a faixa
+  `[322, 1724]` exigida pelo contrato.
+- O packet isolado contém cinco arquivos; há 79 IDs de candidato distintos e os
+  cinco fingerprints protegidos são exatamente iguais ao snapshot. Não houve
+  mudança editorial, consolidação, Supabase, commit, push ou deploy.
+- O Epic E1 está aprovado e concluído. O Epic E2 de `TOW0sWhPaZw` permanece
+  apenas na fila e ainda precisa de seu planejamento, brief e delegação.
+
+## 2026-07-11 - Epic E2 de TOW0sWhPaZw despachado
+
+- O preflight do coordenador confirmou que a fonte
+  `processed/TOW0sWhPaZw/content_segments.json` existe e que a pasta gold e o
+  export isolado da wave ainda não existem.
+- E2 foi planejado como um único épico enxuto: preflight, revisão cronológica
+  completa, recall semântico adversarial e um build diagnóstico. Um único reparo
+  de até 12 candidatos é permitido somente para erro objetivo de
+  número/evidência, seguido de um único rebuild final; qualquer outro caso para
+  com inventário e evento `blocked`.
+- O worker `gpt-5.6-terra/high` recebeu ownership exclusivo de TOW gold e seu
+  export isolado. Ele retornará apenas em conclusão, bloqueio ou decisão
+  necessária; a auditoria cega e qualquer transição para `complete` continuam
+  sob responsabilidade do coordenador.
+
+## 2026-07-11 - E2 retomado com fonte raw canônica
+
+- O worker bloqueou E2 antes de qualquer escrita: o preparador gold exige
+  `raw/youtube/TOW0sWhPaZw/metadata.json` e `transcript_original.json`, mas a
+  primeira delegação havia permitido apenas `content_segments.json`.
+- O coordenador confirmou em leitura que ambos os arquivos raw existem, que
+  `youtube_video_id=TOW0sWhPaZw`, `transcript_status=available` e que a
+  transcrição tem 2.108 segmentos. Isso é expansão de leitura, não mudança de
+  dados, schema ou fonte de verdade.
+- A tentativa 24 mantém todo o ownership de escrita anterior e libera apenas a
+  leitura dos dois arquivos raw. O worker continua proibido de tocar em E1,
+  código, documentação, camadas consolidadas, release ou Supabase.
+
+## 2026-07-11 - E2-S04a: correção de integridade procedural autorizada
+
+- Após o raw autorizado, o worker concluiu preflight, 35 reviews, recall global
+  e o único build diagnóstico. A calibração passou, mas o build identificou 31
+  candidatos dos tipos `framework` ou `playbook_step` com `steps` vazios.
+- O contrato exige `steps` não vazios para tipos procedurais. O coordenador
+  conferiu o inventário e claims/evidências de amostra: os candidatos já contêm
+  procedimentos ou sequências sustentados pela fonte; o defeito é estrutural,
+  não um finding editorial novo.
+- E2-S04a autoriza exclusivamente preencher `steps` para os 31 IDs fechados no
+  plano, usando apenas claim e citações já existentes. São proibidos
+  reclassificação, alteração de evidência, números, relações, títulos, candidatos
+  ou qualquer outro episódio. Depois, há um único build final, uma validação
+  normal e um export; qualquer novo erro encerra o job.
+
+## 2026-07-11 - Auditoria do packet E2: um reparo editorial menor
+
+- O worker entregou o packet de `TOW0sWhPaZw` com 2.068 segmentos limpos, 72
+  candidatos distintos, 1.509 entradas no ledger, calibração 7/6 pass, packet
+  de cinco arquivos e lifecycle `awaiting_external_audit/pending_external`.
+- O coordenador confirmou a entrega no chat do worker, reproduziu a validação
+  normal e auditou manifest, transcript, insights, ledger e calibrações. Quotes,
+  contextos, números, relações, ledger, steps procedurais, calibrações e os cinco
+  fingerprints protegidos passaram.
+- O julgamento selado
+  `.codex-work/msf-r20-coordinator-audits/TOW0sWhPaZw_audit.json` é
+  `changes_requested` com o único finding minor aberto `MSF-R20-TOW-001`:
+  `G072.takeaway_applicavel` contém `Me?a` em vez de `Meça`. As evidências
+  transcript devem continuar verbatim.
+- A auditoria declara sua limitação: o coordenador conhecia o reparo estrutural
+  anterior de steps, portanto é independente do executor, mas não inteiramente
+  cega ao contexto de geração. E2-S06 só registra o relatório e corrige esse
+  caractere, antes de reauditoria.
+
+## 2026-07-11 - E2-S06a: sincronização explícita do packet da wave
+
+- E2-S06 corrigiu o gold atual de G072 e passou no build/validador normal, mas a
+  reauditoria detectou que o packet `msf_r20_wave_001_TOW0sWhPaZw` ainda tinha
+  `Me?a`. O gold atual e o packet de compatibilidade
+  `msf_r20_piloto_TOW0sWhPaZw` já contêm `Meça`.
+- A causa é determinística: o builder chama o exportador com o sufixo de
+  compatibilidade `msf_r20_piloto_<video_id>`, enquanto a wave usa um caminho de
+  export diferente. Não há erro no conteúdo corrigido.
+- E2-S06a autoriza uma única chamada explícita ao exportador com o sufixo da
+  wave, copiando somente os cinco arquivos permitidos do gold atual. Não permite
+  build, validação, mudança editorial, código ou novo tratamento de dados.
+
+## 2026-07-11 - Reauditoria E2 aprovada; registro determinístico pendente
+
+- O export explícito sincronizou o packet da wave com o gold atual. O packet tem
+  exatamente cinco arquivos, 72 IDs distintos e G072 agora contém `Meça`, sem a
+  forma corrompida `Me?a`.
+- O coordenador reproduziu a validação normal e confirmou os cinco fingerprints
+  protegidos. A reauditoria selada
+  `.codex-work/msf-r20-coordinator-audits/TOW0sWhPaZw_reaudit_001.json` é
+  `passed`, com `MSF-R20-TOW-001` resolvido e `open_findings=0`; mantém a
+  limitação declarada de conhecer o contexto do reparo.
+- E2-S07 fica limitado a registrar esse julgamento, rodar um build e validar uma
+  vez com `--require-external-audit`, para derivar `complete/passed`. O worker
+  não pode editar a reauditoria ou dados editoriais.
+
+## 2026-07-11 - Wave 001 concluída
+
+- O worker registrou a reauditoria aprovada de `TOW0sWhPaZw`; o builder derivou
+  `complete/passed` e o coordenador reproduziu a validação com
+  `--require-external-audit`. O estado final é `complete`, `audit_status=passed`
+  e `open_audit_findings=0`, com 72 candidatos distintos e
+  `MSF-R20-TOW-001` resolvido.
+- A wave termina com E1 `mCaFyZpXJdE` (28 candidatos) e E2 `TOW0sWhPaZw` (72
+  candidatos) completos e aprovados. Os dois packets têm cinco arquivos e os
+  cinco fingerprints protegidos permanecem idênticos ao snapshot da wave.
+- Nenhum commit, push, deploy, consolidação gold ou ação no Supabase foi feita.
+  A fila durável e o plano da wave foram encerrados como `done`.
+
+## 2026-07-11 - Hardening pré-próxima wave iniciado
+
+- A Wave 001 revelou três causas mecânicas de retrabalho: o builder exporta por
+  padrão para o sufixo de compatibilidade, o preparador depende de fontes raw
+  não declaradas no preflight e `steps` procedurais podem falhar somente no build
+  final.
+- O job `MSF-R20-NEXT-WAVE-HARDENING-001` foi criado para corrigir esses pontos
+  de modo compatível e testado: sufixo explícito opcional, preflight raw sem
+  escrita e modo de prontidão sem escrita antes do build final.
+- O contrato de worker, AGENTS, coordenação e contrato gold passam a exigir as
+  fontes raw `metadata.json` e `transcript_original.json` antes de iniciar uma
+  extração. Nenhum dado real, export ou fingerprint protegido é autorizado neste
+  épico.
+
+### 2026-07-11 — Continuação mínima de validação do hardening R20
+
+- O worker implementou H1-H4, mas duas execuções da suíte focada pararam apenas
+  na limpeza do diretório temporário: primeiro no Temp global e depois no
+  basetemp dentro do OneDrive. Nenhum dado real foi escrito.
+- Na revisão do coordenador, foi identificada uma lacuna adicional: o preflight
+  também deve rejeitar `metadata.transcript_status` diferente de `available`,
+  mesmo que o transcript tenha segmentos.
+- Foi autorizada somente uma continuação: teste de regressão dessa condição e
+  uma execução da suíte usando
+  `C:\MSF-data\Marketing_Swipe_File\.tmp\msf-r20-next-wave-hardening-001-002`.
+  O próximo gate é revisão independente do diff e dos testes; commit, push,
+  deploy, consolidação e Supabase continuam fora do escopo.
+
+### 2026-07-11 — Hardening aprovado para a próxima wave
+
+- O worker concluiu H1-H4 e informou `16 passed` no temporário externo ao
+  OneDrive. A entrega foi confirmada no chat de origem.
+- O coordenador revisou o diff de
+  `build_gold_semantic_extraction.py`, `reprocess_gold_episode.py` e
+  `test_gold_pipeline.py`; confirmou que o preflight bloqueia também
+  `metadata.transcript_status` incompatível, sem escrita; e reproduziu a suíte
+  focada com **16 testes passando**. `git diff --check` passou.
+- Decisão: **APROVADO PARA A PRÓXIMA WAVE FUNCIONAL**. Não houve alteração de
+  dados reais, exports de episódio, auditorias, fingerprints protegidos,
+  commit, push, deploy, consolidação ou Supabase. O próximo trabalho deve usar
+  o preflight raw e o readiness check antes do build final.
+
+### 2026-07-11 — Wave 002 E1 planejada e liberada
+
+- Episódio selecionado: `YcqJ_vrjf-g` (*A Fórmula dos Criativos que Vendem
+  7D/Dia*), por combinar tema técnico de criativos com fonte pronta e tamanho
+  controlado de 1.593 segmentos.
+- O coordenador executou o preflight raw sem escrita: metadata e transcript
+  estão disponíveis e consistentes; a pasta gold e o export próprio da Wave 002
+  estavam ausentes antes da delegação.
+- O épico exige preparação, revisão cronológica integral, recall adversarial,
+  readiness sem escrita e um único build/export para
+  `msf_r20_wave_002_YcqJ_vrjf-g`. O limite do worker é
+  `awaiting_external_audit/pending_external`; a auditoria e qualquer conclusão
+  continuam sendo gates separados do coordenador.
+
+### 2026-07-11 — Wave 002 E1: correção procedural limitada
+
+- O worker preparou 1.553 segmentos limpos em 23 chunks, registrou 23 reviews,
+  47 candidatos, 246 sinais e 16 calibrações. O readiness read-only bloqueou
+  antes do build somente por `steps` ausentes em G003, G028, G040 e G043.
+- O coordenador confirmou a entrega no chat de origem, reproduziu o readiness
+  com o mesmo inventário e calibração aprovada, verificou ausência de build e
+  export e leu os claims/segmentos dos quatro candidatos.
+- Decisão: manter os quatro como `framework` e acrescentar somente passos
+  sustentados. Nenhum outro campo pode mudar. Depois haverá uma execução de
+  readiness; se passar, um build com sufixo explícito, um validador normal e a
+  confirmação do packet. Novo erro encerra a tentativa sem segundo reparo.
+
+### 2026-07-11 — Wave 002 E1: auditoria cega com remediação planejada
+
+- O packet de `YcqJ_vrjf-g` foi auditado pelo coordenador somente pelos cinco
+  arquivos cegos. Passaram: manifesto, IDs, 108 quotes verbatim com tempos
+  coerentes, ranges, 250 entradas de ledger, destinos captured/excluded,
+  16 calibrações com 10 cobertas para mínimo 4, relações e fingerprints.
+- O julgamento selado abriu três findings: ausência global de `numbers`
+  estruturados em claims quantitativos materiais, quatro strings editoriais com
+  `?` dentro de palavras e G027 sustentado principalmente por pergunta do
+  entrevistador.
+- A remediação é fechada: registrar o relatório sem editá-lo; estruturar apenas
+  números materiais nos 31 candidatos listados; corrigir quatro strings ASCII;
+  reescrever G027 sobre o caso diretamente sustentado de usar repertório quando
+  só há manchete e excluir 0764 como interviewer_restate. Depois: um readiness,
+  um build, um validador normal e novo packet pendente de reauditoria.
+
+### 2026-07-11 — Wave 002 E1: reauditoria aprovada
+
+- A reauditoria packet-only confirmou a resolução dos três findings: 58 records
+  numéricos coerentes com quotes literais, nenhum caractere editorial corrompido
+  e G027 sustentado diretamente por 0770/0772; 0764 está
+  `excluded/interviewer_restate`.
+- Integridade revalidada: 47 IDs, 108 quotes/timings verbatim, ledger de 250
+  entradas, calibração 10/4 pass, relações simétricas e packet com cinco
+  arquivos. Os quatro fingerprints protegidos antes/depois permanecem iguais.
+- O relatório `YcqJ_vrjf-g_reaudit_001.json` foi selado como `passed` com zero
+  findings abertos. Resta somente o registro determinístico, build e validador
+  com auditoria exigida; não há edição editorial autorizada nessa última story.
+
+### 2026-07-11 — Wave 002 E1 concluída
+
+- A reauditoria aprovada foi registrada uma vez e o builder derivou
+  `complete/passed` sem nova edição editorial.
+- O coordenador confirmou a entrega no chat do worker e reproduziu
+  `validate_gold_extraction --require-external-audit`: **pass**, sem erros.
+  Estado final: 47 IDs distintos, `open_audit_findings=0`, packet com cinco
+  arquivos e quatro fingerprints protegidos antes/depois idênticos.
+- Decisão: **APROVADO FUNCIONALMENTE — Wave 002 E1 concluída**. Nenhum commit,
+  push, deploy, consolidação ou Supabase foi solicitado ou executado. O próximo
+  trabalho pode planejar outro episódio gold sob os gates já endurecidos.
+
+### 2026-07-11 — Wave 002 E2 planejada e liberada
+
+- Episódio selecionado: `qj04cUeaRAw` (*Lucrando Múltiplos 7D/Mês com Perpétuo
+  para Público Frio*), para ampliar a base com metodologia de perpétuo em
+  audiência fria.
+- O preflight raw read-only passou com 1.609 segmentos; não existiam gold nem
+  export da Wave 002 antes da delegação.
+- O novo plano torna explícito o autocheck de números materiais, texto ASCII e
+  distinção entre fala do entrevistado e perguntas do entrevistador, para
+  reduzir uma rodada corretiva observada em E1. O worker pode entregar somente
+  um packet pendente de auditoria independente.
+
+### 2026-07-11 — Wave 002 E2: auditoria cega e correção limitada
+
+- O packet inicial tinha 25 candidatos, 18 numbers, ledger de 1.155 entradas e
+  calibração 19/5 pass. A auditoria cega confirmou integridade de manifesto,
+  quotes/timings, relações, ledger, calibração e encoding.
+- Três findings foram selados: G002 e G005 são bio/promo; G017, G023 e G024
+  usam evidências mínimas truncadas; G014 normaliza o ano como 25 em vez de
+  2025.
+- A remediação é fechada: registrar o relatório sem editá-lo, remover os dois
+  candidatos impróprios, reescrever os três com fala afirmativa adjacente e
+  corrigir somente o valor normalizado do ano. Depois haverá um readiness, um
+  build, um validador normal e nova auditoria independente.
+
+### 2026-07-11 — Wave 002 E2: correção residual de literalidade planejada
+
+- A auditoria selada foi registrada e o inventário fechado foi aplicado. O
+  readiness único parou antes de build, validação ou export por duas falhas
+  literais: G017 não incluía 0920 na evidência mínima do intervalo `2, 3, 4, 10
+  dias`, e G024 mantinha `tr?s` em vez da grafia literal `três` de 1358.
+- O coordenador confirmou que a alternativa mínima é segura: acrescentar 0920
+  somente à evidência mínima de G017 e trocar somente o `numbers.raw` de G024
+  pela grafia literal. A story E2-S07e não relê a auditoria, não a registra de
+  novo e não altera outros campos editoriais.
+- Depois haverá uma única tentativa de readiness; se aprovada, um build e um
+  validador normal. O packet deve continuar pendente de auditoria, com os três
+  findings ainda abertos. Não houve commit, push, deploy, consolidação ou
+  Supabase.
+
+### 2026-07-11 — Wave 002 E2: reauditoria com um finding residual
+
+- O packet rederivado passou em readiness, build e validação normal: 23 IDs,
+  calibração 16/4, cinco arquivos cegos e fingerprints protegidos iguais. Ele
+  permaneceu corretamente pendente, com os três findings da auditoria inicial.
+- A reauditoria independente confirmou que G002/G005 foram removidos com os
+  destinos corretos no ledger e que G014 normaliza 2025. Esses dois findings
+  estão resolvidos.
+- G024 continua incompleto: a minimal_quote não traz a decisão do dia atual
+  (1359/1361) nem a redução de verba antes do desligamento (1363-1367), que são
+  a continuação material do framework e ficaram excluídos do ledger. O relatório
+  selado `qj04cUeaRAw_reaudit_001.json` tem um finding major aberto.
+- E2-S08 registrará esse relatório e corrigirá exclusivamente G024 e os
+  segmentos de ledger definidos. Depois fará uma única sequência de readiness,
+  build e validação normal. Não houve commit, push, deploy, consolidação ou
+  Supabase.
+
+### 2026-07-11 — Wave 002 E2: normalização ASCII residual planejada
+
+- E2-S07e resolveu G017 ao incluir 0920 na evidência mínima. O único readiness
+  seguinte voltou a parar em G024, sem build, validação ou export.
+- A inspeção independente confirmou o dado gravado como `tr?s` e confirmou no
+  contrato do validador que campos estruturados podem usar a forma ASCII NFKD
+  da evidência verbatim. A forma comparável de `três` é `tres`.
+- E2-S07f trocará exclusivamente esse `numbers.raw`; depois fará uma única
+  tentativa de readiness, build e validação normal, se cada gate anterior
+  passar. A auditoria não será registrada novamente e os três findings seguem
+  abertos até a nova reauditoria. Não houve release, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 002 E2: reauditoria final aprovada
+
+- O packet final permanece íntegro: cinco arquivos cegos, 23 candidatos,
+  quotes verbatim, números, ledger, relações e calibração 17/3 com targets
+  distintos passaram. Os fingerprints protegidos permanecem iguais.
+- G024 agora traz, em evidência mínima e ledger, a sequência integral 7-3-1,
+  a decisão pelo dia atual, a redução proporcional de 50%-70% antes de
+  desligar e a retomada de 20%. Isso resolve o último finding major.
+- O relatório selado `qj04cUeaRAw_reaudit_002.json` está `passed` com zero
+  findings abertos. Resta apenas registrá-lo e rodar o build/validador com
+  auditoria exigida; não há edição editorial autorizada nessa story final.
+
+### 2026-07-11 — Wave 002 E2 concluída
+
+- A reauditoria aprovada foi registrada uma vez, o builder derivou
+  `complete/passed` sem editar conteúdo e a validação final com
+  `--require-external-audit` passou sem erros.
+- Quality gate independente reproduzido pelo coordenador: `complete`,
+  `audit_status=passed`, `open_audit_findings=0`, 23 IDs únicos, relatório de
+  revisor separado válido, packet com os cinco arquivos cegos e quatro
+  fingerprints protegidos idênticos antes/depois.
+- Decisão: **APROVADO FUNCIONALMENTE — Wave 002 E2 concluída**. Não houve
+  commit, push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003 ampliada para três episódios
+
+- O owner pediu mais escala por épico. A coordenação passou a permitir uma
+  delegação multi-episódio explicitamente delimitada, executada sequencialmente
+  no mesmo worker e com ownership/export isolado por episódio.
+- Para reduzir loops antes da auditoria, cada episódio pode usar um readiness
+  diagnóstico, um reparo interno do inventário determinístico e um readiness
+  final. Depois há no máximo um build e um validador normal. O worker envia
+  somente um evento final consolidado; a auditoria continua independente.
+- Selecionados `VQJ_Y8E6Hw0`, `icryHLwikKw` e `4Ad8K3xIX4g`. Os preflights raw
+  read-only passaram com 402, 405 e 497 segmentos; `content_segments.json`
+  existe e os diretórios gold/exports da Wave 003 estavam ausentes.
+- O plano está em `docs/coordination/msf-r20-wave-003-plan.md`. Não houve
+  commit, push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: auditorias cegas e remediação consolidada
+
+- O worker entregou os três packets em um único evento. O coordenador auditou
+  cada um separadamente apenas pelos cinco arquivos cegos e, depois de selar os
+  julgamentos, reproduziu os três validadores normais e confirmou fingerprints
+  protegidos 4/4 iguais em todos.
+- VQJ recebeu 3 findings: ausência sistemática de `numbers`, omissão da faixa
+  US$27-US$97 e relações/merge ausentes. icry recebeu 4: quatro blocos de recall,
+  números, G008 vindo do encerramento/G007 corrompido e relações. 4Ad recebeu 4:
+  números, testes de closes/micro-leads, G010 sustentado por CTA e relações.
+- O processo ganhou um autocheck obrigatório antes do readiness: inventário de
+  candidatos com sinais numéricos e `numbers` vazio, todos os targets de
+  calibração em fail, evidência somente de entrevistador/promo/outro e grupos
+  sobrepostos sem relação/merge.
+- A tentativa 2 registra os três relatórios e corrige os inventários em um único
+  épico sequencial, com um evento final consolidado. Não houve commit, push,
+  deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: restauração de VQJ verificada
+
+- Os três audits foram registrados. A remediação avançou em VQJ, mas uma
+  sobrescrita acidental do review 007 foi detectada antes dos gates; o worker
+  restaurou o arquivo do candidate chunk preservado e retornou estado parcial.
+- O coordenador verificou sete reviews completas, hashes/chunk IDs coerentes,
+  24 IDs únicos G001-G024, G021-G023 corretamente no chunk 007, números e
+  relações auditadas. Nenhum readiness/build/validator de remediação havia sido
+  executado, portanto não há transição duplicada.
+- A tentativa 3 termina os gates de VQJ sem refazer a correção e continua as
+  remediações ainda pendentes de icry e 4Ad. Auditorias não serão registradas
+  novamente. Não houve commit, push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: VQJ reaudidado e escopo reduzido
+
+- VQJ passou readiness, build e validador normal com 24 candidatos. A
+  reauditoria resolveu a faixa US$27-US$97, mas reteve dois resíduos objetivos:
+  G019 ainda não estrutura as taxas de upsells 2/3 e G015/G016 não têm a relação
+  solicitada. O relatório `VQJ_Y8E6Hw0_reaudit_001.json` ficou com dois findings.
+- Para evitar outra entrega parcial ampla, W3-R07 exclui VQJ e processa somente
+  as remediações ainda não iniciadas de icry e 4Ad. Seus audits já estão
+  registrados e não serão repetidos.
+- VQJ será retomado depois em escopo estreito junto ao próximo gate adequado.
+  Não houve commit, push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: bloqueio seguro antes da escrita em ICRY
+
+- A tentativa W3-R07 parou antes de qualquer escrita editorial. A montagem de
+  relações referenciou o novo `icryHLwikKw-G011` antes de ele existir no mapa
+  em memória e gerou `KeyError`. O chat do worker confirmou estado idle, oito
+  candidatos ICRY preservados e 4Ad ainda não iniciado.
+- A tentativa 5 usa caminho diferente: persiste primeiro G009-G012 sem novas
+  relações, relê os reviews do disco, reconstrói o mapa completo e somente
+  então adiciona relações. ICRY e 4Ad não compartilham estado em memória.
+- O contador desta subtask registra uma devolução consecutiva sem progresso.
+  VQJ continua read-only. Não houve commit, push, deploy, consolidação ou
+  Supabase.
+
+### 2026-07-11 — Wave 003: segunda devolução vazia e rota sem Python inline
+
+- W3-R08 parou novamente antes de qualquer escrita: a invocação da Fase A tinha
+  `SyntaxError` antes de o processo Python iniciar. ICRY preserva oito IDs e 4Ad
+  preserva dez; nenhum dos dois recebeu correção editorial nessa tentativa.
+- O contador da subtask passa a duas devoluções consecutivas sem progresso. A
+  tentativa 6 muda materialmente a execução: começa por 4Ad e usa helpers
+  job-local com `py_compile`, modo read-only `--check` e uma única aplicação,
+  eliminando chamadas Python inline.
+- Os helpers ficam limitados a
+  `.codex-work/worker-jobs/MSF-R20-WAVE-003-W3-R09/`. Scripts do produto, docs,
+  fila e audits permanecem read-only para o worker. Não houve commit, push,
+  deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: avanço em 4Ad e inventário literal fechado
+
+- O helper file-based de 4Ad compilou, passou `--check` sem escrita e teve um
+  único `--apply`. O episódio agora tem 12 candidatos, incluindo G011/G012;
+  G010 usa fala do convidado e as relações auditadas foram gravadas.
+- O readiness diagnóstico passou calibração e reteve apenas seis raws. A
+  conferência independente fechou as formas literais em G006, G009, G011 e
+  G012; valores, unidades, claims e relações não precisam mudar.
+- Como houve artefato material novo, o contador de devoluções sem progresso
+  volta a zero. A tentativa 7 usa helper corretivo novo, conclui 4Ad e depois
+  retoma ICRY em duas fases. Não houve commit, push, deploy, consolidação ou
+  Supabase.
+
+### 2026-07-11 — Wave 003: reauditorias de 4Ad e ICRY
+
+- As reauditorias foram formadas somente pelos cinco arquivos cegos de cada
+  packet e seladas antes da leitura de status, relatórios ou fingerprints
+  internos. 4Ad passou com zero findings; ICRY reteve um finding minor de
+  caveats, ASCII, encoding e concordância.
+- Depois do selo, o coordenador reproduziu os dois validadores normais e
+  confirmou quatro fingerprints antes/depois iguais em cada episódio.
+- W3-R11 registra o passe de 4Ad e deriva complete sem edição editorial. Em
+  ICRY, registra changes_requested e altera somente quatro campos editoriais e
+  três caveats fechados antes de novo packet/re-auditoria. Não houve commit,
+  push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: 4Ad concluído e ICRY aprovado
+
+- 4Ad foi derivado para `complete/passed` com 12 IDs, zero findings, validador
+  exigindo auditoria aprovado e quatro fingerprints iguais.
+- O packet ICRY corrigido foi reaudidado somente pelos cinco arquivos cegos. Os
+  sete ajustes estavam exatos; estrutura, quotes, números, relações, ledger e
+  calibração passaram. `icryHLwikKw_reaudit_002.json` foi selado `passed/0`.
+- W3-R12 conclui ICRY sem edição e corrige somente os dois resíduos selados de
+  VQJ: números de upsells 2/3 em G019 e relação G016→G015. Não houve commit,
+  push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003: VQJ aprovado para registro final
+
+- ICRY foi derivado para `complete/passed` com 11 IDs, zero findings, validador
+  exigindo auditoria aprovado e fingerprints preservados.
+- O packet VQJ corrigido foi reaudidado somente pelos cinco arquivos cegos. Os
+  seis records de G019 e a relação G016→G015 estavam corretos; estrutura,
+  quotes, ledger, calibração e editorial passaram. A reauditoria 002 foi selada
+  `passed/0`.
+- O coordenador reproduziu o validador normal de VQJ e confirmou fingerprints
+  4/4 iguais nos três episódios. W3-R13 fará apenas o registro determinístico e
+  o gate final de VQJ. Não houve commit, push, deploy, consolidação ou Supabase.
+
+### 2026-07-11 — Wave 003 concluída e aprovada
+
+- VQJ foi derivado para `complete/passed` a partir da reauditoria final selada,
+  sem edição editorial. O worker entregou 24 IDs, zero findings, packet com
+  cinco arquivos e fingerprints 4/4 iguais.
+- O coordenador reproduziu `validate_gold_extraction --require-external-audit`
+  nos três episódios; todos passaram sem erros. Os estados reais são:
+  VQJ 24 IDs, ICRY 11 e 4Ad 12, todos `complete/passed`, auditoria `passed` e
+  zero findings.
+- Os três relatórios finais registram o coordenador/thread de revisão separado
+  do thread executor; packets têm cinco arquivos cada; os 12 fingerprints
+  protegidos comparados permanecem iguais.
+- Decisão: **APROVADO FUNCIONALMENTE — Wave 003 concluída**. Não houve commit,
+  push, deploy, consolidação gold ou Supabase.
+
+### 2026-07-12 — Fast Path gold planejado para episódios novos e retomáveis
+
+- O owner pediu redução de tempo e consumo de tokens sem enfraquecer o padrão-
+  ouro. A análise dos três episódios da Wave 003 mostrou que os work orders são
+  39% a 54% maiores que o transcript limpo por repetição de texto, e que
+  numbers, steps, encoding, relações e persistência artesanal ainda geram
+  correções tardias.
+- Foi criado `MSF-R20-GOLD-FASTPATH-001` como um único pipeline com `mode=auto`.
+  Episódios novos começam em raw/preflight e chegam ao packet; episódios
+  incompletos reaproveitam hashes e reviews válidos e continuam do último gate.
+  Episódios `complete/passed` ficam read-only por padrão.
+- O plano inclui work orders compactos, validação antes da escrita, patch
+  transacional, autocheck e recall dirigido, orquestrador multi-episódio, delta
+  de reauditoria, métricas, testes e atualização posterior da skill.
+- Não será criado MCP nesta fase: scripts locais oferecem menor custo e menos
+  superfície de falha. O épico está somente planejado/queued; não foi delegado,
+  não alterou dados reais e não executou commit, push, deploy, consolidação ou
+  Supabase.
+
+### 2026-07-12 — Fast Path gold delegado para implementação
+
+- O `EXECUTION BRIEF — MSF-R20-GOLD-FASTPATH-001` foi publicado em linguagem
+  simples antes da delegação. O worker designado continua sendo Extração
+  Padrão-Ouro, com `gpt-5.6-terra/high` e ownership exclusivo dos scripts,
+  testes, fixtures e skill listados no plano.
+- A implementação deve cobrir o mesmo `mode=auto` para episódios novos,
+  retomáveis e `complete/passed` protegido, medir redução mínima de 25% nos work
+  orders dos fixtures Wave 003 e preservar compatibilidade legada.
+- Dados reais, exports, auditorias seladas, fila e documentos do coordenador são
+  read-only. O worker enviará um único `WORKER_EVENT` final; o coordenador não
+  fará polling ou processamento paralelo e retomará somente para o quality gate.
+
+### 2026-07-12 — Fast Path: quality gate solicita primeira correção
+
+- O worker entregou F1-F8 sem tocar dados reais. O coordenador reproduziu 36
+  testes, compilou os oito módulos, passou `git diff --check` e confirmou em
+  leitura que VQJ, ICRY e 4Ad continuam protegidos. A redução estimada dos work
+  orders foi 66,98%, 69,26% e 66,17%.
+- O resultado não foi aprovado porque os testes não cobriam seis contratos:
+  runner retomável não executa gates; diretório parcial sem status parece novo;
+  recorder não valida relações/IDs contra reviews persistidas; patch não remove
+  candidato nem altera ledger; autocheck não detecta entrevistador; delta omite
+  campos materiais, manifesto e transcript.
+- Decisão: `changes_requested`, findings FP-001 a FP-006. A primeira rodada
+  corretiva adicionará testes fechados e continuará sem dados reais, release,
+  consolidação ou Supabase.
+- O brief da correção 1/2 foi publicado e limita a retomada aos seis findings,
+  scripts Fast Path/gold, testes/fixtures e skill. O coordenador encerra o turno
+  após a delegação e só retoma com o próximo `WORKER_EVENT` final.
+
+### 2026-07-12 — Fast Path: segunda correção limitada ao patch seguro
+
+- A primeira correção resolveu runner retomável, checkpoint parcial, recorder
+  global, autocheck e delta. O coordenador reproduziu 40 testes, compilação,
+  diff check, proteção read-only da Wave 003, reduções de 66% a 69% e
+  fingerprints atuais 4/4 em cada episódio.
+- FP-004 continua aberto porque remoção e ledger update aceitam ausência de
+  assert e as decisões de ledger não são validadas contra os candidatos finais.
+  Também será sincronizado o help desatualizado do runner.
+- A correção 2/2 fica estritamente nesses pontos. Dados reais permanecem
+  read-only e não houve release, consolidação ou Supabase.
+- O brief final foi publicado antes da delegação. O worker enviará somente um
+  evento final; o coordenador encerra o turno e não acompanha a execução.
+
+### 2026-07-12 — Fast Path concluído e aprovado
+
+- A correção final tornou obrigatórias as precondições de remoção e ledger,
+  validou dispositions, segmentos, duplicidade, destinos, exclusões e
+  `duplicate_of` contra transcript e candidatos finais antes do batch atômico,
+  e sincronizou o help do runner.
+- O coordenador reproduziu 46 testes, compilou os módulos finais, passou
+  `git diff --check`, confirmou o help e reexecutou o runner Wave 003 somente
+  leitura. VQJ, ICRY e 4Ad foram classificados como protegidos, com reduções
+  estimadas de 66,98%, 69,26% e 66,17%.
+- Os fingerprints atuais continuam iguais ao snapshot: 4/4 por episódio,
+  12/12 no total. Nenhum dado real, export ou auditoria foi alterado.
+- Decisão: **APROVADO FUNCIONALMENTE — Fast Path liberado para a próxima wave**.
+  Não houve commit, push, deploy, consolidação ou Supabase.
+
+### 2026-07-13 — Wave 004 preparada para a primeira execução real do Fast Path
+
+- O coordenador selecionou pela fila de prioridade os próximos três episódios
+  com fonte raw elegível e sem gold existente: `yyoGeQp5yzM` (1.142 segmentos),
+  `8WEvN5T7J0U` (844) e `v6luZ9KvmOI` (1.784).
+- O `--preflight-raw` read-only passou nos três; metadata e transcript estão
+  compatíveis, `content_segments.json` existe e os diretórios gold/exports da
+  Wave 004 estavam ausentes antes da delegação.
+- Foram criados o plano `msf-r20-wave-004-plan.md` e o manifesto `mode=auto`.
+  O épico autoriza preparação Fast Path, revisão semântica integral, recall e
+  autocheck, um reparo declarativo fechado por episódio e a geração de três
+  packets cegos independentes.
+- O worker altera somente os três diretórios gold, os três exports e seu
+  diretório job-local. Código, docs, fila, auditorias, outros episódios,
+  consolidação, Supabase e release permanecem fora de escopo.
+- O `EXECUTION BRIEF` foi publicado antes da delegação. O worker enviará um
+  único evento final; o coordenador encerra o turno e só retoma para auditoria
+  independente e quality gate.
+
+### 2026-07-13 — Wave 004 retomada de checkpoint semântico seguro
+
+- O worker preparou os três episódios pelo Fast Path e interrompeu antes de
+  readiness/build/packet para não alegar revisão parcial como completa.
+- O coordenador confirmou em leitura que `yyoGeQp5yzM` possui 14 reviews
+  completas, hashes presentes e 34 candidatos únicos. O número 32 do evento
+  resumido era uma inconsistência de reporte; o disco e o chat registram 34.
+- O runner read-only marcou os três episódios como
+  `resumable_incomplete_gold`, sem chunks stale ou inconsistentes. Em yyo,
+  somente 015–021 permanecem pendentes; os outros dois estão preparados e ainda
+  sem reviews. Nenhum export existe.
+- O checkpoint traz progresso material e não exige decisão do owner. W4-R01
+  mantém o mesmo job e ownership: preserva 001–014, conclui yyo e seus gates e
+  então processa 8WE e v6lu sequencialmente. O worker continuará enviando
+  somente um evento final ao coordenador.
+
+### 2026-07-13 — Wave 004: auditoria inicial de yyo e retomada W4-R02
+
+- O evento `MSF-R20-WAVE-004-002` entregou `yyoGeQp5yzM` com 21 reviews, 50
+  candidatos, readiness pronto, build e validador normal aprovados e packet
+  cego de cinco arquivos. `8WEvN5T7J0U` ficou retomável com o chunk 001
+  persistido; `v6luZ9KvmOI` permaneceu preparado e sem gates.
+- O coordenador auditou yyo somente pelos cinco arquivos permitidos do packet.
+  Integridade, IDs, evidências, ledger, números estruturados, relações e
+  calibração passaram. A auditoria é cega ao histórico do executor, mas não ao
+  episódio nem ao estilo.
+- O julgamento foi selado em
+  `.codex-work/msf-r20-coordinator-audits/yyoGeQp5yzM_audit.json` como
+  `changes_requested`, com quatro findings major abertos: comparação de captura
+  de valor por cliente, mudança temporal de diferencial, span/camadas de gestão
+  e script com IA para buscar casos análogos.
+- W4-R02 mantém o mesmo job e ownership. Primeiro registra o audit e corrige
+  somente os quatro findings; depois conclui 8WE desde o chunk 002 e v6lu. Cada
+  episódio usa recall/autocheck/readiness antes de um único build e validador;
+  packets parciais continuam proibidos.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado. O
+  próximo gate é a reauditoria independente de yyo e a auditoria inicial dos
+  packets completos de 8WE e v6lu.
+
+### 2026-07-13 — Wave 004: envelope compatível e retomada W4-R03
+
+- O evento `MSF-R20-WAVE-004-003` bloqueou yyo antes de qualquer edição: o
+  registrador atual exige `segment_range` numérico e rejeitou os ranges textuais
+  da auditoria selada. O arquivo original e o packet ficaram preservados.
+- O coordenador confirmou o contrato diretamente em
+  `validate_external_audit_report` e criou
+  `yyoGeQp5yzM_audit_envelope_001.json`. O envelope mantém o mesmo julgamento,
+  quatro findings, evidências e ações; converte somente os ranges para clean
+  indexes zero-based. A validação oficial retornou `errors=[]`.
+- 8WE avançou de forma material: chunks 001 e 002 estão completos, com hashes,
+  seis IDs únicos e nenhum chunk stale ou inconsistente. O runner read-only
+  lista 003–014 como pendentes. v6lu continua preparado e sem review.
+- W4-R03 usará somente o novo envelope para registrar yyo, corrigirá os quatro
+  achados e continuará 8WE no chunk 003 antes de processar v6lu. A auditoria
+  original e o envelope são read-only para o worker.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: erro de encoding isolado antes da escrita
+
+- O evento `MSF-R20-WAVE-005-014` não escreveu qoh 011–020: o helper de
+  paridade encontrou um único `ç` em `G020.title`. O recorder não foi chamado,
+  e o checkpoint 001–010 segue íntegro.
+- A correção autorizada é exclusivamente `frustração→frustracao` no título.
+  Para antecipar essa classe de erro, a próxima rota roda `editorial_ascii_errors`
+  diretamente em todos os campos antes do helper composto de paridade.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: primeiro checkpoint de qoh persistido
+
+- O evento `MSF-R20-WAVE-005-013` confirmou que a rota de preflight de paridade
+  resolveu o problema do primeiro lote: qoh 001–010 passou com `errors=[]` e
+  foi persistido uma vez, atomicamente, com dez candidatos únicos.
+- O limite nativo de contexto ocorreu depois da fronteira segura, antes de ler
+  011–020. O runner independente confirma que somente 011–036 permanecem,
+  sem chunk stale ou inconsistente. Não existe packet parcial nem finding de
+  qualidade nesse checkpoint.
+- A próxima delegação cobre somente 011–020 e reutiliza o helper read-only
+  comprovado antes do recorder. A auditoria continua reservada ao episódio
+  finalizado.
+
+### 2026-07-13 — Wave 005: qoh passa a validar o payload antes de gravar
+
+- O evento `MSF-R20-WAVE-005-012` confirmou `JF2oC44lBG8` completo pelo
+  validador com auditoria exigida. Em qoh, o primeiro batch 001–010 foi
+  rejeitado atomicamente antes de qualquer review, candidato ou packet ser
+  escrito; os 36 chunks continuam pendentes e íntegros.
+- O inventário é de contrato, não de cobertura: temas/tipos/roles não canônicos
+  e quatro raws que não reproduziam literalmente a transcrição. Foi revisado e
+  convertido em substituições fechadas no plano W5-R13; nenhum claim ou
+  evidência precisa ser inventado.
+- Para evitar nova ida e volta, a próxima tentativa usa um helper job-local de
+  leitura que chama as mesmas validações do recorder antes da única escrita
+  atômica. O recorder deixa de ser a primeira checagem de schema.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: JF auditado e qoh liberado
+
+- O evento `MSF-R20-WAVE-005-011` concluiu `JF2oC44lBG8`: 24 reviews, 27
+  candidatos, hard blockers zero, finalizador e validação normal aprovados,
+  packet com cinco arquivos e fingerprints 4/4 iguais.
+- O coordenador auditou o packet cego e reproduziu integridade de arquivos,
+  IDs, quotes/números, ledger, relações e 20 targets de calibração sem
+  duplicidade. O parecer
+  `.codex-work/msf-r20-coordinator-audits/JF2oC44lBG8_audit_001.json` foi
+  selado com `passed` e zero findings. As quatro ambigüidades restantes são
+  avisos explícitos, não alegações de cobertura nem defeitos estruturais.
+- A próxima unidade é `qohJceyapS0` completa: o worker registra o audit de JF
+  deterministicamente e entrega um único packet de qoh. O coordenador não faz
+  revisões intermediárias e só retorna para auditoria após essa entrega.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: zo concluído; retry de schema em JF
+
+- O worker registrou o parecer selado de `zoChfFHnlOQ` uma vez. O coordenador
+  reproduziu o validador com `--require-external-audit`: `complete/passed`,
+  zero findings, 48 candidatos e sem erros. Não houve alteração editorial de
+  zo durante essa transição derivada.
+- A única gravação atômica planejada para `JF2oC44lBG8` 019–024 foi recusada
+  antes de qualquer escrita. O checkpoint 001–018/24 e 19 IDs permanece
+  preservado. A causa se limita a dois campos do payload novo: um acento em
+  texto editorial de G024 e o tipo não permitido `reported_case` em G026.
+- Foi autorizada uma tentativa materialmente nova, com payload novo e somente
+  `G024.takeaway_applicavel: peça→peca` e `G026.type: reported_case→example`.
+  Depois dela, o worker pode finalizar JF; o coordenador só retorna para auditar
+  seu packet integral.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004 aprovada
+
+- O evento 026 registrou a reauditoria aprovada de v6lu uma vez e derivou
+  `complete/passed` sem editar candidatos, reviews, ledger ou calibração.
+- O coordenador reproduziu `validate_gold_extraction --require-external-audit`:
+  `pass/errors=[]`; v6lu tem 41 IDs únicos, zero findings e packet de cinco
+  arquivos. Os quatro hashes protegidos foram recalculados e conferem com o
+  snapshot.
+- O runner Fast Path em modo somente leitura confirmou yyo (54), 8WE (42) e
+  v6lu (41) como `protected_complete_read_only`, todos `complete/passed`.
+- Decisão: Wave 004 aprovada. Nenhum commit, push, deploy, consolidação gold ou
+  Supabase foi executado.
+
+### 2026-07-13 — Reauditoria final de v6lu aprovada
+
+- O evento 025 aplicou um único patch: G014 `students`, G024 `result` e as
+  citações 1697–1702 de G041. O ledger derivado passou a capturar 1697–1702
+  para G041, sem `ledger_decisions` manuais.
+- A reauditoria packet-only `v6luZ9KvmOI_reaudit_002.json` foi selada como
+  `passed/open_findings=0`. As verificações cegas confirmaram 41 IDs, quotes
+  verbatim, números, ledger, relações, calibração e packet de cinco arquivos.
+- W4-R25 fica limitado ao registro determinístico da auditoria aprovada e à
+  derivação de `complete`; não há edição editorial autorizada.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: primeiro patch aprovado; segundo patch replanejado
+
+- O evento `MSF-R20-WAVE-005-005` confirmou que o patch editorial foi aplicado
+  uma vez e o patch de calibração parou no `--check`, antes de qualquer escrita.
+  O coordenador reproduziu o verificador: 48 IDs permanecem únicos e somente os
+  21 candidatos autorizados foram alterados. O autocheck confirmou zero alertas
+  numéricos, claim/evidência e overlap.
+- A causa é mecânica e localizada: os targets históricos não persistem
+  `semantic_candidate_ids`; o manifesto os assertou como `[]`, mas o patcher
+  distingue campo ausente de lista vazia. Não houve alteração de calibração.
+- A continuação W5-R06 usa o segundo e último patch permitido: assertions dos
+  campos realmente presentes, os cinco redirects já revisados e somente o
+  caveat de caso reportado de `G031`, que emergiu após o primeiro patch. Se o
+  check falhar, não haverá nova tentativa de escrita neste escopo.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: rota final extrai precondições diretamente do JSON
+
+- O W5-R06 parou no check sem escrita. A comparação independente do
+  coordenador provou que os cinco asserts de quote continham barras invertidas
+  literais (`\\u00e9`, por exemplo), enquanto o gold tem os caracteres UTF-8.
+  Não era divergência editorial nem alteração do episódio.
+- O W5-R07 substitui a redação manual de quotes por gerador job-local que lê o
+  estado atual de `calibration_tests.json`, verifica igualdade e hexadecimal
+  UTF-8, e só então entrega o manifesto ao patcher. Ele permanece o segundo e
+  último apply pré-packet; qualquer falha encerra o ramo sem nova escrita.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: decisão necessária sobre equivalência de calibração
+
+- O W5-R07 aplicou o segundo patch uma única vez após extrair os asserts
+  diretamente do JSON atual. A cobertura chegou a 6/24, sem target duplicado;
+  o patch alterou somente `calibration_tests.json` e o caveat de `G031`.
+- O autocheck estrito bloqueou três equivalências: dois redirects para `G004`
+  e um para `G042` têm evidência física, mas os claims editoriais não enunciam
+  precisamente a proposição calibrada. O coordenador confirmou as três
+  ocorrências em leitura independente.
+- O limite de duas rodadas corretivas foi atingido. A Wave fica em
+  `awaiting_owner_decision`; nenhum readiness, build, validator ou packet será
+  produzido até que o owner escolha a próxima política de correção.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-14 — Wave 005: owner autorizou alinhamento semântico mínimo
+
+- O owner escolheu a Opção A: uma terceira e última correção, limitada a
+  `source_claim` de `G004` e `G042`. Ela não altera targets de calibração,
+  evidências, números, relações ou outros candidatos.
+- O plano W5-R08 registra os dois textos editoriais, o `patch_window`
+  `owner_authorized_semantic_alignment`, um único check/apply e os gates que só
+  podem rodar se esse patch passar.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-14 — Wave 005: janela de patch exige nova decisão
+
+- O W5-R08 não escreveu no gold: o patcher rejeitou
+  `owner_authorized_semantic_alignment`, pois seu contrato aceita apenas
+  `pre_packet` ou `post_packet`.
+- `pre_packet` já atingiu o limite; usar `post_packet` sem packet existente
+  registraria provenance falsa. Uma exceção honesta requer extensão compatível
+  do contrato e testes, o que excede a autorização editorial da Opção A.
+- O episódio está `awaiting_owner_decision`; nenhum apply, readiness, build,
+  validador ou export ocorreu.
+
+### 2026-07-13 — W4-R23 corrige premissa do ledger antes de escrever
+
+- O worker registrou a reauditoria de v6lu como `changes_requested/open=2`,
+  compilou o helper e parou antes de qualquer patch ao detectar que 1698–1701
+  não são decisões manuais em `manual_reviews`.
+- A revisão do coordenador confirmou os quatro registros como
+  `excluded/low_signal` no ledger derivado. Pelo contrato do builder, inserir
+  1697–1702 em G041 gera automaticamente as entradas `captured` pertinentes;
+  criar decisões manuais seria redundante.
+- W4-R24 usa essa rota canônica: não registra a auditoria de novo e não altera
+  `ledger_decisions`; atualiza somente G014, G024 e evidência de G041, então
+  confirma o ledger derivado após build.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: rota de inserção segura W4-R04
+
+- O evento `MSF-R20-WAVE-004-004` confirmou o registro do envelope como
+  `changes_requested/open_findings=4`. O recorder abortou atomicamente a
+  remediação; nenhum candidato ou review foi parcialmente escrito.
+- A inspeção independente mostrou que `G034↔G035` já é uma relação válida e
+  simétrica. O erro de dangling era efeito da semântica de substituição do
+  recorder: o payload continha apenas o novo G053 no chunk 015 e, portanto,
+  removeria o G035 existente. O mesmo padrão descartaria candidatos atuais dos
+  chunks 003, 007 e 020.
+- O coordenador rejeitou a remoção da relação e definiu uma rota materialmente
+  diferente: `gold_review_patch` fará apenas inserts G051–G054, com assertions
+  completas de chunk/hash/IDs, `--check` sem escrita e um único `--apply`.
+  G054 deve usar editorial ASCII e `role=other`; todos os candidatos anteriores
+  e G034/G035 precisam permanecer inalterados.
+- Depois do patch, yyo volta aos gates e o worker retoma 8WE no chunk 003 e
+  v6lu. Nenhum commit, push, deploy, consolidação gold ou Supabase foi
+  executado.
+
+### 2026-07-13 — Wave 004: reauditoria yyo aprovada e retomada W4-R05
+
+- O evento `MSF-R20-WAVE-004-005` entregou yyo com 54 candidatos após inserção
+  transacional check/apply, sem alterar G034/G035 ou os candidatos anteriores.
+  Readiness, build e validador normal passaram; o packet tem cinco arquivos.
+- O coordenador reauditou somente o novo packet cego. G051–G054 resolvem os
+  quatro findings: captura de valor, mudança de diferencial, span gerencial e
+  script com IA. Ledger, evidências, 25 números, relações e 16 calibrações foram
+  conferidos; não há target duplicado nem finding aberto.
+- `yyoGeQp5yzM_reaudit_001.json` foi selado `passed/open_findings=0` e o
+  validador do contrato retornou zero erros. O validador normal independente do
+  gold também passou e os fingerprints protegidos permanecem iguais.
+- W4-R05 registrará a reauditoria e derivará yyo para complete sem edição
+  editorial; depois concluirá 8WE desde o chunk 003 e v6lu desde o chunk 001.
+  Packets parciais continuam proibidos.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: yyo aprovado e retomada W4-R06
+
+- O evento `MSF-R20-WAVE-004-006` derivou yyo para `complete/passed` e avançou
+  8WE até o chunk 004, sem packet parcial. v6lu permaneceu preparado.
+- O coordenador reproduziu `validate_gold_extraction --require-external-audit`
+  em yyo: pass, zero erros. O episódio tem 54 IDs únicos, zero finding aberto,
+  cinco arquivos no packet e fingerprints protegidos iguais. O runner o marca
+  `protected_complete_read_only`; o quality gate de yyo está aprovado.
+- 8WE possui quatro reviews integrais com hashes e 14 IDs únicos. Não há chunk
+  stale ou inconsistente; a fronteira segura é 005. v6lu continua com 31 chunks
+  pendentes desde o 001.
+- W4-R06 remove yyo do ownership de escrita da continuação e limita o worker a
+  concluir 8WE 005–014 e v6lu 001–031, com recall/autocheck/gates e packets
+  integrais.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: 8WE retomável no chunk 007
+
+- O evento `MSF-R20-WAVE-004-007` preservou yyo e avançou 8WE pelos chunks
+  005–006, sem readiness, build ou packet parcial. v6lu não foi iniciado.
+- O coordenador confirmou seis reviews integrais com hashes, 20 IDs únicos e
+  zero duplicidade. O runner não encontrou stale/inconsistência e lista
+  007–014 como pendentes; yyo continua protegido complete/passed.
+- W4-R07 preserva 001–006, conclui 8WE e seus gates e só então abre v6lu no
+  chunk 001. O checkpoint representa progresso material; o contador de retorno
+  sem progresso permanece zero.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: faixa final de 8WE liberada
+
+- O evento `MSF-R20-WAVE-004-008` concluiu reviews 007–008 e manteve yyo
+  protegido; v6lu não foi aberto antes da ordem autorizada.
+- O coordenador confirmou oito reviews completos com hashes, 25 IDs únicos,
+  zero duplicidade e runner sem stale/inconsistência. Restam somente 009–014.
+- W4-R08 preserva 001–008 e executa a faixa final, recall/autocheck e gates de
+  8WE. v6lu só começa depois do packet integral. O retorno traz progresso
+  material; `no_progress_returns` permanece zero.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: fechamento de 8WE isolado em W4-R09
+
+- O evento `MSF-R20-WAVE-004-009` concluiu reviews 009–010. O coordenador
+  confirmou dez reviews com hashes, 33 IDs únicos e nenhum chunk inconsistente;
+  restam 011–014.
+- Para reduzir troca de contexto e concluir um gate de cada vez, W4-R09 fica
+  restrito ao fechamento de 8WE, seu recall/autocheck/gates e packet integral.
+  v6lu permanece preparado e será aberto somente depois da auditoria de 8WE.
+- O retorno mantém progresso material e `no_progress_returns=0`. Yyo segue
+  protegido complete/passed.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: último chunk de 8WE liberado
+
+- O evento `MSF-R20-WAVE-004-010` concluiu reviews 011–013. O coordenador
+  confirmou 13 reviews com hashes, 39 IDs únicos e somente o chunk 014
+  pendente, sem stale ou inconsistência.
+- W4-R10 preserva 001–013, revisa o último chunk e executa recall/autocheck,
+  readiness, build, validador e packet integral. Yyo e v6lu ficam read-only.
+- O retorno representa progresso material; `no_progress_returns=0`.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: auditoria cega inicial de 8WE
+
+- O evento `MSF-R20-WAVE-004-011` entregou `8WEvN5T7J0U` com 14 reviews,
+  40 candidatos únicos, readiness pronto, build sem erros, validador normal
+  aprovado e packet cego com cinco arquivos.
+- Antes de ler artefatos internos do worker, o coordenador auditou somente
+  manifest, transcript, insights, ledger e calibrações. O julgamento foi selado
+  em `.codex-work/msf-r20-coordinator-audits/8WEvN5T7J0U_audit.json` como
+  `changes_requested`, com dez findings abertos.
+- O packet passou integridade e evidência verbatim, mas não o quality gate por
+  duplicata editorial, três lacunas de recall, números incompletos, relações
+  ausentes, dupla contagem semântica de calibração e grafias locais.
+- O coordenador reproduziu `validate_gold_extraction` normal com `pass` e
+  confirmou quatro fingerprints protegidos iguais antes/depois. W4-R11 limita a
+  próxima rodada à remediação dos findings e rederivação do packet de 8WE;
+  `yyoGeQp5yzM` e `v6luZ9KvmOI` permanecem read-only.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: remediação de 8WE bloqueada só na calibração
+
+- O evento `MSF-R20-WAVE-004-012` registrou o audit selado e aplicou um patch
+  transacional único. O coordenador confirmou 42 candidatos únicos, remoção de
+  G001, três novos candidatos de recall, números corrigidos, relações simétricas,
+  validador normal aprovado, packet com cinco arquivos e fingerprints 4/4.
+- O único bloqueio residual é `MSF-R20-8WE-009`: os targets 0001, 0003, 0012 e
+  0568 continuam `fail`, sem deduplicação/redirecionamento para G040, G033 e
+  G029. Não será aceita a cobertura mínima como substituto da correção.
+- W4-R12 é uma story estreita e a segunda rodada corretiva: altera somente o
+  arquivo-fonte de calibração com helper job-local, check read-only e apply
+  único, seguido de uma readiness, um build, validador e export.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: contorno do timeout de aplicação W4-R12
+
+- O evento `MSF-R20-WAVE-004-013` informou que o helper compilou e passou em
+  `--check`, mas o `--apply` via `.venv` ficou 30 minutos sem saída e foi
+  interrompido. Hash, mtime, candidates, ledger e audit permaneceram iguais;
+  nenhuma escrita ou receipt ocorreu.
+- Conforme a regra de ação indivisível travada, o coordenador não repetirá esse
+  comando. O `--check` foi reproduzido com o Python global em 1,9 segundo e
+  confirmou dez targets e o hash final esperado
+  `77E7F5DCF92A54381F7A18C62422536BAE0D458DE977D2C36E195D6BBA45E1B3`.
+- W4-R13 autoriza uma única aplicação pelo runtime global, com preflight de
+  acesso exclusivo e limite de dois minutos. Falha ou timeout encerra a story
+  sem fallback de escrita no mesmo turno.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: divergência de hash de W4-R13 é apenas CRLF
+
+- O evento `MSF-R20-WAVE-004-014` informou apply global concluído em 6,3
+  segundos, receipt com dez targets e parada segura antes dos gates porque o
+  hash físico diferiu do hash LF esperado.
+- A verificação independente do coordenador confirmou JSON parseável, dez
+  testes, 252 quebras CRLF e nenhuma LF isolada. Normalizar somente as quebras
+  para LF produz exatamente
+  `77E7F5DCF92A54381F7A18C62422536BAE0D458DE977D2C36E195D6BBA45E1B3`, o
+  hash declarado pelo helper/receipt. O hash físico CRLF é
+  `EA3144419DE9A2B2A475D2F772BA69B96FBB357DEA57B67B97240AD4101FDB74`.
+- O objeto removeu os targets independentes 0001/0003/0012/0568 e preservou a
+  provenance em 0799/0611/0540. Portanto não será feita restauração, segunda
+  aplicação ou normalização externa; W4-R14 executará somente readiness, build,
+  validador normal e packet para reauditoria.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: reauditoria de 8WE aprovada
+
+- O evento `MSF-R20-WAVE-004-015` concluiu readiness, build, validador normal e
+  packet depois da correção semântica das calibrações. O coordenador auditou
+  somente manifest, transcript, insights, ledger e calibration_tests.
+- O packet tem 42 IDs únicos, evidências verbatim válidas, ledger com 315 sinais
+  captured e 283 excluded, 48 registros numéricos, três hierarquias simétricas
+  e acíclicas e dez calibrações distintas; 6 passam para mínimo 3, sem target
+  duplicado. O validador normal independente retornou `pass/errors=[]`.
+- Os dez findings anteriores foram confirmados como resolvidos. A reauditoria
+  foi selada em `8WEvN5T7J0U_reaudit_001.json` como `passed/open_findings=0` e
+  seu contrato oficial passou para revisor e executor separados.
+- Depois do julgamento, o coordenador confirmou quatro fingerprints protegidos
+  idênticos antes/depois. W4-R15 registrará o audit e derivará `complete` sem
+  editar o conteúdo gold; v6lu permanece preparado e read-only.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: 8WE aprovado e v6lu liberado
+
+- O evento `MSF-R20-WAVE-004-016` registrou a reauditoria aprovada e derivou
+  8WE para `complete/passed/open=0`, sem edição editorial.
+- O coordenador confirmou o resultado no chat do worker e reproduziu o
+  validador com `--require-external-audit`: `pass/errors=[]`. O relatório
+  derivado preserva integralmente metadata e dez findings resolvidos do audit
+  selado; revisor e executor são separados.
+- 8WE tem 42 IDs únicos, dez calibrações distintas, seis cobertas para mínimo
+  três, packet com cinco arquivos e fingerprints protegidos 4/4 iguais.
+  Quality gate: aprovado.
+- O runner Fast Path agora protege yyo e 8WE. v6lu é o único episódio pendente,
+  preparado com 31 chunks, zero stale e zero inconsistência. W4-R16 executará
+  sua revisão integral, recall/autocheck, gates e packet cego.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: v6lu retomado em lotes compactos
+
+- O evento `MSF-R20-WAVE-004-017` passou o preflight de v6lu e persistiu os
+  reviews 001–002, ambos completos, source-backed e com hashes. Há três IDs
+  únicos; nenhum gate, audit ou packet foi executado.
+- O coordenador confirmou o checkpoint e o runner: 003–031 pendentes, zero
+  stale e zero inconsistente. Yyo e 8WE continuam protegidos.
+- Como a tentativa de concluir 31 chunks num único turno encerrou na fronteira
+  002, W4-R17 reduz overhead com dois batches atômicos: 003–006 e 007–010,
+  usando work orders compactos e narração mínima. Isso é continuação do mesmo
+  épico, não um novo episódio nem uma redução de cobertura.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: v6lu íntegro até o chunk 010
+
+- O evento `MSF-R20-WAVE-004-018` concluiu 003–010 em dois batches atômicos.
+  O coordenador confirmou dez reviews completos com hashes, 16 IDs únicos e o
+  chunk 005 como zero-insight válido.
+- O runner lista 011–031 pendentes, zero stale e zero inconsistente. Nenhum
+  readiness, build, validador, audit ou packet foi executado.
+- W4-R18 repete o padrão eficiente para 011–014 e 015–018. Reviews 001–010,
+  yyo e 8WE permanecem imutáveis.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: v6lu íntegro até o chunk 018
+
+- O evento `MSF-R20-WAVE-004-019` concluiu 011–018 em dois batches atômicos.
+  O coordenador confirmou 18 reviews completos com hashes e 26 IDs únicos.
+- Chunks 005 e 018 são zero-insight. O final de 018 contém uma proposição
+  parcial preservada para leitura com 019; não será descartada nem transformada
+  isoladamente em insight.
+- O runner lista 019–031 pendentes, zero stale e zero inconsistente. W4-R19
+  revisará 019–026 e fechará explicitamente a fronteira 018/019.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: correção fechada do payload G027
+
+- O evento `MSF-R20-WAVE-004-020` foi bloqueado pelo recorder antes da escrita
+  do Batch A: `content_strategy` não é tema canônico e `uma live por semana`
+  não aparece literalmente na evidência mínima. Batch B não foi iniciado.
+- O coordenador confirmou zero review 019–022 persistido e definiu a correção
+  exata: tema `creative_strategy` e raw `pelo menos uma live na semana`, forma
+  presente nos segmentos 1040 e 1091. Nenhum outro campo pode mudar.
+- W4-R20 reaplica Batch A atomicamente uma vez; somente após sucesso conclui
+  023–026. Isso é progresso diagnóstico, portanto `no_progress_returns=0`.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: v6lu liberado para fechamento e packet
+
+- O evento `MSF-R20-WAVE-004-021` aplicou somente os dois deltas autorizados em
+  G027 e persistiu 019–026 em dois batches atômicos. O coordenador confirmou
+  26 reviews completos, 35 IDs únicos e G027 source-backed por 1040/1091.
+- O runner lista apenas 027–031 pendentes, sem stale/inconsistência. O snapshot
+  `protected_fingerprints.json` existe no data root e mostra 4/4 iguais.
+- W4-R21 conclui os cinco reviews, recall/autocheck global, reparos limitados a
+  inventários fechados, readiness, build, validador normal e packet cego.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004: auditoria cega de v6lu solicita mudanças
+
+- O evento `MSF-R20-WAVE-004-022` entregou v6lu com 31 reviews, 39 IDs únicos,
+  readiness/build/validador normal aprovados, packet de cinco arquivos e
+  fingerprints protegidos 4/4 iguais.
+- Antes de ler reviews, autocheck, status ou relatório interno, o coordenador
+  auditou exclusivamente manifest, transcript, insights, ledger e calibrações.
+  O parecer foi selado em `v6luZ9KvmOI_audit.json` como
+  `changes_requested/open_findings=6`; o contrato oficial retornou zero erros.
+- Os findings cobrem: normalização de quase R$ 300 mil registrada como R$ 300;
+  valores materiais omitidos; bloco econômico 0835–0853 excluído como
+  `low_signal`; continuações substantivas 1275–1721 descartadas; duas
+  calibrações contadas sem a mesma proposição; e relações ausentes no cluster
+  de webinar.
+- Depois do selo, o coordenador reproduziu o validador normal
+  (`pass/errors=[]`) e recalculou os quatro hashes protegidos, todos iguais ao
+  snapshot. W4-R22 aplicará somente esse inventário e devolverá novo packet
+  ainda pendente de reauditoria.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 004 pausada para otimização ponta a ponta
+
+- O evento `MSF-R20-WAVE-004-023` registrou a auditoria `changes_requested` de
+  v6lu, aplicou um patch transacional para os seis findings e entregou novo
+  packet com 41 IDs, readiness/build/validador normal aprovados e fingerprints
+  protegidos 4/4 iguais. O episódio continua `awaiting_external_audit`.
+- O owner interrompeu a reauditoria para corrigir a lentidão observada. A
+  comparação confirmou que a Wave 004 tem 66 chunks e 3.652 segmentos limpos,
+  contra 24 chunks e 1.284 segmentos na Wave 003; a métrica anterior de
+  66%–69% media bytes de work orders, não custo ponta a ponta.
+- Foi criado `MSF-R20-GOLD-FASTPATH-002` para implementar orçamento por carga,
+  faixas contínuas de 8–12 chunks, pré-auditoria semântica, até dois patches
+  pré-packet, patch genérico de calibração, `audit --check`, hashes semânticos e
+  métricas reais. Todos os dados reais ficam somente leitura.
+- A reauditoria atual de v6lu será retomada do packet já entregue depois do
+  quality gate do Fast Path 002; W4-R22 não será repetido.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Fast Path 002 solicita primeira correção
+
+- O evento `MSF-R20-GOLD-FASTPATH-002-001` foi confirmado no chat do worker. O
+  diff ficou no ownership e os dados reais permaneceram read-only.
+- O coordenador reproduziu 50 testes, compilação dos seis módulos, diff check e
+  os runners read-only das Waves 003/004. Os seis status hashes permaneceram
+  iguais.
+- Testes adversariais encontraram quatro falhas: retomada pequena conta todo o
+  raw e bloqueia; chunk stale recebe carga/faixa zero; calibração para candidato
+  inexistente é aceita; e findings semânticos novos não entram no gate estrito.
+  O autocheck também usa sobreposição lexical fraca, não avalia o ledger
+  automático e confunde suporte misto com suporte exclusivo de entrevistador.
+- FP2-001 a FP2-004 foram registrados no plano. A correção 1/2 fica limitada a
+  carga ativa real, receipt semântico obrigatório, validação final de
+  calibração e métricas idempotentes/honestas.
+- A Wave 004 continua pausada. Nenhum commit, push, deploy, consolidação gold ou
+  Supabase foi executado.
+
+### 2026-07-13 — Fast Path 002 solicita correção final do autocheck
+
+- O evento `MSF-R20-GOLD-FASTPATH-002-002` foi confirmado no chat inativo do
+  worker. O coordenador reproduziu 55 testes, compilação, diff check e os
+  runners read-only das Waves 003/004; os seis hashes de status ficaram iguais.
+- FP2-001, FP2-003 e FP2-004 passaram a validação direcionada. Contudo, o
+  autocheck ainda consulta IDs em campos de draft ausentes do candidato
+  persistido, em vez de usar `evidence.minimal_quote` e
+  `evidence.support_segments`. Em v6lu isso gerou 1.166 falsos previews de
+  ledger e 1.967 itens semânticos a resolver.
+- A correção 2/2 limita-se a essa resolução de IDs e a três regressões: destino
+  válido não pode virar falso positivo, captured deve reconhecer sua evidência
+  e sinal realmente não coberto deve continuar bloqueando. Dados reais e Wave
+  004 continuam somente leitura até o gate final.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Fast Path 002 aguarda decisão sobre exclusões legítimas
+
+- O evento `MSF-R20-GOLD-FASTPATH-002-003` foi confirmado no chat inativo do
+  worker. O coordenador reproduziu 56 testes, compilação e diff check; as três
+  regressões de evidência persistida passam.
+- A leitura real de v6lu reduziu os falsos previews de 1.166 para 779, mas os
+  779 restantes correspondem exatamente ao ledger final
+  `excluded/low_signal`. Como o autocheck ainda os publica em
+  `automatic_ledger_preview`, há 1.580 `review_required`, inviabilizando o
+  receipt como mecanismo econômico.
+- O limite de duas correções foi alcançado. A fila está em
+  `awaiting_owner_decision`: autorizar FP2-002c para reconhecer exclusões
+  válidas (recomendado), aceitar o receipt manual oneroso ou encerrar o Fast
+  Path e retomar o fluxo anterior.
+- A reauditoria de v6lu permanece pausada. Nenhum commit, push, deploy,
+  consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Owner autoriza FP2-002c
+
+- O owner escolheu a Opção A: uma terceira e última correção é autorizada para
+  que `excluded` com razão válida encerre a prévia de ledger sem mascarar
+  `captured/merged` sem evidência ou segmentos sem decisão.
+- O job fica limitado ao autocheck e testes: sem receipt, `--execute`, escrita
+  em dados reais, export, auditoria, fingerprint, commit, push, deploy,
+  consolidação gold ou Supabase.
+- A Wave 004 permanece pausada até o quality gate final do Fast Path 002.
+
+### 2026-07-13 — Fast Path 002 aprovado e Wave 004 liberada
+
+- O worker concluiu FP2-002c, mas o pytest do job encontrou `PermissionError`
+  no basetemp e não enviou o evento final esperado. Após pedido de status do
+  owner, o coordenador confirmou o chat inativo e processou a entrega sem
+  duplicar a escrita.
+- Em temp materialmente diferente, o coordenador reproduziu 59 testes,
+  `py_compile` e `git diff --check`. O autocheck real de v6lu retornou zero
+  preview de ledger, zero high-signal sem destino e zero erro de alinhamento;
+  os 779 `excluded/low_signal` deixaram de inflar o receipt.
+- Os runners das Waves 003/004 foram executados em leitura pura; seis hashes de
+  status permaneceram iguais. Os quatro fingerprints atuais de v6lu também
+  conferem com o snapshot.
+- Fast Path 002 recebeu gate `approved`. A reauditoria cega do packet remediado
+  de v6lu está liberada. Nenhum commit, push, deploy, consolidação gold ou
+  Supabase foi executado.
+
+### 2026-07-13 — Reauditoria de v6lu solicita dois ajustes residuais
+
+- O coordenador reavaliou somente os cinco arquivos cegos do packet atualizado
+  de `v6luZ9KvmOI`. Integridade, quotes, ledger, relações e calibração passaram
+  nas verificações determinísticas.
+- A reauditoria foi selada como `changes_requested/open_findings=2`: G014 usa
+  unidade `leads` para `150 a 200 alunos`; G024 usa role `other` para conversão
+  de `10 a 15%`; e G041 não cita 1697–1702 na evidência mínima da afirmação de
+  quase prejuízo.
+- W4-R23 fica limitado a esses três campos semânticos e à destinação de ledger
+  correspondente, seguido pelo Fast Path, build único e validador normal. Yyo e
+  8WE permanecem protegidos.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Esteira de aprendizado contínuo incorporada
+
+- O owner aprovou adaptar as práticas observadas no `CLAUDE.md` de referência
+  para o protocolo Codex do Marketing Swipe File.
+- Foi criado `docs/coordination/process-learnings.md`: primeira ocorrência fica
+  local, segunda entra no registro e terceira exige prevenção ou rota diferente.
+  Risco crítico ou possibilidade de corrupção pode ser promovido imediatamente.
+- Falhas determinísticas passam a preferir script, guard ou teste; regras gerais
+  ficam na coordenação e somente heurísticas gold comprovadas entram na skill.
+- O worker ganhou o campo opcional `process_learnings`, mas continua sem
+  autoridade para editar AGENTS, fila, execution log ou o registro central.
+- Respostas de fechamento agora separam estado, pendência real do owner, próximo
+  passo autônomo e bloqueios. `SESSÃO FINALIZADA` exige fila/checkpoint
+  sincronizados e ausência de job ativo.
+- Validações: fila JSON parseável com IDs únicos, skill válida e concisa,
+  Markdown balanceado e `git diff --check` aprovado. Nenhum dado gold, packet,
+  audit, export, script do pipeline, commit, push, deploy, consolidação ou
+  Supabase foi alterado.
+
+### 2026-07-13 — Wave 005 planejada com cinco episódios
+
+- O owner pediu ampliar o próximo épico para cinco episódios padrão-ouro.
+- Foram selecionados os cinco primeiros episódios elegíveis por prioridade:
+  `zoChfFHnlOQ`, `JF2oC44lBG8`, `qohJceyapS0`, `wHdyTM-nVqg` e
+  `BbhJn8NXRso`. Todos têm raw, transcrição disponível e nenhum gold existente.
+- A carga é 8.716 segmentos e 158 chunks estimados. O manifesto declara
+  orçamento 9.000/160/5 e faixas de revisão de 10 chunks.
+- O plano autoriza execução sequencial, uma correção pré-packet limitada por
+  episódio, um evento final consolidado e isolamento de bloqueios.
+- O runner Fast Path em leitura pura confirmou cinco rotas `new_raw_episode`,
+  preflight pass, 17 faixas e carga dentro do orçamento, sem qualquer escrita.
+- A wave está `queued` e ainda não foi delegada. Nenhum dado, packet, audit,
+  export, commit, push, deploy, consolidação ou Supabase foi alterado.
+
+### 2026-07-13 — Wave 005 delegada
+
+- O owner autorizou o início da Wave 005 depois da criação e validação do plano.
+- O EXECUTION BRIEF foi publicado e a delegação foi enviada ao worker
+  `Extração Padrão-Ouro` com `gpt-5.6-terra/high`.
+- O coordenador não fará polling, monitoramento ou análise paralela. Ele retoma
+  somente após receber o WORKER_EVENT final consolidado ou nova instrução do
+  owner.
+
+### 2026-07-13 — Wave 005: evento final recuperado e entrega endurecida
+
+- Após aviso do owner, uma leitura única do chat inativo do worker confirmou
+  `MSF-R20-WAVE-005-001` como `blocked`: preflight e preparação Fast Path dos
+  cinco episódios passaram, mas nenhum review, packet, build ou auditoria foi
+  persistido antes da primeira fronteira atômica. Não houve perda nem escrita
+  editorial parcial.
+- A mesma falha de transporte já havia ocorrido no Fast Path 002. Por ser a
+  segunda ocorrência confirmada, `MSF-PL-005` foi promovido: o worker deve usar
+  `send_message_to_thread` para o coordenador e registrar o recibo; publicar
+  apenas no próprio chat não conta como entrega.
+- O pedido do owner para iniciar uma nova wave passa a autorizar planejamento e
+  delegação automaticamente, salvo pedido explícito de somente planejar ou gate
+  material de decisão. A Wave 005 retoma em `zoChfFHnlOQ` 001–010, sem repetir
+  a preparação e sem packet parcial.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: primeiro batch semântico aprovado
+
+- O `MSF-R20-WAVE-005-002` chegou pelo novo canal inter-chat. `zoChfFHnlOQ`
+  persistiu a faixa 001–010 em batch atômico: dez reviews completos, 17 IDs
+  únicos e input hashes presentes. A tentativa inicial do recorder foi rejeitada
+  antes de qualquer escrita por literal numérico ausente; o payload foi
+  corrigido e a segunda tentativa persistiu sem duplicar dados.
+- O coordenador confirmou estruturalmente os dez reviews e executou o runner em
+  leitura pura: 011–039 são os únicos chunks pendentes; `stale=[]` e
+  `inconsistent=[]`. O lifecycle permanece `awaiting_semantic_review`.
+- A entrega inter-chat com evento 002 valida a prevenção `MSF-PL-005`. A
+  continuação retoma somente `zoChfFHnlOQ` 011–020.
+- Nenhum packet, auditoria, commit, push, deploy, consolidação gold ou Supabase
+  foi executado.
+
+### 2026-07-13 — Wave 005: segunda faixa semântica aprovada
+
+- O evento inter-chat `MSF-R20-WAVE-005-003` entregou `zoChfFHnlOQ` 011–020.
+  O coordenador confirmou 20 reviews completos com input hash, 25 IDs únicos e
+  nenhuma duplicata ou problema estrutural.
+- O runner em leitura pura mostra somente 021–039 pendentes, zero stale e zero
+  inconsistente; a carga ativa caiu para 7.417 segmentos e 132 chunks. O
+  lifecycle continua `awaiting_semantic_review` e ainda não existe packet.
+- A próxima continuidade fecha 021–039 e somente então permite recall,
+  autocheck, readiness, build, validador normal e export cego desse episódio.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Wave 005: autocheck bloqueia inflação técnica antes do packet
+
+- O evento `MSF-R20-WAVE-005-004` concluiu `zoChfFHnlOQ`: 39 reviews completos,
+  48 IDs únicos, zero pending/stale/inconsistent e fingerprints protegidos
+  iguais. Nenhum readiness, build, validador, export ou packet foi executado.
+- A reprodução independente do autocheck confirmou 20 alertas numéricos,
+  calibração 1/24, um claim sem suporte lexical e 3.009 pendências high-signal.
+  A inspeção mostrou que estas últimas são inflação técnica: antes do build, a
+  prévia consulta apenas decisões manuais, embora `ledger_for_signals()` já
+  possa derivar `captured` e exclusões válidas em memória.
+- Foi aberto `MSF-R20-GOLD-FASTPATH-003`, limitado a autocheck e testes, para
+  corrigir essa diferença sem escrever dados reais. A Wave 005 fica bloqueada
+  até o diagnóstico residual ser honesto e finito.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Fast Path 003 aprovado; overlap genérico ainda é ruído
+
+- O worker corrigiu o autocheck para derivar `ledger_for_signals()` em memória
+  antes do build, mantendo ledger persistido final como precedência. O
+  coordenador revisou a mudança e reproduziu 48 testes em temp fora do OneDrive,
+  compilação em memória e `git diff --check`.
+- No diagnóstico read-only de `zoChfFHnlOQ`, `automatic_ledger_preview` e
+  `high_signals_without_direct_destination` caíram de 3.009 para zero;
+  `review_required` caiu de 3.063 para 54. O hash de status gold permaneceu
+  `C509B1FBCD9028641B74A55E69646D8FCB73E66DB0F6741E20E0AF9236D9C02A`.
+- Dos 54 itens, 53 são overlaps lexicais por palavras genéricas. Foi aberto
+  `MSF-R20-GOLD-FASTPATH-004`, limitado a essa heurística e testes; números,
+  calibração e claim residual não serão ocultados.
+- Nenhum dado gold, packet, audit, commit, push, deploy, consolidação ou
+  Supabase foi alterado no Fast Path 003.
+
+### 2026-07-13 — Fast Path 004 aprovado e remediação finita da Wave 005 liberada
+
+- O evento direto `MSF-R20-GOLD-FASTPATH-004-001` entregou a heurística que
+  ignora palavras genéricas e só suprime overlap mediante relação parent/child
+  simétrica. O coordenador reproduziu 51 testes (`test_gold_fastpath` e
+  `test_gold_pipeline`) em temp fora do OneDrive, compilação em memória e
+  `git diff --check`.
+- O autocheck read-only de `zoChfFHnlOQ` preservou o status hash
+  `C509B1FBCD9028641B74A55E69646D8FCB73E66DB0F6741E20E0AF9236D9C02A`;
+  `automatic_ledger_preview` e gaps high-signal são zero e os overlaps caíram
+  de 53 para um. Os diagnósticos verdadeiros permanecem visíveis: 20 números,
+  `G037`, `G030/G034` e calibração 1/24.
+- Foi planejada e delegada a story W5-R05, limitada a esse inventário, até dois
+  patches atômicos e um único ciclo de readiness/build/validador/export. Os
+  demais quatro episódios permanecem sem escrita. Depois da delegação, o
+  coordenador não acompanha o worker até receber o evento final direto.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-13 — Simplificação estrutural das fases finais gold autorizada
+
+- O owner determinou que o coordenador deve delegar o épico e auditar somente
+  depois de o worker concluir o episódio ou o conjunto de episódios, sem
+  revisões intermediárias de readiness, patch, calibração ou packet provisório.
+- Foi criado `MSF-R20-GOLD-PIPELINE-SIMPLIFICATION-001`. O fluxo alvo separa
+  `hard_blockers` de `audit_warnings`, substitui janelas/contagem de patches por
+  revisões completas do episódio, deriva ledger/calibração dos candidatos finais
+  e gera um único packet por revisão pronta.
+- Permanecem rígidos: fonte original, suporte literal de quote/número, schema e
+  relações válidas, escrita atômica/rollback, fingerprints protegidos e
+  auditoria independente com zero findings para `complete/passed`.
+
+### 2026-07-13 — Quality gate 1 da simplificação gold
+
+- O worker entregou `MSF-R20-GOLD-PIPELINE-SIMPLIFICATION-001-001`. O
+  coordenador reproduziu `56 passed`, validou a skill e aprovou
+  `git diff --check`; nenhuma falha de teste funcional foi encontrada.
+- O quality gate de contrato abriu quatro findings: recibo idempotente sem hash
+  das entradas/packet, exportação não transacional, quote de calibração não
+  validado contra o transcript e heurística lexical de claim classificada como
+  bloqueio em vez de warning editorial.
+- Provas isoladas em temp confirmaram: review alterada reutiliza packet obsoleto,
+  falha na segunda cópia deixa packet parcial e quote de calibração fabricado
+  chega ao export. Nenhum dado real da Wave 005 foi escrito.
+- Foi autorizada uma única rodada corretiva consolidada, agora com ownership
+  explícito de `scripts/export_gold_audit_packet.py`. A Wave 005 permanece
+  pausada até o segundo quality gate.
+
+### 2026-07-13 — Quality gate 2 da simplificação gold
+
+- O worker entregou o evento `002` e o coordenador reproduziu `64 passed`.
+  Mudança semântica real agora conflita, packet parcial sofre rollback, quote de
+  calibração fabricado bloqueia e heurística lexical tornou-se warning.
+- Um probe adicional regravou uma review semanticamente idêntica apenas com
+  CRLF. O finalizador retornou `conflict` porque compara o objeto de assinatura
+  inteiro, incluindo hashes físicos, apesar de já calcular o hash semântico.
+- Foi aberta a segunda e última rodada corretiva, restrita a `PS-QG-005`:
+  idempotência das entradas usa somente a assinatura semântica; hashes físicos
+  do packet continuam obrigatórios. Wave 005 e demais dados reais continuam
+  somente leitura.
+
+### 2026-07-13 — Pipeline simplificado aprovado e Wave 005 liberada
+
+- O evento `MSF-R20-GOLD-PIPELINE-SIMPLIFICATION-001-003` resolveu PS-QG-005.
+  O coordenador reproduziu `65 passed` e confirmou que LF/CRLF é idempotente,
+  enquanto mudança semântica real continua em conflito.
+- Probes confirmaram rollback sem packet parcial, bloqueio de quote de
+  calibração fabricado e warnings editoriais não bloqueantes. Compilação, skill,
+  diff e prova read-only das Waves 003/004/005 passaram.
+- O job de simplificação foi aprovado. A Wave 005 foi liberada numa única
+  execução: o worker revisa/finaliza os cinco episódios e o coordenador só
+  retorna após o evento final para fazer as auditorias cegas.
+- A Wave 005 foi pausada como dependência, sem desfazer os 39 reviews, 48
+  candidatos ou patches válidos já persistidos em `zoChfFHnlOQ`. O manifesto
+  incompatível do evento 008 não escreveu e não será contornado com provenance
+  falsa.
+- Este job de tooling mantém toda a Wave 005, exports, audits e dados protegidos
+  em leitura pura. Nenhum commit, push, deploy, consolidação ou Supabase foi
+  autorizado.
+
+### 2026-07-13 — Wave 005: primeiro packet auditado e continuidade por episódio
+
+- O evento `MSF-R20-WAVE-005-009` finalizou `zoChfFHnlOQ` sem blocker técnico:
+  39 reviews, 48 candidatos, readiness/build/validação normal aprovados e um
+  packet cego exato de cinco arquivos. `JF2oC44lBG8` chegou em checkpoint
+  durável com reviews 001–018/24 e 19 IDs; os outros três episódios não foram
+  alterados.
+- O coordenador auditou o packet de zo independentemente: JSON parseável e
+  consistente, 48 IDs únicos, referências/quotes verbatim válidos, relação
+  G030→G034 simétrica, 24 targets de calibração distintos e validador
+  determinístico aprovado. Os sete avisos no packet foram verificados como
+  contexto editorial, não findings. O parecer selado é
+  `.codex-work/msf-r20-coordinator-audits/zoChfFHnlOQ_audit_001.json`, com
+  `passed` e `open_findings=0`.
+- A continuidade foi reduzida para a fronteira de um episódio completo: o
+  worker primeiro registra deterministicamente o audit de zo e conclui apenas
+  JF (019–024, recall e packet). Não há revisão intermediária do coordenador;
+  a próxima auditoria ocorrerá apenas após o packet integral de JF.
+- Nenhum commit, push, deploy, consolidação gold ou Supabase foi executado.
+
+### 2026-07-14 — Wave como unidade única de execução e auditoria
+
+- O owner confirmou que a Wave 005 ainda estava lenta e retornava ao
+  coordenador em batches e episódios, apesar do contrato de simplificação. A
+  análise identificou duas causas: validação fail-fast acoplada ao recorder e
+  ausência de um receipt que exigisse os cinco episódios antes da entrega.
+- O worker recebeu uma pausa segura durante W5-R15. O evento
+  `MSF-R20-WAVE-005-015` confirmou qoh 001–010 preservado, 011–020 ausente, dez
+  candidatos únicos, nenhum packet/export parcial e nenhum blocker de dados.
+- O protocolo agora define a wave multi-episódio como unidade de delegação,
+  entrega e auditoria. Erros mecânicos ou source-backed são resolvidos dentro do
+  worker; checkpoints ficam no próprio chat; o coordenador não audita episódios
+  isolados e só retoma depois do gate consolidado 5/5.
+- Foi criado `MSF-R20-GOLD-WAVE-ONE-SHOT-001` para implementar compilador
+  read-only com normalização segura e inventário completo, recorder idempotente
+  recuperável e gate consolidado de wave. Durante o hardening, Waves 003, 004 e
+  005, golds, exports, packets, audits e fingerprints são somente leitura.
+- A Wave 005 permanece pausada. Depois do quality gate do hardening, será
+  retomada uma única vez a partir de qoh chunk 011, seguida por wHdy e Bbh. A
+  auditoria ocorrerá numa única fase após os cinco episódios atingirem o receipt
+  `ready_for_audit`.
+
+### 2026-07-14 — Quality gate 1 do pipeline one-shot
+
+- O evento `MSF-R20-GOLD-WAVE-ONE-SHOT-001-001` entregou o compilador puro, o
+  recorder idempotente e o gate consolidado. O coordenador reproduziu `69
+  passed`, compilação em memória, validação da skill e `git diff --check`.
+- Execuções read-only das Waves 003, 004 e 005 preservaram 40 arquivos
+  rastreados de status, auditoria, packet e fingerprints. A Wave 005 continuou
+  `in_progress`; nenhum dado gold real foi alterado.
+- Quatro probes adversariais impediram a aprovação: tema desconhecido virou
+  `business_model`; wave incompleta escreveu recibo; episódio protegido sem
+  packet passou como pronto; e ausência de evidência ocultou os demais erros do
+  mesmo candidato.
+- Foi aberta uma única rodada corretiva consolidada (`OS-QG-001..004`). A Wave
+  005 continua pausada e só será retomada depois do quality gate final.
+
+### 2026-07-14 — Quality gate 2 do pipeline one-shot
+
+- O evento `MSF-R20-GOLD-WAVE-ONE-SHOT-001-002` foi reproduzido com `73
+  passed`, compilação, skill e diff aprovados. Temas desconhecidos agora geram
+  issue, waves incompletas não escrevem recibo e o compilador devolve múltiplos
+  erros estruturados numa só checagem.
+- A rota protegida passou nos casos de packet ausente ou trocado, audit inválido
+  e fingerprints divergentes. Os dados reais das Waves 003–005 permaneceram
+  byte a byte inalterados nas leituras do coordenador.
+- Um probe adicional encontrou o residual `OS-QG-003b`: a rota pending aceitou
+  o receipt de `pending-a` apontando para o packet de `pending-b` e classificou
+  a wave como pronta. A segunda e última correção fica restrita a vincular o
+  receipt ao `export_suffix` esperado e ao `episode_video_id` do packet.
+- A Wave 005 permanece pausada até o quality gate final desse residual.
+
+### 2026-07-14 — Pipeline one-shot aprovado e Wave 005 liberada
+
+- O evento `MSF-R20-GOLD-WAVE-ONE-SHOT-001-003` fechou `OS-QG-003b`. O
+  coordenador reproduziu `74 passed`, compilação, skill e diff aprovados.
+- O probe final fez `pending-a` apontar para o packet íntegro de `pending-b`:
+  o gate retornou `in_progress`, `packet_identity=false` e não criou receipt.
+  Restaurado o packet correto, retornou `ready_for_audit` e gerou receipt único.
+- A prova real read-only da Wave 005 acompanhou 509 arquivos sem diferença. zo
+  e JF estão protegidos/prontos; qoh, wHdy e Bbh seguem nos checkpoints previstos.
+- `MSF-R20-GOLD-WAVE-ONE-SHOT-001` foi aprovado. A Wave 005 foi enfileirada para
+  uma única retomada autônoma e só retornará ao coordenador no gate consolidado
+  dos cinco episódios ou em bloqueio externo terminal real.
+
+### 2026-07-14 — Wave 005: checkpoint interno de qoh retomado sem novo gate
+
+- O evento `MSF-R20-WAVE-005-016` trouxe progresso real: qoh chegou a 36/36
+  reviews e 35 candidatos em batches atômicos; nenhum packet parcial,
+  finalização, build, auditoria ou alteração protegida ocorreu.
+- O inventário de números/calibração continua sendo correção interna. O check
+  recusou um raw stale de G029 antes de escrever, sem lock, permissão, fonte ou
+  fingerprint divergente.
+- Pelo contrato one-shot, isso não é entrega bloqueada nem exige auditoria do
+  coordenador. O mesmo worker foi devolvido para regenerar o manifesto a partir
+  do estado atual, resolver qoh e só então continuar wHdy/Bbh até o receipt 5/5.
+
+### 2026-07-14 — Autocontinuação intraworker elimina eventos de checkpoint
+
+- A Wave 005 ainda não está concluída: zo e JF estão protegidos; qoh tem 36/36
+  reviews, mas não foi finalizado; wHdy e Bbh ainda não foram processados.
+- A causa dos eventos menores remanescentes foi isolada: o gate 5/5 estava
+  correto, porém cada mensagem ao worker abria um turno finito e o encerramento
+  desse turno ainda era publicado como WORKER_EVENT ao coordenador.
+- O protocolo passou a exigir checkpoint job-local e `WORKER_SELF_CONTINUE`
+  idempotente para o próprio worker em todo estado não terminal. O coordenador
+  permanece sem polling e só recebe o evento terminal consolidado.
+- A continuação preserva o mesmo worker, modelo/esforço, job ID, ownership e
+  critérios. Duas falhas confirmadas do transporte intraworker são o único novo
+  bloqueio de comunicação permitido; erros rotineiros continuam internos.
+
+### 2026-07-14 — Wave 005 retomada após autocontinuação sem execução
+
+- Após aviso do owner, o coordenador fez a leitura única permitida do chat idle.
+  qoh estava finalizado e packet-ready; wHdy continuava no chunk 001 e Bbh não
+  havia começado.
+- A causa foi semântica: ao consumir `self-002`, o worker criou outra mensagem
+  de continuação sem executar a `next_action`. Não houve erro de fonte, lock,
+  permissão ou dado gold.
+- O contrato agora exige consume-then-execute: progresso material verificável
+  antes de um novo continuation ID, proibindo reenvio da mesma ação sem avanço.
+- A Wave 005 foi retomada no mesmo worker a partir de wHdy chunk 001; continua
+  valendo um único evento terminal consolidado ao coordenador.
+
+### 2026-07-14 — Autocontinuação revogada; Wave 005 em retomada direta
+
+- A leitura única após novo alerta do owner confirmou progresso real: qoh está
+  packet-ready e wHdy chunk 001 foi compilado e persistido atomicamente.
+- Também confirmou a limitação da superfície: `self-003` apareceu no turno
+  ativo, mas não iniciou outro turno após a resposta final; o worker ficou idle.
+- `WORKER_SELF_CONTINUE` foi removido do protocolo. Checkpoints permanecem
+  duráveis, porém a delegação não pode terminar neles: deve continuar no mesmo
+  turno até o gate consolidado.
+- A retomada W5-R18 começa em wHdy chunk 002 e segue até wHdy, Bbh e receipt 5/5,
+  sem evento intermediário ao coordenador.
+
+### 2026-07-14 — Wave 005 passa a heartbeat temporário do executor
+
+- W5-R18 terminou em 32 segundos após apenas ler wHdy chunk 002, novamente sem
+  erro de fonte, lock, permissão ou validação. O chat ficou idle.
+- Repetir outra retomada direta seria a mesma rota já falha. A recuperação mudou
+  materialmente para heartbeat temporário anexado ao thread do worker.
+- O heartbeat acorda somente o executor, retoma o checkpoint, não envia eventos
+  de progresso e não exige processamento paralelo do coordenador.
+- A automação é limitada à Wave 005 e deve ser desativada pelo worker depois do
+  receipt 5/5 e do único WORKER_EVENT terminal.
+- Heartbeat criado no app com ID
+  `msf-wave-005-continuar-worker-at-gate-5-5`, intervalo de cinco minutos e alvo
+  exclusivo no thread `019f4c90-b9dc-7e32-8ff1-57f8896386d3`.
+
+### 2026-07-14 — Heartbeat pausado; runner persistente W5-R20
+
+- O heartbeat disparou às 14:34Z e 14:39Z. No primeiro turno leu os sinais
+  002–010 sem persistir; no segundo apenas declarou a revisão pendente e encerrou
+  com `DONT_NOTIFY`. O worker permaneceu idle.
+- A automação `msf-wave-005-continuar-worker-at-gate-5-5` foi pausada para evitar
+  concorrência e duplicação.
+- Foi criado `.codex-work/coordination/run-wave005-until-terminal.ps1`: runner
+  sequencial que retoma o mesmo thread pela Codex CLI, verifica progresso real,
+  reduz a unidade após duas tentativas sem avanço e aplica timeout de 30 minutos.
+- O runner só encerra após marcador do evento terminal ou orçamento explícito,
+  mantendo logs e status duráveis no diretório job-local.
+
+### 2026-07-14 — Modelo coordenador/worker encerrado pelo owner
+
+- O owner encerrou delegações entre chats, `WORKER_EVENT`, checkpoints
+  obrigatórios, heartbeats e runners persistentes para extração gold.
+- A automação `msf-wave-005-continuar-worker-at-gate-5-5` foi apagada no app.
+- O runner W5-R20 e os artefatos de autocontinuação foram removidos; dados gold,
+  packets, auditorias históricas e progresso persistido foram preservados.
+- A execução passa a ocorrer integralmente no chat ativo, incluindo correções
+  rotineiras e validação. Somente a auditoria final do épico usa
+  `gpt-5.6-sol/high` ou superior, sem revisão intermediária.
+- Na transição, a Wave 005 preserva zo/JF `complete/passed`, qoh packet-ready e
+  wHdy reviews 001-010 com 12 IDs únicos; a próxima fronteira é wHdy chunk 011.

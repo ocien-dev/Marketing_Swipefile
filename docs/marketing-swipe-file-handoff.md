@@ -37,8 +37,8 @@ Leia nesta ordem:
 
 1. `AGENTS.md`
 2. `README.md`
-3. `docs/agent-coordination.md`
-4. `docs/coordination/msf-r20-codex-gate-migration.md`
+3. `docs/gold-extraction-contract.md`
+4. `docs/coordination/msf-r20-wave-005-plan.md`
 5. `docs/marketing-swipe-file-prd.md`
 6. `docs/marketing-swipe-file-architecture.md`
 7. `docs/marketing-swipe-file-full-backlog.md`
@@ -49,19 +49,18 @@ Leia nesta ordem:
 12. `docs/insight-quality-checklist.md`
 13. `docs/output-evaluation-rubric.md`
 
-## Coordenacao E Gate MSF-R20
+## Execucao E Gate MSF-R20
 
-O R20 usa dois papeis: um worker executa dentro de ownership explicito e um
-coordenador Codex separado planeja, audita, reproduz validacoes e decide o gate.
-O worker nunca aprova o proprio output. A fila central e os docs de coordenacao
-sao ownership exclusivo do coordenador.
+O R20 e executado integralmente no chat ativo: planejamento, extracao,
+correcoes rotineiras, validacao e packets finais. Nao ha coordenador, worker,
+delegacao entre chats ou revisao intermediaria.
 
 O nome `awaiting_external_audit` permanece por compatibilidade e significa
-externo a tarefa executora, nao externo ao Codex. Auditorias historicas do
-Claude permanecem como provenance verdadeira. Auditorias futuras registram
-thread, modelo, effort e rota do revisor Codex. Mesmo com gate verde, commit,
-push, deploy, Supabase e consolidacao continuam proibidos sem liberacao do
-owner.
+externo a fase executora, nao externo ao Codex. Depois de todo o epic estar
+pronto, uma unica fase de auditoria final usa `gpt-5.6-sol` com raciocinio high
+ou superior e registra thread, modelo, effort e rota. Auditorias historicas
+permanecem como provenance verdadeira. Mesmo com gate verde, commit, push,
+deploy, Supabase e consolidacao continuam proibidos sem liberacao do owner.
 
 ## Estado Atual Em 2026-07-07
 

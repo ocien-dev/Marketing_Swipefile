@@ -1,154 +1,107 @@
-# Marketing Swipe File agent protocol
+# Protocolo de execução do Marketing Swipe File
 
-This repository uses a coordinator/worker quality-gate model for gold-standard
-extraction work.
+Este repositório usa execução direta por épico no chat ativo. Não existe mais
+modelo coordenador/worker, delegação entre chats, `WORKER_EVENT`, heartbeat,
+autocontinuação, runner de recuperação ou checkpoint obrigatório.
 
-## Roles
+## Fluxo padrão
 
-- The coordinator plans work, owns the central queue, performs independent
-  audits, reviews diffs and tests, and decides the quality gate.
-- A worker implements or processes only its delegated ownership. A worker must
-  never approve its own output.
-- The default R20 worker runs with `gpt-5.6-terra` and `high` reasoning. The
-  coordinator audit is a separate task.
+- O chat ativo planeja, executa, diagnostica, corrige e valida o épico inteiro.
+- Um pedido para iniciar ou executar um épico autoriza seguir todas as stories
+  documentadas até o resultado final, salvo decisão material reservada ao owner.
+- Erros rotineiros de draft, ASCII, enum, tema, campo, número, steps, relação,
+  ledger, calibração, teste ou serialização são resolvidos localmente.
+- Não interrompa o épico para revisão intermediária, faixa de chunks, episódio,
+  readiness, patch, packet provisório ou limite artificial de tentativas.
+- Não envie mensagens para outro chat durante a execução normal.
+- Não crie automações, heartbeats, polling, runners persistentes ou mensagens de
+  autocontinuação para manter o trabalho ativo.
 
-`awaiting_external_audit` remains the compatibility lifecycle name. Here,
-`external` means external to the executor task, not external to Codex.
+## Auditoria final única
 
-## Safety and repository state
+A auditoria acontece apenas depois que todo o épico estiver executado, corrigido
+e deterministicamente validado. Não há auditoria intermediária.
 
-Before any write, record `git status --short --branch` and preserve all existing
-modified and untracked files. Do not use destructive reset, checkout, clean, or
-equivalent operations. Do not force through OneDrive locks or permission errors.
+- Antes da auditoria, todos os episódios do escopo devem ter revisão integral,
+  recall adversarial, `hard_blockers=0`, finalização válida, packet final e
+  fingerprints preservados, ou um bloqueio externo terminal documentado.
+- A auditoria final é uma fase dedicada no mesmo fluxo e usa
+  `gpt-5.6-sol` com raciocínio `high` ou superior.
+- O relatório registra thread, modelo, esforço, rota e findings. O mesmo chat é
+  permitido quando a provenance comprova a troca para a fase final Sol.
+- `awaiting_external_audit` continua como nome de lifecycle por compatibilidade;
+  aqui, `external` significa externo à fase executora, não outro chat.
+- Somente auditoria final `passed`, zero findings abertos, validação obrigatória
+  aprovada e fingerprints inalterados permitem derivar `complete`.
+- Registros históricos de auditoria permanecem imutáveis como provenance.
 
-The owner has declared `production_status=pre_production`. Gold consolidation
-and Supabase remain prohibited without their own functional gates. Destructive
-history operations and publication of local/ignored data remain prohibited.
+## Execução gold por episódio e wave
 
-For the current implementation job, do not commit, push, or deploy unless the
-coordinator sends a later explicit gate instruction. At project level,
-pre-production commit, push, and deploy may be approved and executed
-autonomously by the coordinator only after their separate gates pass.
+O episódio é a unidade isolada de extração e persistência. A wave ou épico é a
+unidade de execução e auditoria final.
 
-- do not consolidate gold into v2/curated/pool/master or start Supabase without
-  a separate functional gate;
-- preserve historical audit provenance, including historical Claude records;
-- do not write outside delegated ownership;
-- do not edit concurrently overlapping files or episode export directories.
+1. Registre `git status --short --branch` antes da primeira escrita.
+2. Faça preflight de runtime, módulos, temp gravável, ownership, raw, metadata,
+   transcript, export e fingerprints.
+3. Preserve reviews cujo `input_hash` continue válido.
+4. Leia integralmente os chunks pendentes em ordem cronológica.
+5. Compile drafts com o compilador oficial e corrija o inventário completo antes
+   de cada persistência atômica.
+6. Faça recall adversarial global, inclusive fronteiras adjacentes, números,
+   comparações, testes, scripts, steps, condições, alertas e caveats.
+7. Corrija `hard_blockers` source-backed; mantenha ambiguidades editoriais como
+   `audit_warnings` visíveis no packet.
+8. Use o finalizador aprovado somente quando o episódio estiver semanticamente
+   completo. Não gere packet intermediário.
+9. Em waves, processe os episódios sequencialmente e de forma isolada. Um ramo
+   terminalmente bloqueado não impede os demais.
+10. Depois de todos os ramos terminais, execute o gate consolidado e somente
+    então inicie a auditoria final única em Sol.
 
-## Delegation contract
+Ledger e calibração são derivados dos candidatos finais. Uma disposição
+`captured` ou `merged` só é válida quando o candidato expressa a mesma
+proposição útil sustentada pelo segmento. Quotes verbatim nunca são
+normalizadas. Campos editoriais internos seguem ASCII/NFKD conforme o contrato.
 
-Every worker job must state `coordinator_thread_id`, a unique `job_id`,
-`worker_thread_id`, model/effort, ownership, acceptance criteria, allowed files,
-and prohibited actions.
+## Segurança e ownership
 
-On material progress, completion, blocking, or a needed decision, the worker
-must both publish in its own task and send this event to the coordinator:
+- Preserve mudanças existentes e arquivos não rastreados.
+- Não use `reset`, `checkout`, `clean` destrutivo ou equivalente.
+- Não force locks do OneDrive nem contorne `PermissionError` com escrita
+  concorrente.
+- Escreva somente nos caminhos do épico ativo e mantenha episódios isolados.
+- Não edite auditorias seladas nem provenance histórico.
+- Não consolide gold em `v2/curated/pool/master` nem inicie Supabase sem gate
+  funcional separado.
+- Não faça commit, push ou deploy sem autorização explícita do owner.
+- Dados raw, transcripts, packets e exports locais não devem ser publicados.
 
-```text
-WORKER_EVENT
-event_id: <job_id>-<sequence>
-job_id:
-worker_thread_id:
-event_type: completed | blocked | decision_required | progress
-status:
-summary:
-artifacts:
-validations:
-blockers:
-decision_needed:
-next_action:
-```
+## Condições reais de parada
 
-The coordinator independently polls the worker task, confirms every event in
-the source task, and deduplicates transitions by `event_id` and `job_id`.
+Corrija problemas técnicos rotineiros dentro do épico. Pare e peça decisão
+somente quando houver:
 
-## Durable queue and ownership
+- mudança material de escopo, arquitetura, schema público ou fonte de verdade;
+- migração, exclusão ou operação irreversível;
+- risco de segurança, privacidade ou exposição de credencial;
+- serviço pago ou ação externa material;
+- produção, commit, push ou deploy sem autorização;
+- fonte ausente ou incompatível;
+- conflito de ownership;
+- lock ou permissão persistente;
+- duas rotas atômicas materialmente diferentes falhando;
+- corrupção ou rollback impossível;
+- fingerprint protegido divergente.
 
-Only the coordinator edits:
+Uma ação indivisível sem progresso observável por 30 minutos deve ser
+interrompida. Registre a ação, saída e tempo, escolha uma rota segura
+materialmente diferente e continue quando ela permanecer no escopo.
 
-- `.codex-work/coordination/queue.json`;
-- `docs/coordination/task-queue.md`;
-- `AGENTS.md`;
-- `docs/agent-coordination.md`;
-- `docs/execution-log.md`.
+## Encerramento
 
-Allowed queue states are `queued`, `running`, `awaiting_worker`,
-`awaiting_coord_review`, `changes_requested`, `awaiting_owner_decision`,
-`approved`, `done`, and `blocked`.
+Ao concluir, relate no próprio chat: estado, episódios, artefatos, validações,
+bloqueios e próxima ação. Não gere handoff para coordenador ou worker.
 
-Independent workers may run in parallel only with non-overlapping ownership and
-explicit dependencies/integration. Shared scripts and contracts are
-single-writer. Concurrent code edits require separate worktrees. When overlap is
-uncertain, use one worker.
-
-## Quality gate
-
-A worker `completed` event is a delivery signal, not approval. The coordinator
-must confirm the worker task, inspect artifacts and ownership, reproduce
-appropriate validations, and decide `approved`, `changes_requested`, or
-`blocked`. Use at most two correction rounds before escalating to the owner,
-unless the owner authorizes more.
-
-An episode may become `complete` only from a valid audit report by a reviewer
-separate from the executor, with `status=passed`, zero open findings,
-deterministic validation passing, and protected fingerprints unchanged.
-
-## Owner decision gate
-
-Continue autonomously for routine, reversible, documented choices. Pause the
-affected branch as `awaiting_owner_decision` for material scope, architecture,
-schema/public-contract, source-of-truth, data migration/deletion, compatibility,
-security/privacy, paid service, external action, production, commit/push/deploy,
-irreversible action, or a material precision/cost/time/coverage tradeoff.
-
-Independent jobs may continue while one branch awaits a decision. A decision
-request must provide context, materiality, options and impacts, a coordinator
-recommendation, paused work, and independent work that continues.
-
-## Pre-production release gates
-
-Only the owner can change `production_status` to `production`. While status is
-`pre_production`, the coordinator may autonomously grant and execute, in order:
-
-1. `APROVADO PARA COMMIT`;
-2. `APROVADO PARA PUSH`;
-3. `APROVADO PARA DEPLOY`.
-
-One gate never implies the next. Each requires approved in-project scope,
-worker evidence, coordinator quality gate, proportional passing tests, no open
-critical/major findings, inspected diff, queue/Markdown record, rollback or
-reversal strategy, and no credential exposure. Deploy additionally requires an
-identified preview/staging/pre-production destination that is not plausibly
-production.
-
-A worker may run any release action only after a later explicit coordinator
-message states job ID, granted gate, exact scope, branch/destination, authorized
-command/action, and required post-action validation. Never include release
-actions silently in implementation work. Do not force-push, destructively
-rebase/reset, alter remote history, publish ignored/local data or `C:\MSF-data`,
-or treat data consolidation as deploy.
-
-When the owner explicitly declares production, record
-`production_status=production` and require owner authorization separately for
-every commit, push, and deploy. Analysis, local implementation, tests, and
-quality gating remain autonomous.
-
-## Context hygiene
-
-Keep durable checkpoints or handoffs at safe boundaries, especially after a
-job, recording job ID, state, decisions, artifacts, validations, blockers, and
-next action. Never copy secrets or ignored local data. A checkpoint is useful
-for continuity but is not a precondition for starting the next job.
-
-Do not attempt preventive context compaction through App Server calls, CLI
-helpers, scripts, hooks, automations, slash-command messages, or worker
-rotation. Do not block a new job because of context percentage and do not mark
-the designated worker retired or exhausted. Keep the same coordinator and the
-same designated worker.
-
-Codex may compact context automatically when it reaches its own native limit.
-Do not claim manual, preventive, or automatic compaction unless the real Codex
-interface or event confirms it. If native compaction occurs, reread
-`AGENTS.md`, the active checkpoint/handoff, the queue, and the job instructions
-before continuing.
+Use `ÉPICO FINALIZADO — PROJETO CONTINUA` quando apenas o épico terminar. Use
+`SESSÃO FINALIZADA` somente quando não houver trabalho ativo ou próxima ação
+nesta sessão.

@@ -53,10 +53,114 @@ following:
 gold batch total or any master export.
 
 `awaiting_external_audit` is a compatibility name: the audit is external to the
-executor task. A separate Codex coordinator must validate reviewer provenance,
-the finding contract, zero open findings, deterministic checks, and protected
-fingerprints. A worker must never approve its own output or set `passed` through
-a free build argument. Preserve historical audit providers as recorded.
+executor phase. Execute the entire epic in the active chat without delegation
+or intermediate review. After the complete epic gate, switch to a dedicated
+final audit phase using `gpt-5.6-sol` with high reasoning or above. Validate the
+finding contract, zero open findings, deterministic checks and protected
+fingerprints before deriving `complete`. Future work needs no Claude permission,
+execution, or audit; preserve historical providers only as recorded provenance.
+
+## Gold Wave Workflow
+
+Before starting a gold episode:
+
+1. Record Git state and run one technical preflight for the explicit Python
+   runtime, required modules, writable job-scoped temp path, data/export access,
+   protected fingerprints, packet inputs, and tooling ownership.
+2. Define a bounded wave with non-overlapping episode paths. The active chat
+   executes the whole wave; ranges and episodes are internal units.
+3. Reuse matching chunk reviews and signal inventories by hash. Reopen only
+   changed chunks and adjacent context needed for semantic verification.
+4. After normal chunk extraction and ledger completion, run an adversarial
+   semantic-recall pass for numbers, comparisons, tests, changes, scripts,
+   steps, conditions, warnings, caveats, and propositions spanning adjacent
+   segments or chunks.
+5. Confirm that each `captured` or `merged` ledger entry references a candidate
+   expressing the same useful proposition. Topic proximity is not coverage.
+6. Run deterministic validation before exporting the blind packet. A valid
+   `changes_requested` audit may remain deterministic-pass; only the
+   required-audit gate may derive `complete` from `passed` with zero findings.
+7. Continue directly across chunks and episodes. Audit only after the
+   consolidated wave gate confirms every expected episode is packet-ready or
+   terminally blocked, then run the single final Sol audit.
+8. Record per-episode metrics and begin expansion with a small wave. Increase
+   batch size only after the finding profile remains acceptably low.
+
+The pilot evidence and decisions are recorded in
+`docs/coordination/msf-r20-pilot-retrospective.md`.
+
+## Gold Fast Path
+
+Use o Fast Path para ondas novas sem criar microgates ou delegacoes. Ele nao
+substitui leitura integral, recall semantico ou a auditoria final unica.
+
+1. Gere um manifesto com `mode=auto` por episodio e rode
+   `scripts/run_gold_wave.py --manifest <arquivo> --data-root <raiz>` para
+   classificar cada rota sem escrita.
+2. `new_raw_episode` valida raw e, com `--execute`, prepara transcript, chunks,
+   sinais e work orders compactos. O texto permanece uma unica vez nos chunks;
+   work orders usam referencias de segmentos, sinais e calibracoes.
+3. `resumable_incomplete_gold` reaproveita reviews com `input_hash` igual e
+   informa somente chunks pendentes ou desatualizados. Nao reexecute review
+   concluida sem uma causa registrada.
+4. `protected_complete_read_only` nunca pode ser preparado, patchado ou
+   reexportado pelo modo automatico. Reabra um episodio complete/passed somente
+   com autorizacao explicita do owner e revisao de escopo.
+5. Quando o episodio couber no contexto ativo, monte um payload com todos os
+   reviews e use `scripts/run_gold_episode_fast.py --check`. O comando compila
+   e executa o autocheck contra o estado final em memoria, sem escrever no gold
+   ou export. Corrija os `hard_blockers` source-backed no payload; mantenha
+   `audit_warnings` visiveis para a auditoria final.
+6. Depois de check limpo, use `run_gold_episode_fast.py --apply` com
+   `revision_id` e `export_suffix`. A rota faz uma persistencia atomica e chama
+   o finalizador uma vez, com tempos medidos por etapa. Use batches de 8-12
+   chunks somente quando o episodio nao couber com seguranca em uma unica
+   passagem. O receipt semantico torna a repeticao idempotente. Para correcao
+   fechada posterior, use
+   `gold_review_patch.py --check` e depois um unico `--apply` com asserts,
+   hashes e valores anteriores.
+7. Para reauditoria, rode `gold_reaudit_delta.py --before <packet> --after
+   <packet>`; ele e somente leitura. A primeira auditoria continua integral e
+   cega; o delta apenas orienta uma reauditoria posterior.
+8. Defina `active_budget` no manifesto quando uma wave tiver carga relevante.
+   O padrao admite 2.500 segmentos raw, 40 chunks ativos e tres episodios;
+   episodios `protected_complete_read_only` e trabalho integralmente concluido
+   nao consomem esse orcamento. O runner bloqueia excesso antes de escrever e
+   produz faixas de revisao de 8-12 chunks.
+9. Para uma correcao fechada, use revisoes identificadas por `revision_id`,
+   `revision_kind` e `reason`; cada manifest exige `--check` sem escrita e um
+   unico `--apply` atomico. Historicos `patch_window` antigos continuam apenas
+   para leitura. Diagnosticos read-only podem ser repetidos.
+10. Para episodio semanticamente completo, use
+   `scripts/finalize_gold_episode.py`: autocheck, readiness, build, validacao
+   normal e export do packet ocorrem nessa ordem. A mesma revisao pronta e
+   idempotente; episodios `complete/passed` ficam read-only.
+11. Use `record_gold_external_audit.py --check` para validar envelopes sem
+   escrever. Compare packets por hash fisico e hash semantico JSON: CRLF/LF
+   isolado e provenance de serializacao, nao mudanca editorial.
+12. Ao fechar uma wave, use `run_gold_wave.py --wave-receipt <arquivo>`.
+    `ready_for_audit` exige todos os episodios esperados; uma wave parcial
+    permanece `in_progress`, e o comando nao cria nem sobrescreve recibo de
+    entrega. Apenas `ready_for_audit` ou `terminally_blocked` final escrevem o
+    recibo consolidado. Episodio `complete/passed` tambem precisa comprovar o
+    packet esperado de cinco arquivos, sua identidade/hashes, auditoria
+    passada sem findings e fingerprints iguais antes de contar como pronto.
+    O mesmo vinculo entre `export_suffix`, receipt e `packet_manifest` vale
+    para episodio pendente de auditoria; receipt nao pode apontar para packet
+    de outro episodio.
+
+## Aprendizado do Fluxo Gold
+
+Ao fechar um epic ou wave, relate somente friccoes novas e acionaveis; nao
+carregue narracao de sessao para outra tarefa. Para recorrencias gold:
+
+- quando o ledger for derivado da evidencia do candidato, corrija a evidencia
+  source-backed e rederive; nao fabrique `ledger_decisions` manuais;
+- diferencie hash fisico de hash semantico JSON antes de tratar CRLF/LF como
+  mudanca editorial;
+- promova falha deterministica recorrente para autocheck, guard ou teste;
+- mantenha regras gerais em AGENTS e esta skill apenas com
+  heuristicas especificas da extracao gold.
 
 ## Batch Workflow
 

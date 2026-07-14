@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Persist an independent external audit result without exposing it in packets."""
+"""Persist the dedicated final audit result without exposing it in packets."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from scripts.gold_extraction_common import GoldPauseError, now, validate_external_audit_report, write_json
+from scripts.gold_extraction_common import GoldPauseError, now, record_operation_event, sha256_json, validate_external_audit_report, write_json
 
 
-def record_audit(video_id: str, data_root: Path, payload: dict[str, Any]) -> dict[str, Any]:
+def record_audit(video_id: str, data_root: Path, payload: dict[str, Any], *, persist: bool = True) -> dict[str, Any]:
     if payload.get("episode_video_id") not in {None, video_id}:
         raise ValueError("episode_video_id mismatch")
     validation_errors = validate_external_audit_report(payload, payload.get("executor_thread_id"), require_executor_provenance=False)
@@ -31,7 +31,9 @@ def record_audit(video_id: str, data_root: Path, payload: dict[str, Any]) -> dic
         "findings": findings, "open_findings": open_findings,
     }
     out = data_root / "processed" / video_id / "gold_extraction"
-    write_json(out / "editorial_audit_report.json", result)
+    if persist:
+        write_json(out / "editorial_audit_report.json", result)
+        record_operation_event(out, "audit", sha256_json(payload), {"open_findings": open_findings})
     return result
 
 
@@ -40,14 +42,15 @@ def main() -> int:
     parser.add_argument("--video-id", required=True)
     parser.add_argument("--data-root", required=True, type=Path)
     parser.add_argument("--input", type=Path, help="Audit JSON. Omit to read JSON from stdin.")
+    parser.add_argument("--check", action="store_true", help="Validate the audit envelope without writing episode artifacts.")
     args = parser.parse_args()
     try:
         payload: dict[str, Any] = json.loads(args.input.read_text(encoding="utf-8") if args.input else sys.stdin.read())
-        result = record_audit(args.video_id, args.data_root, payload)
+        result = record_audit(args.video_id, args.data_root, payload, persist=not args.check)
     except (GoldPauseError, KeyError, ValueError, json.JSONDecodeError) as exc:
         print(json.dumps({"status": "error", "error": str(exc)}))
         return 1
-    print(json.dumps({"status": result["status"], "open_findings": result["open_findings"]}, ensure_ascii=False))
+    print(json.dumps({"status": result["status"], "open_findings": result["open_findings"], "read_only": args.check}, ensure_ascii=False))
     return 0
 
 

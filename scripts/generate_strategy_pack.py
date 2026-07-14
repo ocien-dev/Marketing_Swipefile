@@ -147,7 +147,7 @@ def build_ranked_candidates(insights: list[dict[str, Any]], args: argparse.Names
         confidence = confidence_score(insight)
         if confidence < args.min_confidence:
             continue
-        if editorial_score(insight) < args.min_editorial_score:
+        if editorial_score(insight) < getattr(args, "min_editorial_score", 0.0):
             continue
         score = (
             theme_score(insight, desired_themes)
