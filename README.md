@@ -89,6 +89,7 @@ and publish explicitly after the pipeline is idle:
 ```bash
 python -m scripts.publish_shared_exports --check
 python -m scripts.publish_shared_exports --publish
+python -m scripts.publish_shared_exports --verify
 ```
 
 The published directory contains `published_manifest.json` plus an `exports/`

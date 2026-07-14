@@ -210,12 +210,18 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="inspect the publish plan without writing")
     mode.add_argument("--publish", action="store_true", help="publish one verified snapshot")
+    mode.add_argument("--verify", action="store_true", help="verify the existing published snapshot without writing")
     args = parser.parse_args()
     if args.destination is None:
         parser.error("--destination or MSF_PUBLISHED_DIR is required")
 
     try:
-        result = publication_plan(args.source) if args.check else publish_exports(args.source, args.destination)
+        if args.check:
+            result = publication_plan(args.source)
+        elif args.verify:
+            result = verify_published_snapshot(args.destination)
+        else:
+            result = publish_exports(args.source, args.destination)
     except (OSError, ValueError, RuntimeError) as exc:
         print(json.dumps({"status": "error", "error": str(exc)}, ensure_ascii=False))
         return 1
