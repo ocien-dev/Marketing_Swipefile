@@ -1205,6 +1205,12 @@ def test_wave_gate_binds_pending_receipt_to_manifest_packet_identity(tmp_path):
     out_a = tmp_path / "processed" / "pending-a" / "gold_extraction"
     receipt_path = out_a / "gold_finalization_receipt.json"
     receipt = load_json(receipt_path)
+    receipt["packet"] = r"Z:\MSF-data\Marketing_Swipe_File\exports\packet-a"
+    write_json(receipt_path, receipt)
+    rebased = evaluate_wave(valid_manifest, tmp_path)
+    assert rebased["wave_status"] == "ready_for_audit"
+    assert rebased["episode_results"][0]["packet_identity"] is True
+
     packet_b = tmp_path / "exports" / "packet-b"
     from scripts.finalize_gold_episode import _packet_snapshot
     receipt["packet"] = str(packet_b)

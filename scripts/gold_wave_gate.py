@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.finalize_gold_episode import _packet_snapshot
-from scripts.gold_extraction_common import load_json, sha256_semantic_json, validate_external_audit_report, write_json
+from scripts.gold_extraction_common import load_json, resolve_data_path, sha256_semantic_json, validate_external_audit_report, write_json
 
 
 def _gold_dir(data_root: Path, video_id: str) -> Path:
@@ -40,7 +40,7 @@ def _packet_evidence(video_id: str, data_root: Path, entry: dict[str, Any], rece
     receipt_packet_matches = False
     if isinstance(receipt, dict) and isinstance(receipt.get("packet"), str) and receipt["packet"].strip():
         try:
-            receipt_packet_matches = Path(receipt["packet"]).resolve() == packet.resolve()
+            receipt_packet_matches = resolve_data_path(receipt["packet"], data_root) == packet.resolve()
         except (OSError, ValueError):
             receipt_packet_matches = False
     if not receipt_packet_matches:
