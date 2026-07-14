@@ -1,6 +1,6 @@
 # MSF-R20-WSL-DEFAULT-001 - WSL como runtime padrao
 
-Status: planned - aguardando checkpoint Git/GitHub e instalacao da distro
+Status: completed - WSL 2 instalado, dados verificados e runtime validado
 Owner: chat ativo
 Production status: pre_production
 Distribuicao alvo: Ubuntu 24.04 LTS sobre WSL 2
@@ -13,7 +13,7 @@ deve reduzir locks do OneDrive, erros de permissao, custo de milhares de
 operacoes pequenas e divergencias de ambiente, sem alterar qualquer dado gold
 ou lifecycle durante a migracao.
 
-## Estado confirmado
+## Estado inicial confirmado
 
 - WSL 2 esta habilitado, mas nenhuma distribuicao esta instalada.
 - `Ubuntu-24.04` esta disponivel para instalacao.
@@ -172,8 +172,38 @@ export TMPDIR="$HOME/.cache/msf/tmp"
 - Copia adicional para cloud ou dispositivo externo exige escolha explicita de
   destino por causa de privacidade e material possivelmente protegido.
 
+## Resultado executado em 2026-07-14
+
+- Branch de recuperacao publicada:
+  `codex/msf-r20-wsl-migration-baseline`.
+- Checkpoint inicial do worktree: `ddd17a9bd67692ca6cdc71db6645db282aa7828a`.
+- Ubuntu 24.04.4 LTS instalado e definido como distribuicao WSL 2 padrao.
+- Usuario Linux sem privilegio automatico: `luish`.
+- Repositorio Linux: `/home/luish/src/Marketing_Swipe_File`.
+- Data root Linux: `/home/luish/msf-data/Marketing_Swipe_File`.
+- Temp Linux: `/home/luish/.cache/msf/tmp`.
+- Python 3.12.3, Git 2.43, Node 18.19, npm 9.2, ffmpeg 6.1 e rsync
+  instalados; virtualenv criada com `pip check` aprovado.
+- O data root persistente foi copiado sem `--delete`; somente `.tmp` foi
+  excluido. Origem e destino possuem 12.769 arquivos, 6.938.979.898 bytes e
+  hash agregado SHA-256
+  `0e011dad1068cc14131659e5deb5717bf1115916540535106f7f8726c221b204`.
+- Inventarios completos antes/depois ficaram byte a byte identicos e foram
+  preservados no diretorio job-local ignorado.
+- Suite completa no WSL: 119 testes aprovados em 1,17 s.
+- Verificador WSL: `status=pass`, todos os paths ativos Linux-native.
+- Runner read-only das Waves 003/004/005 abriu os artefatos migrados. A Wave
+  005 atingiu `ready_for_audit` 5/5 com packet identity, snapshots, auditorias
+  e fingerprints validos.
+- Compatibilidade adicionada para rebase seguro de paths absolutos Windows em
+  chunks e receipts, sempre confinada ao `MSF_DATA_DIR` atual.
+- `C:\MSF-data\Marketing_Swipe_File` permanece preservado como rollback; os
+  temporarios de teste ficam em `.tmp` e nao fazem parte do inventario.
+
 ## Proxima acao
 
-Revisar e salvar o estado atual do repositorio em um branch de checkpoint no
-GitHub. Depois instalar Ubuntu 24.04 e executar as stories de bootstrap,
-migracao, validacao e benchmark em ordem.
+Usar o clone WSL como runtime padrao nas proximas execucoes e manter a origem
+Windows sem mudanca operacional por pelo menos um ciclo completo. Se for
+necessaria protecao contra falha fisica do SSD, criar separadamente um snapshot
+compactado, imutavel e privado em OneDrive ou outro storage aprovado; nao
+sincronizar o data root ativo.
