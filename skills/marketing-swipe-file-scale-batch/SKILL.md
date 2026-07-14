@@ -164,6 +164,16 @@ carregue narracao de sessao para outra tarefa. Para recorrencias gold:
 
 ## Batch Workflow
 
+### Runtime WSL
+
+- Use Ubuntu 24.04/WSL 2 como runtime padrao, com repositorio, `.venv`,
+  `MSF_DATA_DIR` e `TMPDIR` no filesystem Linux, fora de `/mnt/c`.
+- Execute `scripts/bootstrap_wsl.sh` uma vez por clone e valide com
+  `python scripts/verify_wsl_environment.py` antes de qualquer escrita gold.
+- Preserve quotes verbatim e o data root Windows durante a migracao. GitHub
+  protege somente arquivos versionados; OneDrive pode guardar snapshot fechado,
+  mas nao deve sincronizar o data root ativo.
+
 1. Check status:
    `scripts/run_episode_batch.py --target-complete 50 --status-only`
 2. Set the runtime data root when MSF-R03 external data is active:

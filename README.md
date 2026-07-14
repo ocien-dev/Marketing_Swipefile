@@ -56,6 +56,34 @@ setx MSF_DATA_DIR "C:\MSF-data\Marketing_Swipe_File"
 
 `data/processed/taxonomy_seed.json` remains the canonical repo-tracked taxonomy seed.
 
+### WSL 2 default runtime
+
+The preferred runtime is Ubuntu 24.04 on WSL 2, with the repository, data
+root, temp directory, and virtualenv on the Linux filesystem:
+
+```bash
+git clone --branch codex/msf-r20-wsl-migration-baseline \
+  https://github.com/ocien-dev/Marketing_Swipefile.git \
+  "$HOME/src/Marketing_Swipe_File"
+cd "$HOME/src/Marketing_Swipe_File"
+export MSF_DATA_DIR="$HOME/msf-data/Marketing_Swipe_File"
+export TMPDIR="$HOME/.cache/msf/tmp"
+./scripts/bootstrap_wsl.sh
+python scripts/verify_wsl_environment.py
+```
+
+Do not use `/mnt/c`, the OneDrive checkout, or a synced OneDrive folder as the
+active data root. The gold pipeline performs many small writes and atomic
+directory swaps; sync clients can introduce locks, partial uploads, mtime
+churn, and avoidable I/O latency. OneDrive is suitable for an immutable,
+closed backup archive created after the pipeline is idle, not for the live
+working tree.
+
+GitHub protects versioned code only. Raw media, transcripts, reviews, packets,
+receipts, and other ignored data under `MSF_DATA_DIR` need a separate private
+backup policy. Supabase is a future serving layer, not a file-level backup of
+this data tree.
+
 Tracked files should be limited to:
 
 - docs
@@ -76,6 +104,9 @@ Use the project venv by default:
 ```
 
 The old Codex bundled Python path is only a fallback. The project runtime dependencies are tracked in `requirements.txt`.
+
+In WSL, use `.venv/bin/python` and install `requirements-dev.txt` through
+`scripts/bootstrap_wsl.sh`.
 
 ## MVP Flow
 

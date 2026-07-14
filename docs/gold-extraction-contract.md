@@ -227,3 +227,21 @@ Patch manifests use non-empty `revision_id`, `revision_kind`, and `reason` for
 new revisions. Assertions, read-only `--check`, atomic `--apply`, rollback,
 and history remain mandatory. Historical `patch_window` manifests remain
 readable, but no patch-count quota is imposed on a revision.
+
+## WSL Runtime Contract
+
+Gold extraction runs by default on Ubuntu 24.04 under WSL 2. The repository,
+`MSF_DATA_DIR`, `TMPDIR`, and `.venv` must be Linux-native paths and must not
+live under `/mnt/c`. This keeps recorder transactions, packet staging, and
+`os.replace` operations on one filesystem and avoids OneDrive/NTFS lock and
+latency behavior.
+
+The Windows data root remains a rollback source during migration and is never
+deleted by bootstrap or verification commands. Migration is copy-only until a
+path, size, and SHA-256 inventory proves equivalence. GitHub stores versioned
+code and contracts; it does not store raw sources, ignored gold state, packets,
+audits, or receipts. Supabase is not a backup mechanism for this filesystem.
+
+Use `scripts/bootstrap_wsl.sh` to create the Linux virtualenv and install
+requirements. Use `scripts/verify_wsl_environment.py` for the read-only runtime
+gate before any gold write.
