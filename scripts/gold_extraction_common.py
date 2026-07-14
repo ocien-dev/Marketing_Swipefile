@@ -17,7 +17,7 @@ import tempfile
 import unicodedata
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Iterable
 
 
@@ -143,6 +143,33 @@ def comparison_texts(value: Any) -> set[str]:
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def resolve_data_path(value: str | Path, data_root: Path) -> Path:
+    """Resolve persisted data paths after moving a data root across platforms."""
+    direct = Path(value)
+    if direct.exists():
+        return direct.resolve()
+
+    raw = str(value)
+    pure = PureWindowsPath(raw) if "\\" in raw or PureWindowsPath(raw).drive else PurePosixPath(raw)
+    parts = list(pure.parts)
+    if "Marketing_Swipe_File" in parts:
+        relative = parts[parts.index("Marketing_Swipe_File") + 1 :]
+    else:
+        anchors = {"input", "raw", "processed", "exports", "logs", "cache"}
+        anchor_index = next((index for index, part in enumerate(parts) if part in anchors), None)
+        if anchor_index is None:
+            raise ValueError(f"cannot rebase data path without a known anchor: {value}")
+        relative = parts[anchor_index:]
+    if not relative:
+        raise ValueError(f"cannot rebase empty data path: {value}")
+
+    root = data_root.resolve()
+    rebased = root.joinpath(*relative).resolve()
+    if not rebased.is_relative_to(root):
+        raise ValueError(f"rebased data path escapes the configured root: {value}")
+    return rebased
 
 
 def sha256_semantic_json(value: Any) -> str:

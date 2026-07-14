@@ -12,7 +12,7 @@ from scripts.gold_review_autocheck import autocheck
 from scripts.gold_wave_gate import evaluate_wave
 from scripts.gold_review_patch import apply_patch
 from scripts.finalize_gold_episode import finalize_episode
-from scripts.gold_extraction_common import json_hashes, load_json, sha256_json, write_json
+from scripts.gold_extraction_common import json_hashes, load_json, resolve_data_path, sha256_json, write_json
 from scripts.record_gold_external_audit import record_audit
 from scripts.record_gold_manual_reviews import main as record_main, record
 from scripts.reprocess_gold_episode import chunk_work_order, legacy_chunk_work_order, prepare_episode, work_order_metrics
@@ -84,6 +84,19 @@ def add_second_chunk(root: Path, video_id: str) -> None:
 
 def file_snapshot(directory: Path) -> dict[Path, tuple[int, bytes]]:
     return {path: (path.stat().st_mtime_ns, path.read_bytes()) for path in directory.rglob("*") if path.is_file()}
+
+
+def test_resolve_data_path_rebases_windows_provenance_to_wsl_root(tmp_path: Path):
+    target = tmp_path / "processed" / "episode" / "gold_extraction" / "chunks" / "chunk_001.json"
+    target.parent.mkdir(parents=True)
+    target.write_text("{}\n", encoding="utf-8")
+    historical = r"C:\MSF-data\Marketing_Swipe_File\processed\episode\gold_extraction\chunks\chunk_001.json"
+    assert resolve_data_path(historical, tmp_path) == target.resolve()
+
+
+def test_resolve_data_path_rejects_unknown_external_path(tmp_path: Path):
+    with pytest.raises(ValueError, match="known anchor"):
+        resolve_data_path(r"D:\unrelated\chunk_001.json", tmp_path)
 
 
 def test_compact_work_order_preserves_references_and_reduces_wave_style_bytes():

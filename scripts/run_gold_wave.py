@@ -14,7 +14,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.finalize_gold_episode import finalize_episode
-from scripts.gold_extraction_common import ledger_errors, load_json, sha256_json, validate_document
+from scripts.gold_extraction_common import ledger_errors, load_json, resolve_data_path, sha256_json, validate_document
 from scripts.gold_wave_gate import evaluate_wave, write_wave_receipt
 from scripts.reprocess_gold_episode import prepare_episode, raw_preflight, work_order_metrics
 
@@ -43,7 +43,7 @@ def episode_metrics(video_id: str, data_root: Path) -> dict[str, Any]:
     calibrations = load_json(required[3]).get("tests", [])
     hydrated = []
     for item in chunks:
-        chunk_path = Path(item["file"])
+        chunk_path = resolve_data_path(item["file"], data_root)
         hydrated.append(load_json(chunk_path))
     metrics = work_order_metrics(video_id, hydrated, signals, calibrations)
     actual_bytes = sum(path.stat().st_size for path in (out / "work_orders").glob("chunk_*_work_order.json"))
