@@ -18,13 +18,29 @@ from scripts.gold_extraction_common import (
     GoldPauseError,
     calibration_coverage,
     editorial_ascii_errors,
+    json_hashes,
     load_json,
     normalize_relations,
+    numeric_mentions,
     record_operation_event,
     sha256_json,
     validate_candidate,
+    write_json,
     write_json_batch,
 )
+
+
+def canonical_source_assert_value(value: Any) -> Any:
+    """Remove builder-only compatibility fields from a source assertion."""
+    if isinstance(value, dict):
+        return {
+            key: canonical_source_assert_value(item)
+            for key, item in value.items()
+            if not str(key).startswith("legacy_")
+        }
+    if isinstance(value, list):
+        return [canonical_source_assert_value(item) for item in value]
+    return copy.deepcopy(value)
 
 
 def _path_value(value: dict[str, Any], path: str) -> Any:
@@ -58,6 +74,203 @@ def _load_reviews(out: Path) -> tuple[dict[Path, dict[str, Any]], dict[str, tupl
             candidates[candidate_id] = (path, candidate)
         reviews[path] = review
     return reviews, candidates
+
+
+def generate_source_assert_manifest(
+    video_id: str,
+    data_root: Path,
+    intent: dict[str, Any],
+) -> dict[str, Any]:
+    """Hydrate assert_paths from current manual-review source without gold writes."""
+    if intent.get("episode_video_id") != video_id:
+        raise ValueError("patch episode_video_id mismatch")
+    out = data_root / "processed" / video_id / "gold_extraction"
+    _reviews, candidates = _load_reviews(out)
+    manifest = copy.deepcopy(intent)
+    manifest["assertion_mode"] = "source_canonical"
+    for update in manifest.get("updates", []):
+        candidate_id = update.get("candidate_id")
+        if candidate_id not in candidates:
+            raise ValueError(f"unknown update candidate {candidate_id}")
+        if "assert" in update:
+            raise ValueError(f"{candidate_id}: source-assert intent must use assert_paths, not assert")
+        paths = update.pop("assert_paths", None)
+        if paths is None:
+            paths = list(update.get("set", {}))
+        if not isinstance(paths, list) or not paths or any(not isinstance(path, str) or not path for path in paths):
+            raise ValueError(f"{candidate_id}: assert_paths must be a non-empty string list")
+        candidate = candidates[candidate_id][1]
+        update["assert"] = {
+            path: canonical_source_assert_value(_path_value(candidate, path))
+            for path in paths
+        }
+        update["set"] = {
+            path: canonical_source_assert_value(value)
+            for path, value in update.get("set", {}).items()
+        }
+    return manifest
+
+
+def generate_audit_remediation_scaffold(
+    video_id: str,
+    data_root: Path,
+    audit: dict[str, Any],
+) -> dict[str, Any]:
+    """Resolve one audit into source-canonical remediation inputs without writes."""
+    if audit.get("episode_video_id") != video_id:
+        raise ValueError("audit episode_video_id mismatch")
+    out = data_root / "processed" / video_id / "gold_extraction"
+    transcript = load_json(out / "transcript_clean.json").get("segments", [])
+    chunks = load_json(out / "chunks" / "chunk_index.json").get("chunks", [])
+    calibration = load_json(out / "calibration_tests.json")
+    reviews, candidates = _load_reviews(out)
+    by_index = {int(item["clean_index"]): item for item in transcript}
+    segment_by_id = {str(item["segment_id"]): item for item in transcript}
+    next_number = max([
+        int(str(candidate_id).rsplit("-G", 1)[1])
+        for candidate_id in candidates if "-G" in str(candidate_id)
+        and str(candidate_id).rsplit("-G", 1)[1].isdigit()
+    ] or [0]) + 1
+    findings = []
+    for position, finding in enumerate(audit.get("findings", [])):
+        if not isinstance(finding, dict):
+            raise ValueError(f"audit finding {position} is not an object")
+        raw_range = finding.get("segment_range") or finding.get("clean_index_range") or []
+        try:
+            start, end = int(raw_range[0]), int(raw_range[1])
+        except (IndexError, TypeError, ValueError):
+            raise ValueError(f"audit finding {position} has invalid segment_range")
+        source_segments = [by_index[index] for index in range(start, end + 1) if index in by_index]
+        if not source_segments:
+            raise ValueError(f"audit finding {position} does not resolve to transcript segments")
+        candidate_ids = sorted({
+            str(value) for key in ("candidate_ids", "target_candidate_ids")
+            for value in (finding.get(key) or []) if value
+        })
+        unknown = [candidate_id for candidate_id in candidate_ids if candidate_id not in candidates]
+        if unknown:
+            raise ValueError(f"audit finding {position} references unknown candidates: {unknown}")
+        candidate_asserts = []
+        for candidate_id in candidate_ids:
+            review_path, candidate = candidates[candidate_id]
+            evidence = candidate.get("evidence", {}) if isinstance(candidate.get("evidence"), dict) else {}
+            evidence_ids = [
+                str(item.get("segment_id"))
+                for layer in ("minimal_quote", "support_segments")
+                for item in evidence.get(layer, [])
+                if isinstance(item, dict) and item.get("segment_id")
+            ]
+            evidence_indexes = sorted(
+                int(segment_by_id[segment_id]["clean_index"])
+                for segment_id in set(evidence_ids) if segment_id in segment_by_id
+            )
+            candidate_asserts.append({
+                "candidate_id": candidate_id,
+                "review_file": review_path.name,
+                "assert_candidate": canonical_source_assert_value(candidate),
+                "current_relations": canonical_source_assert_value(candidate.get("relations", {})),
+                "current_evidence_segment_ids": sorted(set(evidence_ids)),
+                "current_evidence_clean_index_range": (
+                    [evidence_indexes[0], evidence_indexes[-1]] if evidence_indexes else []
+                ),
+            })
+        owning_chunks = []
+        source_ids = {item["segment_id"] for item in source_segments}
+        for chunk in chunks:
+            chunk_indices = set(range(
+                int(segment_by_id[chunk["first_segment_id"]]["clean_index"]),
+                int(segment_by_id[chunk["last_segment_id"]]["clean_index"]) + 1,
+            )) if chunk.get("first_segment_id") in segment_by_id and chunk.get("last_segment_id") in segment_by_id else set()
+            if chunk_indices & set(range(start, end + 1)):
+                owning_chunks.append({
+                    "chunk_number": chunk.get("chunk_number"),
+                    "chunk_id": chunk.get("chunk_id"),
+                    "input_hash": chunk.get("input_hash"),
+                    "candidate_ids": [
+                        candidate.get("candidate_id")
+                        for review in reviews.values()
+                        if review.get("chunk_id") == chunk.get("chunk_id")
+                        for candidate in review.get("candidates", [])
+                    ],
+                })
+        source_numeric_occurrences = [
+            {
+                "clean_index": int(item["clean_index"]),
+                "segment_id": item["segment_id"],
+                **mention,
+            }
+            for item in source_segments
+            for mention in numeric_mentions(str(item.get("text", "")))
+        ]
+        calibration_asserts = []
+        for test in calibration.get("tests", []):
+            test_ids = {str(value) for value in test.get("segment_ids", []) if value}
+            if not (test_ids & source_ids):
+                continue
+            calibration_asserts.append({
+                "calibration_id": test.get("calibration_id"),
+                "assert": canonical_source_assert_value(test),
+                "source_intersection": sorted(test_ids & source_ids),
+                "current_semantic_candidate_ids": list(test.get("semantic_candidate_ids", [])),
+            })
+        findings.append({
+            "finding_id": finding.get("finding_id") or finding.get("id") or f"finding-{position + 1:03d}",
+            "required_action": finding.get("required_action"),
+            "segment_range": [start, end],
+            "source_segments": [
+                {"clean_index": item["clean_index"], "segment_id": item["segment_id"], "quote_verbatim": item["text"]}
+                for item in source_segments
+            ],
+            "source_segment_ids": sorted(source_ids),
+            "source_numeric_occurrences": source_numeric_occurrences,
+            "owning_chunks": owning_chunks,
+            "review_assertions": owning_chunks,
+            "candidate_asserts": candidate_asserts,
+            "calibration_asserts": calibration_asserts,
+            "suggested_insert_candidate_id": f"{video_id}-G{next_number:03d}",
+            "semantic_fields_for_model": [
+                "merge_or_insert", "source_claim", "takeaway_applicavel", "type",
+                "themes", "caveats", "relations",
+            ],
+        })
+        next_number += 1
+    core = {
+        "schema_version": "1.1.0",
+        "kind": "gold_audit_remediation_scaffold",
+        "episode_video_id": video_id,
+        "audit_status": audit.get("status"),
+        "open_findings": audit.get("open_findings"),
+        "findings": findings,
+        "patch_manifest_template": {
+            "episode_video_id": video_id,
+            "revision_id": None,
+            "revision_kind": "audit_remediation",
+            "reason": "resolve " + ", ".join(item["finding_id"] for item in findings),
+            "review_assertions": [
+                assertion
+                for item in findings
+                for assertion in item.get("review_assertions", [])
+            ],
+            "updates": [],
+            "inserts": [],
+            "removals": [],
+            "relations": [],
+            "calibration_redirects": [],
+        },
+        "model_contract": {
+            "semantic_decisions_required": True,
+            "allowed_inputs": [
+                "source_segments", "source_numeric_occurrences", "candidate_asserts",
+                "calibration_asserts", "review_assertions",
+            ],
+            "must_not_infer": [
+                "numbers absent from source", "calibration equivalence from shared topic only",
+                "relations used only to suppress overlap warnings",
+            ],
+        },
+        "writes_gold": False,
+    }
+    return {**core, "semantic_sha256": sha256_json(core)}
 
 
 def _assert_reviews(manifest: dict[str, Any], reviews: dict[Path, dict[str, Any]]) -> None:
@@ -184,14 +397,22 @@ def prepare_patch(video_id: str, data_root: Path, manifest: dict[str, Any]) -> t
         review.setdefault("candidates", []).append(candidate)
         candidates[candidate_id] = (path, candidate)
 
+    source_canonical_asserts = manifest.get("assertion_mode") == "source_canonical"
     for update in manifest.get("updates", []):
         candidate_id = update["candidate_id"]
         if candidate_id not in candidates:
             raise ValueError(f"unknown update candidate {candidate_id}")
         candidate = candidates[candidate_id][1]
         for path, expected in update.get("assert", {}).items():
-            if _path_value(candidate, path) != expected:
-                raise ValueError(f"{candidate_id}: assertion failed for {path}")
+            actual = _path_value(candidate, path)
+            if source_canonical_asserts:
+                actual = canonical_source_assert_value(actual)
+                expected = canonical_source_assert_value(expected)
+            if actual != expected:
+                raise ValueError(
+                    f"{candidate_id}: assertion failed for {path}; "
+                    f"current_source={json.dumps(actual, ensure_ascii=False, sort_keys=True)}"
+                )
         for path, replacement in update.get("set", {}).items():
             _set_path(candidate, path, replacement)
 
@@ -289,7 +510,38 @@ def prepare_patch(video_id: str, data_root: Path, manifest: dict[str, Any]) -> t
     return reviews, changed, manifest_hash
 
 
-def apply_patch(video_id: str, data_root: Path, manifest: dict[str, Any], apply: bool) -> dict[str, Any]:
+def _patch_preview(
+    video_id: str,
+    manifest_hash: str,
+    reviews: dict[Path, dict[str, Any]],
+    changed: list[str],
+) -> dict[str, Any]:
+    changes = []
+    for raw_path in sorted(changed):
+        path = Path(raw_path)
+        changes.append({
+            "path": raw_path,
+            "before": json_hashes(path) if path.exists() else None,
+            "after_semantic_sha256": sha256_json(reviews[path]),
+        })
+    core = {
+        "schema_version": "1.0.0",
+        "kind": "gold_review_patch_preview",
+        "episode_video_id": video_id,
+        "manifest_hash": manifest_hash,
+        "changes": changes,
+    }
+    return {**core, "preview_semantic_sha256": sha256_json(core)}
+
+
+def apply_patch(
+    video_id: str,
+    data_root: Path,
+    manifest: dict[str, Any],
+    apply: bool,
+    *,
+    preview_receipt: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     out = data_root / "processed" / video_id / "gold_extraction"
     manifest_hash = sha256_json(manifest)
     history_path = out / "fastpath_patch_history.json"
@@ -299,6 +551,19 @@ def apply_patch(video_id: str, data_root: Path, manifest: dict[str, Any], apply:
             return {"status": "ok", "mode": "already_applied", "changed_reviews": [], "manifest_hash": manifest_hash}
         raise ValueError("patch manifest was already applied")
     reviews, changed, manifest_hash = prepare_patch(video_id, data_root, manifest)
+    preview = _patch_preview(video_id, manifest_hash, reviews, changed)
+    if apply and manifest.get("assertion_mode") == "source_canonical":
+        if preview_receipt is None:
+            raise ValueError("source-canonical apply requires its clean patch preview receipt")
+        receipt_core = {
+            key: value for key, value in preview_receipt.items()
+            if key != "preview_semantic_sha256"
+        }
+        if (
+            preview_receipt.get("preview_semantic_sha256") != sha256_json(receipt_core)
+            or preview_receipt != preview
+        ):
+            raise ValueError("source-canonical patch preview receipt is stale or mismatched")
     if apply:
         provenance = _revision_provenance(manifest, history, manifest_hash)
         history["applied"].append({
@@ -310,7 +575,13 @@ def apply_patch(video_id: str, data_root: Path, manifest: dict[str, Any], apply:
         writes[history_path] = history
         write_json_batch(writes)
         record_operation_event(out, "patch", manifest_hash, {"changed_reviews": changed})
-    return {"status": "ok", "mode": "apply" if apply else "check", "changed_reviews": changed, "manifest_hash": manifest_hash}
+    return {
+        "status": "ok",
+        "mode": "apply" if apply else "check",
+        "changed_reviews": changed,
+        "manifest_hash": manifest_hash,
+        "preview": preview,
+    }
 
 
 def main() -> int:
@@ -321,9 +592,43 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--apply", action="store_true")
+    mode.add_argument("--generate-source-asserts", action="store_true")
+    mode.add_argument("--generate-audit-scaffold", action="store_true")
+    parser.add_argument("--output", type=Path, help="Job-local output for --generate-source-asserts.")
+    parser.add_argument("--preview-receipt", type=Path, help="Receipt written by --check and required by source-canonical --apply.")
     args = parser.parse_args()
     try:
-        result = apply_patch(args.video_id, args.data_root, load_json(args.patch), args.apply)
+        payload = load_json(args.patch)
+        if args.generate_audit_scaffold:
+            scaffold = generate_audit_remediation_scaffold(args.video_id, args.data_root, payload)
+            if args.output is not None:
+                write_json(args.output, scaffold)
+            result = {
+                "status": "ok",
+                "mode": "generate_audit_scaffold",
+                "output": str(args.output) if args.output else None,
+                "scaffold": scaffold if args.output is None else None,
+                "semantic_sha256": scaffold["semantic_sha256"],
+            }
+        elif args.generate_source_asserts:
+            manifest = generate_source_assert_manifest(args.video_id, args.data_root, payload)
+            if args.output is not None:
+                write_json(args.output, manifest)
+            result = {
+                "status": "ok",
+                "mode": "generate_source_asserts",
+                "output": str(args.output) if args.output else None,
+                "manifest": manifest if args.output is None else None,
+                "manifest_hash": sha256_json(manifest),
+            }
+        else:
+            preview_receipt = load_json(args.preview_receipt) if args.apply and args.preview_receipt else None
+            result = apply_patch(
+                args.video_id, args.data_root, payload, args.apply,
+                preview_receipt=preview_receipt,
+            )
+            if args.check and args.preview_receipt:
+                write_json(args.preview_receipt, result["preview"])
     except (GoldPauseError, ValueError, OSError, json.JSONDecodeError) as exc:
         print(json.dumps({"status": "error", "error": str(exc)}))
         return 1

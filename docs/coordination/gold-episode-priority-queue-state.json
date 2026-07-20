@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "gold_episode_priority_state",
+  "priority_queue_semantic_sha256": "0e12a69821141bb84b9bbd7ab2ff7f3b771a9bdd557752beed6357f83c89ebdc",
+  "total_episodes": 285,
+  "terminal_count": 12,
+  "remaining_count": 273,
+  "terminal_entries": [
+    {
+      "video_id": "beFYVzSv2bw",
+      "queue_rank": 1,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-17T22:59:54.633345+00:00",
+      "source": "historical_execution_log"
+    },
+    {
+      "video_id": "eCaODMtU5GY",
+      "queue_rank": 2,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-18T22:56:17.674442+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "NiT0-ABoVnk",
+      "queue_rank": 3,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-18T10:36:58.280459+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "jbFY16W5GTE",
+      "queue_rank": 4,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-18T20:48:55.758718+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "yhjZTeFNMHk",
+      "queue_rank": 5,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-19T22:17:07.818668+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "fBaX4ixKkFo",
+      "queue_rank": 18,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-18T20:49:07.900258+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "MiKloPf9-To",
+      "queue_rank": 78,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-18T22:56:29.116422+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "-46vMG3l8Jo",
+      "queue_rank": 80,
+      "state": "finalized_pending_audit",
+      "recorded_at": "2026-07-19T00:43:41.074795+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "0sB3ia6LIVM",
+      "queue_rank": 94,
+      "state": "finalized_pending_audit",
+      "recorded_at": "2026-07-19T01:02:17.292585+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "c_usaRCj0O4",
+      "queue_rank": 95,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-19T15:48:07.917283+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "VzvaaQK-Gv0",
+      "queue_rank": 100,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-19T15:48:33.007421+00:00",
+      "source": "runtime"
+    },
+    {
+      "video_id": "MGpXRmYvJDc",
+      "queue_rank": 123,
+      "state": "complete_passed",
+      "recorded_at": "2026-07-19T22:17:13.969554+00:00",
+      "source": "runtime"
+    }
+  ],
+  "next_episode": {
+    "video_id": "J3HKvFrOnAw",
+    "title": "Criando VSLs Que Vendem 100K/Dia Na Prática | Lucas Nóbrega - Segredos da Escala #077",
+    "duration_seconds": 11329.0,
+    "clean_segments": 1408,
+    "source_status": "cataloged_unverified",
+    "category": "vsl",
+    "category_label": "VSL",
+    "classification_evidence": {
+      "classification_title": "criando vsls que vendem 100k/dia na pratica | lucas nobrega",
+      "matched_terms": [
+        "vsls"
+      ],
+      "all_title_matches": {
+        "vsl": [
+          "vsls"
+        ]
+      }
+    },
+    "youtube_url": "https://www.youtube.com/watch?v=J3HKvFrOnAw",
+    "discovered_order": 129,
+    "published_time_text": "há 1 ano",
+    "rank": 6
+  },
+  "updated_at": "2026-07-19T22:17:13.969554+00:00",
+  "semantic_sha256": "55b0b31dab55a76e8335b2f722972d83bedd3aec470f27df3fbcf6b1da5ffd01"
+}

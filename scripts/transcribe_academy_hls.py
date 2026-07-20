@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import re
+import shutil
 import sys
 import urllib.parse
 import urllib.request
@@ -126,6 +127,17 @@ def queue_status_by_url(queue_path: Path) -> dict[str, str]:
     if not queue_path.exists():
         return {}
     return {row.get("source_url", ""): row.get("transcription_status", "") for row in csv_rows(queue_path)}
+
+
+def needs_hls_upgrade(row: dict[str, Any], raw_root: Path) -> bool:
+    transcript_path = raw_root / media_id_for_lesson(row) / "transcript_original.json"
+    if not transcript_path.exists():
+        return True
+    try:
+        provider = str(json.loads(transcript_path.read_text(encoding="utf-8")).get("provider", ""))
+    except (OSError, json.JSONDecodeError):
+        return True
+    return "large-v3-turbo" not in provider
 
 
 def existing_hls_download(media_path: Path, hls_info_path: Path, args: argparse.Namespace) -> tuple[Path, dict[str, Any]] | None:
@@ -254,16 +266,48 @@ def download_hls(row: dict[str, Any], args: argparse.Namespace) -> tuple[Path, d
     return returned_path, info
 
 
-def transcribe_hls_media(model: Any, media_path: Path, hls_info: dict[str, Any], model_name: str) -> dict[str, Any]:
+def transcribe_hls_media(
+    model: Any,
+    media_path: Path,
+    hls_info: dict[str, Any],
+    model_name: str,
+    max_transcription_chunks: int = 0,
+) -> dict[str, Any]:
     chunks = hls_info.get("chunks") or []
     if not chunks:
-        return transcribe_media(model, media_path, model_name)
+        return transcribe_media(model, media_path, model_name, vad_filter=True)
+
+    checkpoint_path = Path(chunks[0]["path"]).parent.parent / "transcript_chunk_checkpoints.json"
+    checkpoint: dict[str, Any] = {"model": model_name, "chunks": {}}
+    if checkpoint_path.exists():
+        try:
+            checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            checkpoint = {"model": model_name, "chunks": {}}
+    if checkpoint.get("model") != model_name:
+        checkpoint = {"model": model_name, "chunks": {}}
+    completed = checkpoint.setdefault("chunks", {})
+    processed_now = 0
+    for chunk in chunks:
+        chunk_path = str(chunk["path"])
+        if chunk_path in completed:
+            continue
+        if max_transcription_chunks and processed_now >= max_transcription_chunks:
+            break
+        chunk_info = transcribe_media(model, Path(chunk_path), model_name, vad_filter=True)
+        completed[chunk_path] = chunk_info
+        checkpoint["updated_at"] = utc_now()
+        write_json(checkpoint_path, checkpoint)
+        processed_now += 1
+
+    if len(completed) < len(chunks):
+        return {"incomplete": True, "completed_chunks": len(completed), "total_chunks": len(chunks)}
 
     all_segments: list[dict[str, Any]] = []
     language = None
     language_probability = None
     for chunk in chunks:
-        chunk_info = transcribe_media(model, Path(chunk["path"]), model_name)
+        chunk_info = completed[str(chunk["path"])]
         if language is None:
             language = chunk_info.get("language")
             language_probability = chunk_info.get("language_probability")
@@ -298,6 +342,10 @@ def process_row(args: argparse.Namespace, row: dict[str, Any], model: Any | None
     if transcript_path.exists() and not args.force:
         result["status"] = "skipped_existing_transcript"
         return result
+    if transcript_path.exists() and args.force:
+        backup_path = raw_dir / "transcript_original_tiny.json"
+        if not backup_path.exists():
+            shutil.copy2(transcript_path, backup_path)
     if args.dry_run:
         result["status"] = "dry_run"
         return result
@@ -307,7 +355,14 @@ def process_row(args: argparse.Namespace, row: dict[str, Any], model: Any | None
     if model is None:
         raise RuntimeError("transcription model was not loaded")
 
-    media_info = transcribe_hls_media(model, media_path, hls_info, args.model)
+    media_info = transcribe_hls_media(
+        model, media_path, hls_info, args.model, args.max_transcription_chunks
+    )
+    if media_info.get("incomplete"):
+        result["status"] = "transcription_in_progress"
+        result["completed_chunks"] = media_info["completed_chunks"]
+        result["total_chunks"] = media_info["total_chunks"]
+        return result
     synthetic_row = {
         "lesson_title": row.get("lesson_title"),
         "source_url": row.get("source_url"),
@@ -331,11 +386,13 @@ def main() -> int:
     parser.add_argument("--manifest", default=data_path("exports", "vturb_academy_lesson_media_manifest.json"), type=Path)
     parser.add_argument("--queue", default=data_path("input", "academy_video_transcription_queue.csv"), type=Path)
     parser.add_argument("--limit", default=3, type=int)
+    parser.add_argument("--media-id", action="append", default=[])
     parser.add_argument("--max-download-mb", default=250, type=int)
     parser.add_argument("--max-duration-min", default=0, type=int)
     parser.add_argument("--max-segments", default=0, type=int)
     parser.add_argument("--max-height", default=360, type=int)
     parser.add_argument("--chunk-duration-min", default=20, type=int)
+    parser.add_argument("--max-transcription-chunks", default=0, type=int)
     parser.add_argument("--model", default="tiny")
     parser.add_argument("--deps-dir", default=Path(".codex_deps/transcription"), type=Path)
     parser.add_argument("--model-cache", default=data_path("cache", "faster_whisper"), type=Path)
@@ -352,13 +409,27 @@ def main() -> int:
     args = parser.parse_args()
 
     retry_statuses = set(args.retry_status)
+    requested_media_ids = set(args.media_id)
     status_by_url = queue_status_by_url(args.queue)
     rows = [
         row
         for row in load_manifest_rows(args.manifest)
         if row.get("main_m3u8_url")
         and row.get("source_url")
-        and (not status_by_url.get(row.get("source_url", "")) or status_by_url.get(row.get("source_url", "")) in retry_statuses)
+        and needs_hls_upgrade(row, args.raw_root)
+        # A requested media ID is an operator-selected recovery target.  It
+        # still must have an HLS source and need an upgrade, but it must not
+        # be skipped because an export queue status is stale or duplicated.
+        and (
+            (requested_media_ids and media_id_for_lesson(row) in requested_media_ids)
+            or (
+                not requested_media_ids
+                and (
+                    not status_by_url.get(row.get("source_url", ""))
+                    or status_by_url.get(row.get("source_url", "")) in retry_statuses
+                )
+            )
+        )
     ][: args.limit]
 
     model = None if args.dry_run or not rows else load_whisper_model(args.model, args.model_cache, args.deps_dir)

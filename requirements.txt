@@ -3,4 +3,5 @@ python-docx
 openpyxl
 python-pptx
 faster-whisper
+yt-dlp
 jsonschema

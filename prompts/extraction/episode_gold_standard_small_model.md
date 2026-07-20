@@ -5,11 +5,16 @@ You are working in this repository:
 `C:\Users\luish\OneDrive\Code\Marketing_Swipe_File`
 
 Your task is to reprocess exactly one podcast episode as a gold-standard,
-exhaustive extraction:
+exhaustive extraction. The specific episode binding (video ID, data root,
+title, any suspected source defects and any pre-identified calibration probes)
+is supplied per episode by a work order, not by this prompt:
 
-- YouTube video ID: `L7u7r6rOl68`
-- Live data root: `C:\MSF-data\Marketing_Swipe_File`
-- Episode title: `Lucrando Multiplos 7D/Mes Com Perpetuo White (Aos 21 Anos!) | Lucas Ramos - Segredos da Escala #140`
+- Per-episode work order: `prompts/extraction/episode_work_order_template.md`
+  (fill one per episode; the original L7u7r6rOl68 seed is preserved in
+  `prompts/extraction/episode_work_order_L7u7r6rOl68.md`).
+- Single normative source for the extraction rules:
+  `docs/gold-extraction-contract.md`. Where this prompt and the contract
+  overlap, the contract governs.
 
 ## Objective
 
@@ -27,13 +32,16 @@ source. Preserve it unchanged for comparison.
 
 ## Scope Boundary
 
-- Work only on episode `L7u7r6rOl68`.
+- Work only on the single episode named in the work order (`<video_id>`).
 - Do not process or scale to other episodes.
 - Do not modify Supabase or any remote system.
 - Do not overwrite `insights_v2.json`, curated exports, or master exports.
 - Do not publish, commit, push, or deploy unless explicitly requested.
 - Generated gold-standard artifacts must remain separate from the current v1
   and v2 sources.
+- Extraction and final audit are source-only. Do not open, summarize, index or
+  compare legacy insight content before the gold packet and audit are frozen.
+  Legacy files may be fingerprinted as protected bytes without parsing them.
 - Preserve unrelated user changes already present in the worktree.
 - This prompt defines the complete executor phase in the active chat. Do not
   create coordinator/worker tasks or intermediate review handoffs.
@@ -47,31 +55,31 @@ source. Preserve it unchanged for comparison.
 
 Read these files once before acting:
 
-1. `skills/marketing-swipe-file-extract-insights/SKILL.md`
-2. `docs/insight-quality-checklist.md`
-3. `prompts/extraction/base_insight_extraction_v2.md`
-4. `scripts/collect_youtube_transcript_from_playwright_snapshot.py`
-5. `scripts/create_extraction_chunks.py`
-6. `schemas/insights_v2.schema.json`
+1. `docs/gold-extraction-contract.md`
+2. `skills/marketing-swipe-file-scale-batch/SKILL.md`
+3. prepared gold work orders for the active episode
+4. current raw metadata, transcript and content segments
+
+Preparation also creates `processed/<video_id>/transcript_semantic_index.jsonl`
+and its status file. Use the bounded index summary to prioritize numeric
+trajectories, mechanisms, outcomes, caveats, speaker-role risks and chunk
+boundaries. It is navigation only: read the complete chronological transcript,
+preserve each source quote verbatim and never turn an index cue into a claim.
+
+Legacy prompts, schemas and prior insight files are not execution context for
+gold. A separate post-gold benchmark may read them only after packet freeze.
 
 Use the existing repository conventions where they are useful, but do not
 inherit the v2 rule that says "quality, not inventory" or its five-insight cap.
 
 ## Known Problems To Verify
 
-Do not assume these statements are correct without checking the files, but use
-them as a focused starting point:
-
-- The source transcript contains 1,980 segments.
-- The first 1,941 segments appear to be the real episode.
-- The final 39 segments appear to be unrelated recommended-video titles
-  captured by the YouTube UI snapshot collector.
-- Those contaminated segments entered several chunks and produced malformed or
-  misleading time ranges.
-- The current v2 extraction produced one insight in 14 chunks and zero in two
-  chunks, despite allowing up to five.
-- Existing validation measured schema validity, exact quotes, title uniqueness,
-  and promo noise, but did not measure insight recall.
+Suspected source defects are episode-specific. Read them from the per-episode
+work order (`Known problems to verify` section) and verify each against the
+files before trusting it — never assume a listed defect is correct, and never
+invent one. Typical classes: contaminated recommended-video titles captured
+after the real transcript, timestamps that move backward, chunks whose start
+time is greater than their end time, and precision-first v2 undercounting.
 
 ## Non-Negotiable Evidence Rules
 
@@ -93,19 +101,92 @@ persistence units, not handoff or review boundaries.
 
 ### Episode Finalization Guardrails
 
+The only production architecture is `chronological_hybrid_v1`. Read the entire
+episode chronologically and author the final candidates in that pass. Use the
+semantic index, workbench, numeric occurrence matrix, calibration bindings and
+boundary inventory as deterministic controls only. Never invoke the blind
+semantic compiler, shard reducer, relation-window model or gap-resolver research
+lane for a real episode.
+
 For a Fast Path episode, retain the full reading and semantic-recall standard
-while minimizing duplicated context. When the episode fits the active context,
-produce one complete episode payload and run `run_gold_episode_fast.py --check`.
-Repair the complete in-memory inventory before the first write, then use one
-`--apply` to persist and finalize. Use review batches of 8-12 chunks only as a
-fallback for an episode that cannot fit safely in one semantic pass.
+while minimizing duplicated context. First run the Windows-native runtime
+preflight with `.venv\\Scripts\\python.exe -m scripts.verify_gold_runtime
+--runtime windows_native`. When the episode fits the active context, start the
+official fast runner directly from that `.venv`, then read
+the generated `episode_context.jsonl` from first to last record. Confirm its
+`transcript_semantic_index.status=ready`; missing or stale derived navigation
+does not authorize a read-only backfill on a protected episode. Produce one
+`gold_authoring_manifest_v1` and pass it with `--authoring-manifest`;
+candidates appear once, use the numeric `chunk` owner, defaults, clean-index
+ranges, shorthand numbers, local relation aliases and explicit
+`zero_insight_chunks`. V3 authoring keys expand deterministically to v2 before
+validation; persisted schemas do not change. Never type or normalize a quote.
+Before prelint, check each candidate: procedures/frameworks/scripts have steps;
+material numbers preserve literal raw; reported quantitative cases preserve
+attribution, risk and caveats; relations are symmetric/acyclic; broad evidence
+is narrowed or justified.
+Reconcile every material numeric mention in minimal and proposition-bearing
+support evidence against an individual `numbers` record. A candidate is not
+closed merely because one record exists. Preserve repeated before/after values
+and sequence multiplicity. For ASR-separated decimals such as `86,8 5%`, keep
+the literal raw, use `value_status=inferred`, and add a caveat; ratios such as
+`1.2x` remain independent records.
+Review every high-risk excluded cluster: capture the supported proposition or
+acknowledge it as incidental with a non-empty source-based justification.
+
+Run pure `--dry-run --authoring-manifest` while authoring, then use `--prelint`
+once the complete manifest is believed to be closed. Repair the consolidated in-memory inventory
+for procedural steps, literal numbers, evidence scope and risk
+acknowledgements. It must not create a preview receipt. Dry-run also must not
+write session telemetry. Both evaluate evidence/ledger/risk to a fixed
+point. Preserve support-only evidence with a `retained_support` acknowledgement,
+and disposition every claim-evidence warning by its stable `warning_id` as
+`confirmed_source_backed` or `defer_to_final_audit` with a source-based reason.
+When `--output` is present, use the bounded stdout inventory first. Open the
+full report only for a blocker or genuinely new diagnostic; do not reload the
+transcript from that report. Risk acknowledgements bind to stable source
+lineage and remain valid for residual subsets, but never for new material.
+If retained support and an incidental residual share one source lineage, keep
+separate scoped acknowledgements; do not collapse them into one disposition.
+Treat numeric trajectory, outcome, before/after, mechanism continuation,
+counterexample, limitation and claim-support gaps as `must_close`. An
+`incidental` disposition for those items must name every reviewed source
+segment. Low-risk overlap/editorial ambiguity remains `audit_only` and visible
+to the final auditor without blocking finalization.
+`needs_revision`, compiler issues, `hard_blockers`, and `review_gate` from
+dry-run/prelint are local repair inventory, not permission to end the task.
+Continue in the same epic: repair the same source-backed manifest, repeat the
+read-only diagnostic, and proceed to one-shot. Do not emit a final response
+until completion/audit succeeds or a genuine external terminal condition from
+`AGENTS.md` occurs.
+After prelint is clean, use `--one-shot`: it creates the receipt, persists,
+finalizes, and emits dossier v2 in one process. Separate `--check` and `--apply`
+are recovery/debug routes, not the normal sequence. Do not call recorder,
+autocheck, build, or an episode-specific audit probe separately on this route.
+Use review batches of 8-12 chunks only as a fallback for an episode that cannot
+fit safely in one semantic pass.
+For numeric selectors prefer exact `source_literal` or `source_span` bound to a
+source segment; use ordinal `source_occurrence` only for legacy compatibility.
+Ambiguous literals must be rejected, not guessed. Do not infer a WSL runtime
+from the integrated terminal shell; WSL is optional and only an explicitly
+certified Linux route may use `scripts/invoke_gold_wsl.ps1`. After a passed
+final audit, use the one-process
+`scripts.complete_gold_episode` route and require its completion receipt,
+performance report and generated final response. Mirror only these final
+verified artifacts to Windows when a mirror job directory is supplied. A valid
+completion receipt is terminal; do not run an extra Verify/Sync/Verify cycle.
+The generated runtime retrospective is the timing authority: it separates
+active wall time, deterministic command time, measurable model judgment,
+inter-turn idle, phase transitions and artifact bytes under
+the episode `run_id`; do not reconstruct timing manually.
 Before the packet, finish the episode through one consolidated diagnostic and
-source-backed remediation. A post-persistence correction uses a transactional patch with a
-non-empty `revision_id`, `revision_kind`, and `reason`, followed by one
-read-only check and one atomic apply. Preserve assertions, provenance and
-idempotence; do not create an artificial patch-count gate. Keep physical file
-hashes for provenance, but compare parsed JSON semantically so CRLF and LF
-alone do not create a false editorial delta.
+one adversarial executor pass. The manifest must review evidence/numeric
+ownership, excluded material, host attribution, before/after mechanisms and
+outcomes, calibration equivalence, boundaries and counterexamples. Record the
+pass against `authoring_decisions_sha256`; any semantic edit invalidates it.
+Reviews, ledger, calibration and workbench are derived from this manifest.
+Never create job-local Python helpers, `ledger_updates`, calibration redirects
+or direct review edits in the normal route.
 
 Hard blockers such as unsupported evidence, invalid ledger destinations,
 relations, or calibration targets stop finalization. Editorial ambiguity,
@@ -113,6 +194,30 @@ possible promo/interviewer support, overlap, caveats, and semantic calibration
 uncertainty remain audit warnings. Warnings stay visible in the five-file
 packet manifest for the final audit; they are not a reason to stop or emit an
 intermediate handoff.
+
+For an episode above 1,300 transcript segments, do not force the reading pass
+into the short-episode target. Before the first one-shot, perform one
+consolidated semantic-closure pass over multi-value numbers, proof
+demonstrations, procedures, parent/child decompositions, excluded boundary
+spans, speaker attribution, calibration equivalence and caveats. This replaces
+repeated post-audit discovery; it is not an intermediate audit.
+
+If the final audit requests changes after every chunk is already reviewed, edit
+the complete authoring manifest, bind `base_manifest_semantic_sha256` and use
+`run_gold_episode_fast.py --remediate --authoring-manifest <manifest>` with a
+new `revision_id`. The runtime replaces the semantic snapshot once, derives all
+outputs, creates one remediated dossier and emits the focal reaudit delta.
+Do not build a parallel patch API. `changes_requested` is an internal
+`remediation_required` state: it must not create `final_response.md` or close
+the epic. Continue through remediation, a fresh dossier, reaudit, and only then
+completion after `passed/open_findings=0`.
+The one-shot seals dossier hash, route, model and effort in
+`audit_request_receipt.json`. Materialize the Sol response immediately as a
+bound envelope before any lifecycle write. On interruption without envelope,
+use `--resume-audit`; it restarts only Sol and marks the abandoned span
+`interrupted`. Completion consumes the materialized envelope whose request and
+artifact hashes match. Do not route an optional WSL audit through UNC or
+`/mnt/c`.
 
 For a multi-episode wave, batch and episode completion remain internal to the
 active execution. Compile each complete episode read-only first, repair the
@@ -201,7 +306,7 @@ Each atomic candidate must contain at least:
 
 ```json
 {
-  "candidate_id": "L7u7r6rOl68-candidate-0001",
+  "candidate_id": "<video_id>-candidate-0001",
   "chunk_id": "string",
   "title_ptbr_ascii": "specific title",
   "claim_kind": "principle | tactic | playbook_step | framework | quantitative_case | test_result | copy_pattern | script | warning | example",
@@ -262,7 +367,7 @@ write a ledger item:
   "segment_range": "segment-0001..segment-0003",
   "signal_types": ["number", "test_result"],
   "disposition": "captured | excluded | merged",
-  "candidate_ids": ["L7u7r6rOl68-candidate-0001"],
+  "candidate_ids": ["<video_id>-candidate-0001"],
   "reason": "required when excluded or merged"
 }
 ```
@@ -302,6 +407,27 @@ The audit must explicitly check:
 Any omission found must be added to the inventory and the audit rerun. Stop only
 when the audit reports zero uncovered high-signal claims.
 
+Use compact-v3 source selectors for material numbers instead of retyping their
+source form. Point each record at the evidence `segment_id` or clean index and
+select a literal character span or numeric occurrence. The compiler must copy
+`raw` byte for byte; never normalize a number quote.
+
+Before finalization, resolve every item in `semantic_closure_index`: adjacent
+evidence tails, the episode tail, chunk boundaries and evidence containment.
+Use `captured` or `retained_support` only with a candidate that expresses the
+same proposition. Use `incidental` with a source-based reason, or
+`relation_not_useful` for a containment group that is not a useful hierarchy.
+Do not create a claim or relation merely to silence the gate.
+
+Use `semantic_workbench` as the single source-first navigation surface before
+apply. Reconstruct every clean index through its coverage blocks, then close
+`must_close` items in `review_order`. For each candidate, compare the claim to
+the exact evidence ranges, number records, caveats and calibration links in
+`candidate_bindings`. For each target, confirm the same proposition through
+`calibration_bindings`; a shared topic is not sufficient. Structural source
+errors block. Genuine semantic ambiguity remains an audit warning with a
+source-based disposition.
+
 This pass must validate semantic destination, not only ledger presence. For
 each `captured` or `merged` signal, confirm that the referenced candidate states
 the same useful proposition. A candidate about the same topic or a nearby
@@ -311,32 +437,19 @@ offer transition, pitch, result, retention effect, condition, or caveat.
 
 ## Mandatory Calibration Checks
 
-The final inventory must capture these source claims separately if the clean
-transcript confirms them. Treat them as calibration checks, not as the complete
-answer:
-
-- approximately 15,000 front-end buyers per month;
-- approximately 10 VSL lead variants tested per month;
-- one winning lead out of five in the cited scaled VSL case;
-- a post-price bonus with a 60-second timer and its reported conversion effect;
-- extending a VSL from approximately 18 to 25 minutes with about seven extra
-  minutes of closing content;
-- a delayed button with a reported 15-20 percent discount;
-- the price movement from approximately BRL 200 to BRL 160;
-- the report that about half of sales occurred at the discounted price;
-- approximately 500 buyers entering per day;
-- weekly workshop attendance and conversion figures;
-- the business effect of 5, 10, or 15 percent conversion improvements at high
-  volume.
-
-Do not force these into the output if the transcript does not support them
-verbatim. If any are not found, document the search and evidence result.
+Pre-identified calibration probes are episode-specific. Read them from the
+per-episode work order (`Mandatory calibration checks` section). Treat each as
+a calibration probe, not as the complete answer: capture it separately only if
+the clean transcript confirms it verbatim, and never force it into the output
+when the transcript does not support it. If a listed probe is not found,
+document the search and the evidence result. When the work order lists no
+probes, run the standard recall passes without them.
 
 ## Required Artifacts
 
 Write gold-standard outputs under a separate episode subdirectory such as:
 
-`C:\MSF-data\Marketing_Swipe_File\processed\L7u7r6rOl68\gold_extraction\`
+`C:\MSF-data\Marketing_Swipe_File\processed\<video_id>\gold_extraction\`
 
 Required files:
 
@@ -372,6 +485,13 @@ Before declaring completion, verify:
 - focused tests and existing relevant validators pass.
 - the episode remains `awaiting_external_audit` until the dedicated final Sol
   audit records a valid passed report with zero open findings.
+
+The final Sol pass consumes dossier v3.1 by reading the semantic workbench
+first, then candidates, numeric
+coverage/calibration, then the complete transcript with inline ledger. After a
+changes-requested audit, update the same source-canonical authoring manifest and
+reaudit its automatically generated focal delta; return to the full dossier
+whenever an integral invariant changes.
 
 ## Final Response
 

@@ -123,3 +123,43 @@ modelo Sol, nunca um gate intermediario.
 A mediana real de dez minutos deve ser confirmada na proxima wave por faixa de
 tamanho. Este epico remove o overhead repetitivo; ele nao promete que um
 episodio excepcionalmente longo possa ser lido integralmente em dez minutos.
+
+## Hardening apos o piloto Sol
+
+O piloto de 1.067 segmentos revelou que a rota existia, mas nao era obrigatoria.
+O hardening P0/P1 de 2026-07-15 acrescentou:
+
+- receipt de preview limpo ligado ao payload, fontes, reviews, revisao e export;
+- recusa de apply sem receipt ou com receipt stale;
+- verificacao do mesmo receipt pelo finalizer;
+- `--one-shot` para preview, apply, finalizer e audit bundle em um processo;
+- payload compacto com defaults, aliases e ranges de evidencia;
+- leitura em ate tres slabs, recall esparso e telemetria desde o preflight;
+- job-dir Linux-native obrigatorio no WSL;
+- correcao da falsa contagem causada por artigos `um/uma`.
+
+O proximo episodio real deve usar essa rota sem recorder, autocheck, build ou
+probe ad hoc separados.
+
+## Medicao do piloto runtime 001
+
+O episodio real `E9nZMgzzxz4` validou a rota one-shot, WSL Linux-native,
+paridade, uma unica escrita inicial, packet e auditoria final, mas nao validou a
+meta de dez minutos:
+
+- tempo total do epico: 1h09m14s;
+- leitura e composicao: 17m44s;
+- auditoria Sol inicial: 19m42s;
+- duas remediacoes e reauditorias: aproximadamente 9 minutos;
+- preparacao e fechamento fora do nucleo instrumentado: 21m34s;
+- codigo deterministico: sub-segundo internamente.
+
+A proxima otimizacao nao deve alterar o one-shot validado. Ela deve compactar o
+contexto integral, criar recall de clusters excluidos de alto risco, gerar um
+dossier unico para auditoria e produzir um receipt final auto-verificavel. A
+retrospectiva canonica e:
+`docs/coordination/msf-r20-gold-runtime-pilot-001-retrospective.md`.
+
+As faixas de 1-2, 5-8, 5-8 e 1-2 minutos somam 12-20 minutos. O marco seguinte
+e ate 18 minutos com qualidade inalterada; dez minutos permanece meta stretch
+e exige dois pilotos consecutivos antes de virar expectativa operacional.

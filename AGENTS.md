@@ -40,28 +40,93 @@ e deterministicamente validado. Não há auditoria intermediária.
 O episódio é a unidade isolada de extração e persistência. A wave ou épico é a
 unidade de execução e auditoria final.
 
+### Arquitetura oficial
+
+A única arquitetura gold de produção é `chronological_hybrid_v1`:
+
+- leitura cronológica integral e composição semântica pelo modelo ativo;
+- `transcript_semantic_index`, `semantic_workbench`, inventário numérico,
+  calibrações e fronteiras usados apenas como navegação e controle;
+- cada risco material fechado como candidato source-backed, suporte retido ou
+  exclusão incidental com escopo fonte e justificativa;
+- duplicatas exatas bloqueadas para decisão explícita, nunca mescladas
+  automaticamente;
+- prelint consolidado, persistência/finalização one-shot e auditoria Sol final
+  única sobre o dossier source-complete.
+
+Os módulos `gold_semantic_compiler.py`, `gold_semantic_adapter_benchmark.py`,
+`gold_semantic_global_reducer.py` e `gold_semantic_inventory.py` são somente
+artefatos de pesquisa. Não fazem parte da assinatura executável do runtime,
+não substituem a leitura cronológica e não podem processar episódios gold reais
+sem um novo épico de benchmark explicitamente autorizado pelo owner.
+
 1. Registre `git status --short --branch` antes da primeira escrita.
 2. Faça preflight de runtime, módulos, temp gravável, ownership, raw, metadata,
    transcript, export e fingerprints.
+   A fila de prioridade ordena episódios, mas não certifica fontes: a
+   disponibilidade real é sempre a leitura do data root ativo para o próximo ID.
+   Nunca conclua que há staging WSL, perda de dados ou fonte pronta a partir de
+   `source_status` histórico da fila.
 3. Preserve reviews cujo `input_hash` continue válido.
 4. Leia integralmente os chunks pendentes em ordem cronológica.
-5. Compile drafts com o compilador oficial e corrija o inventário completo antes
-   de cada persistência atômica.
-6. Faça recall adversarial global, inclusive fronteiras adjacentes, números,
-   comparações, testes, scripts, steps, condições, alertas e caveats.
-7. Corrija `hard_blockers` source-backed; mantenha ambiguidades editoriais como
+5. Na fast lane, inicie por `run_gold_episode_fast.py --context --slabs 3`, use
+   `gold_authoring_manifest_v1` e mantenha o job-dir transitório no filesystem
+   nativo do runtime Windows.
+6. O manifesto autoral é a única fonte de decisões do modelo. Reviews, ledger,
+   calibração e workbench são derivados dele; `ledger_updates`, redirects de
+   calibração pós-build e helpers específicos do episódio não fazem parte do
+   fluxo normal. Compile com `--check` e corrija o inventário esparso completo antes
+   da primeira persistência. `--apply` deve consumir o receipt da mesma prévia;
+   `--one-shot` pode reunir prévia, apply, finalizer e audit bundle num processo.
+   `needs_revision`, `hard_blockers`, `review_gate` e issues do compilador são
+   estados diagnósticos locais, não condições de encerramento do chat. Consuma
+   o manifesto de reparo, corrija o mesmo manifesto source-backed e repita checks no
+   mesmo épico. Não publique resposta final enquanto restar apenas esse tipo de
+   inventário rotineiro. O CLI sinaliza isso com `terminal=false`,
+   `continue_required=true` e `workflow_disposition` explícito.
+7. Faça uma única passagem adversarial global dentro da autoria, inclusive
+   ownership de evidência/números, blocos materiais excluídos, fala de host,
+   equivalência de calibração, fronteiras adjacentes, comparações, testes,
+   scripts, steps, condições, alertas e caveats. Grave o receipt da passagem no
+   próprio manifesto; qualquer edição semântica posterior o invalida.
+8. Corrija `hard_blockers` source-backed; mantenha ambiguidades editoriais como
    `audit_warnings` visíveis no packet.
-8. Use o finalizador aprovado somente quando o episódio estiver semanticamente
-   completo. Não gere packet intermediário.
-9. Em waves, processe os episódios sequencialmente e de forma isolada. Um ramo
+9. Use o finalizador aprovado somente quando o episódio estiver semanticamente
+   completo. Não gere packet intermediário. O dossier final cria antes da fase
+   Sol um `audit_request_receipt` ligado ao seu hash. O primeiro artefato após o
+   retorno Sol é o envelope validado; uma interrupção retoma apenas a auditoria.
+   Findings geram um único patch do manifesto e reauditoria delta focal.
+10. Em waves, processe os episódios sequencialmente e de forma isolada. Um ramo
    terminalmente bloqueado não impede os demais.
-10. Depois de todos os ramos terminais, execute o gate consolidado e somente
+11. Depois de todos os ramos terminais, execute o gate consolidado e somente
     então inicie a auditoria final única em Sol.
 
 Ledger e calibração são derivados dos candidatos finais. Uma disposição
 `captured` ou `merged` só é válida quando o candidato expressa a mesma
 proposição útil sustentada pelo segmento. Quotes verbatim nunca são
 normalizadas. Campos editoriais internos seguem ASCII/NFKD conforme o contrato.
+
+## Runtime gold canonico: Windows nativo
+
+O agente do app e o runtime gold usam Windows nativo. Isso preserva a base de
+projetos e o historico de chats do Codex, alem de manter o data root ativo.
+
+- Toda operacao gold usa a `.venv` do repositorio e o data root Windows ativo:
+  `.\.venv\Scripts\python.exe -m scripts.verify_gold_runtime --runtime windows_native --data-root C:\MSF-data\Marketing_Swipe_File`.
+- Antes da primeira escrita, esse verificador deve retornar `status=pass`,
+  Python 3.12 da `.venv` e temp gravavel.
+- PowerShell e o shell integrado WSL sao somente formas de abrir um terminal.
+  Nenhuma dessas preferencias instala, seleciona ou prova uma distribuicao WSL.
+  O comando gold canonico continua sendo o Python da `.venv` Windows.
+- WSL e opcional e experimental. So pode ser escolhido explicitamente quando
+  uma distribuicao estiver registrada, o clone Linux, a `.venv` Linux e o data
+  root Linux forem certificados. Nunca deduza isso de um shell configurado como
+  WSL e nunca bloqueie um episodio Windows por ausencia de Ubuntu.
+- `scripts/invoke_gold_wsl.ps1`, planos e receipts WSL anteriores sao
+  provenance historico. Nao sao instrucoes de execucao para um episodio novo.
+- Nao use `bash -lc`, here-string, loop ou pipeline PowerShell para encapsular
+  uma execucao gold. Passe argumentos explicitos ao Python ou a um launcher
+  certificado para evitar perda de quoting e saida.
 
 ## Segurança e ownership
 
@@ -96,6 +161,11 @@ somente quando houver:
 Uma ação indivisível sem progresso observável por 30 minutos deve ser
 interrompida. Registre a ação, saída e tempo, escolha uma rota segura
 materialmente diferente e continue quando ela permanecer no escopo.
+
+Um `hard_blocker` do prelint bloqueia somente persistência/finalização até ser
+corrigido. Ele não é, por si só, um bloqueio terminal do épico. A resposta pode
+encerrar como incompleta apenas por uma das condições reais acima, nunca porque
+um diagnóstico local ainda exige reparo editorial ou estrutural source-backed.
 
 ## Encerramento
 

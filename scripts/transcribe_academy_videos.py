@@ -8,6 +8,7 @@ import csv
 import html
 import json
 import re
+import shutil
 import subprocess
 import sys
 import urllib.parse
@@ -81,30 +82,39 @@ def confirm_url_from_html(html_text: str, file_id: str) -> str | None:
     return None
 
 
-def download_url(url: str, output_path: Path, max_bytes: int | None = None) -> tuple[int, str]:
-    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+def download_url(url: str, output_path: Path, max_bytes: int | None = None, resume: bool = True) -> tuple[int, str]:
+    partial = output_path.with_suffix(output_path.suffix + ".part")
+    offset = partial.stat().st_size if resume and partial.exists() else 0
+    headers = {"User-Agent": "Mozilla/5.0"}
+    if offset:
+        headers["Range"] = f"bytes={offset}-"
+    request = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(request, timeout=180) as response:
         content_type = response.headers.get("content-type", "")
         content_length = response.headers.get("content-length")
-        if max_bytes and content_length and int(content_length) > max_bytes:
-            raise RuntimeError(f"remote file is {content_length} bytes, over limit {max_bytes}")
+        content_range = response.headers.get("content-range", "")
+        remote_total = int(content_range.rsplit("/", 1)[-1]) if "/" in content_range else offset + int(content_length or 0)
+        if max_bytes and remote_total > max_bytes:
+            raise RuntimeError(f"remote file is {remote_total} bytes, over limit {max_bytes}")
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        total = 0
-        with output_path.open("wb") as file:
+        append = offset > 0 and response.status == 206
+        if not append:
+            offset = 0
+        total = offset
+        with partial.open("ab" if append else "wb") as file:
             while True:
                 chunk = response.read(1024 * 1024)
                 if not chunk:
                     break
                 total += len(chunk)
                 if max_bytes and total > max_bytes:
-                    file.close()
-                    output_path.unlink(missing_ok=True)
                     raise RuntimeError(f"download exceeded limit {max_bytes} bytes")
                 file.write(chunk)
+    partial.replace(output_path)
     return total, content_type
 
 
-def download_drive_file(file_id: str, output_path: Path, max_bytes: int | None = None) -> tuple[int, str, str]:
+def download_drive_file(file_id: str, output_path: Path, max_bytes: int | None = None, resume: bool = True) -> tuple[int, str, str]:
     first_url = google_uc_url(file_id)
     request = urllib.request.Request(first_url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(request, timeout=180) as response:
@@ -115,7 +125,7 @@ def download_drive_file(file_id: str, output_path: Path, max_bytes: int | None =
             confirm_url = confirm_url_from_html(html_text, file_id)
             if not confirm_url:
                 raise RuntimeError("Drive returned HTML and no confirm URL was found")
-            size, final_type = download_url(confirm_url, output_path, max_bytes=max_bytes)
+            size, final_type = download_url(confirm_url, output_path, max_bytes=max_bytes, resume=resume)
             return size, final_type, confirm_url
 
         content_length = response.headers.get("content-length")
@@ -146,8 +156,8 @@ def load_whisper_model(model_name: str, download_root: Path, deps_dir: Path):
     return WhisperModel(model_name, device="cpu", compute_type="int8", download_root=str(download_root))
 
 
-def transcribe_media(model: Any, media_path: Path, model_name: str) -> dict[str, Any]:
-    segments_iter, info = model.transcribe(str(media_path), beam_size=1, vad_filter=True)
+def transcribe_media(model: Any, media_path: Path, model_name: str, vad_filter: bool) -> dict[str, Any]:
+    segments_iter, info = model.transcribe(str(media_path), beam_size=5, vad_filter=vad_filter)
     segments = []
     for index, segment in enumerate(segments_iter):
         start = round(float(segment.start), 3)
@@ -170,6 +180,63 @@ def transcribe_media(model: Any, media_path: Path, model_name: str) -> dict[str,
         "provider": f"faster_whisper:{model_name}",
         "segments": segments,
     }
+
+
+def media_duration_seconds(media_path: Path) -> float:
+    completed = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nokey=1:noprint_wrappers=1", str(media_path)],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return float(completed.stdout.strip() or 0)
+
+
+def split_media_chunks(media_path: Path, chunk_dir: Path, chunk_seconds: int) -> list[tuple[Path, float]]:
+    if chunk_seconds <= 0 or media_duration_seconds(media_path) <= chunk_seconds:
+        return [(media_path, 0.0)]
+    chunk_dir.mkdir(parents=True, exist_ok=True)
+    existing = sorted(chunk_dir.glob("part_*.m4a"))
+    if not existing:
+        output = chunk_dir / "part_%03d.m4a"
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", str(media_path), "-map", "0:a:0", "-vn", "-c:a", "aac", "-b:a", "64k", "-f", "segment", "-segment_time", str(chunk_seconds), "-reset_timestamps", "1", str(output)],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        existing = sorted(chunk_dir.glob("part_*.m4a"))
+    return [(path, index * float(chunk_seconds)) for index, path in enumerate(existing)]
+
+
+def transcribe_chunked_media(model: Any, media_path: Path, model_name: str, chunk_dir: Path, chunk_seconds: int, vad_filter: bool) -> dict[str, Any]:
+    chunks = split_media_chunks(media_path, chunk_dir, chunk_seconds)
+    if len(chunks) == 1:
+        return transcribe_media(model, media_path, model_name, vad_filter)
+    segments: list[dict[str, Any]] = []
+    language = None
+    probability = None
+    for path, offset in chunks:
+        info = transcribe_media(model, path, model_name, vad_filter)
+        language = language or info.get("language")
+        probability = probability or info.get("language_probability")
+        for segment in info.get("segments", []):
+            segments.append({**segment, "start_seconds": round(float(segment["start_seconds"]) + offset, 3)})
+    for index, segment in enumerate(segments):
+        segment["index"] = index
+    return {
+        "language": language,
+        "language_probability": probability,
+        "duration_seconds": round(media_duration_seconds(media_path)),
+        "provider": f"faster_whisper:{model_name}:audio_chunks",
+        "segments": segments,
+    }
+
+
+def is_probably_no_speech(media_info: dict[str, Any]) -> bool:
+    texts = [re.sub(r"\s+", " ", str(segment.get("text") or "").strip().lower()) for segment in media_info.get("segments", [])]
+    unique = {text for text in texts if text}
+    return len(texts) >= 3 and len(unique) == 1 and len(next(iter(unique), "")) <= 32
 
 
 def write_episode_metadata(media_id: str, row: dict[str, str], media_info: dict[str, Any], raw_dir: Path) -> None:
@@ -277,21 +344,42 @@ def process_row(args: argparse.Namespace, row: dict[str, str], model: Any | None
         result["status"] = "dry_run"
         return result
 
+    if transcript_path.exists() and args.force and args.backup_existing:
+        backup = raw_dir / "transcript_original_tiny.json"
+        if not backup.exists():
+            shutil.copy2(transcript_path, backup)
+
     if not media_path.exists() or args.force_download:
         file_id = drive_file_id(row.get("source_url", ""), row.get("candidate_video_id"))
         if not file_id:
             raise RuntimeError("no Drive file id found")
-        size, content_type, final_url = download_drive_file(file_id, media_path, max_bytes=args.max_download_mb * 1024 * 1024)
+        size, content_type, final_url = download_drive_file(file_id, media_path, max_bytes=args.max_download_mb * 1024 * 1024, resume=args.resume_download)
         result.update({"downloaded_bytes": size, "content_type": content_type, "download_url": final_url})
     else:
         result.update({"downloaded_bytes": media_path.stat().st_size, "content_type": "existing"})
 
+    if args.download_only:
+        result["status"] = "downloaded_pending_transcription"
+        return result
+
     if model is None:
         raise RuntimeError("transcription model was not loaded")
-    media_info = transcribe_media(model, media_path, args.model)
+    media_info = transcribe_chunked_media(
+        model,
+        media_path,
+        args.model,
+        media_path.parent / "audio_chunks",
+        args.chunk_duration_min * 60,
+        args.vad_filter,
+    )
+    no_speech = is_probably_no_speech(media_info)
+    if no_speech:
+        media_info = {**media_info, "segments": [], "provider": f"{media_info.get('provider')}:no_speech_probe"}
     write_episode_metadata(media_id, row, media_info, raw_dir)
     write_transcript(media_id, media_info, raw_dir)
-    if media_info.get("segments"):
+    if no_speech:
+        result["status"] = "no_speech_validated"
+    elif media_info.get("segments"):
         run_post_pipeline(media_id, raw_dir, processed_dir, args.max_chars)
         result["status"] = "transcribed"
     else:
@@ -331,8 +419,8 @@ def main() -> int:
     parser.add_argument("--queue-type", default="drive_video_asset")
     parser.add_argument("--status", default="needs_download_audio_extraction")
     parser.add_argument("--limit", default=5, type=int)
-    parser.add_argument("--max-download-mb", default=8, type=int)
-    parser.add_argument("--model", default="tiny")
+    parser.add_argument("--max-download-mb", default=250, type=int)
+    parser.add_argument("--model", default="large-v3-turbo")
     parser.add_argument("--deps-dir", default=Path(".codex_deps/transcription"), type=Path)
     parser.add_argument("--model-cache", default=data_path("cache", "faster_whisper"), type=Path)
     parser.add_argument("--media-root", default=data_path("raw", "academy_media"), type=Path)
@@ -342,8 +430,14 @@ def main() -> int:
     parser.add_argument("--max-chars", default=50000, type=int)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--force-download", action="store_true")
+    parser.add_argument("--download-only", action="store_true")
+    parser.add_argument("--resume-download", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--backup-existing", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--chunk-duration-min", default=20, type=int)
+    parser.add_argument("--vad-filter", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--retry-status", action="append", default=[])
+    parser.add_argument("--video-id", action="append", default=[])
     args = parser.parse_args()
     retry_statuses = set(args.retry_status)
 
@@ -353,10 +447,11 @@ def main() -> int:
         if row.get("queue_type") == args.queue_type
         and row.get("status") == args.status
         and row.get("source_url")
+        and (not args.video_id or (row.get("candidate_video_id") or "") in set(args.video_id))
         and (not row.get("transcription_status") or row.get("transcription_status") in retry_statuses)
     ][: args.limit]
 
-    model = None if args.dry_run or not rows else load_whisper_model(args.model, args.model_cache, args.deps_dir)
+    model = None if args.dry_run or args.download_only or not rows else load_whisper_model(args.model, args.model_cache, args.deps_dir)
     args.output_log.parent.mkdir(parents=True, exist_ok=True)
     results = []
     with args.output_log.open("a", encoding="utf-8", newline="\n") as log:

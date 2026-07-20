@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gold Episode Extraction"
+  short_description: "Executa e audita episodios gold com foco de risco."
+  default_prompt: "Execute a extracao gold completa do episodio, priorizando riscos numericos, mecanismos, resultados e auditoria final unica."

@@ -4213,3 +4213,400 @@ Release gates:
   `gpt-5.6-sol/high` ou superior, sem revisão intermediária.
 - Na transição, a Wave 005 preserva zo/JF `complete/passed`, qoh packet-ready e
   wHdy reviews 001-010 com 12 IDs únicos; a próxima fronteira é wHdy chunk 011.
+### 2026-07-16 - VTurb backfill optimization implementada
+
+- P0: capability preflight unico, circuit breaker global e telemetria por fase
+  implementados; headless ficou explicitamente indisponivel por
+  `system_library_missing`.
+- P1: 128 itens verificados no Chrome real em 75,1 min; 94 capturas, 33 falhas
+  terminais e 1 ausencia; 165 eventos atomicos e cursor final zero.
+- As 94 capturas foram importadas em 8 s no WSL. A regressao recuperou ainda
+  `NiT0-ABoVnk` com 1.087 segmentos.
+- P2: `large-v3-turbo` padrao aprovado; `small` e batch 8 rejeitados por perda
+  material de tokens/numeros. Chunks de 1.200 s, overlap 2 s, receipts, reuso,
+  prefetch e ETA adaptativo implementados.
+- `p78Zv3_WCsM` foi transcrito integralmente em tres chunks e promovido com 998
+  segmentos e cobertura 99,78%.
+- Estado final desta rodada: 127/163 validos; 36 `pending_asr`; 94,42 h de
+  midia; ETA quente aproximado de 42 h. Gold nao foi reconstruido antes do gate.
+- Automacao semanal `atualizar-epis-dios-vturb` atualizada para scan dos cinco
+  videos recentes e pipeline incremental completo toda quarta-feira as 9h.
+- Validacoes: 24 testes Python e 3 testes Node verdes; runtime parity pass.
+
+### 2026-07-16 - Catálogo VTurb completado e traduções Codex promovidas
+
+- As 35 transcrições recuperadas foram importadas no data root Linux-native; o
+  inventário terminou com 163/163 vídeos válidos, zero pendência e 163 estados
+  `completed`.
+- `xNrLpLTOPHU`, `9wfKG0bf53o` e `HRuMLbkMO0E` preservam a fonte em inglês e
+  ganharam `transcript_pt_br.json` traduzido pelo próprio Codex; nenhuma
+  tradução automática do YouTube foi usada. O pipeline gold prefere pt-BR e
+  mantém o original como proveniência protegida.
+- A captura DOM do Chrome repetiu cada legenda em `9wfKG0bf53o` e
+  `HRuMLbkMO0E`. As cópias canônicas foram normalizadas de 1.248 para 624 e de
+  910 para 455 segmentos, respectivamente, sem perda de cobertura. As capturas
+  integrais anteriores à normalização foram preservadas em
+  `transcript_original_browser_capture.json`.
+- Os hashes das traduções apontam para os originais canônicos deduplicados, os
+  três episódios têm zero pares exatos duplicados e `gold_transcript_language`
+  igual a `pt-BR`.
+- A fila gold foi regenerada pela classificação já estabelecida: 285 episódios
+  no projeto, todos `source_complete` e nenhum `awaiting_source`.
+- Validações finais: regressão ampliada com 178 testes Python aprovados e
+  inventário VTurb com 163/163 transcrições válidas.
+
+### 2026-07-16 - Complementares: fila reconciliada e pendências de mídia resolvidas
+
+- A reconciliação da Academy corrigiu sete episódios do YouTube que ainda
+  apareciam como pendentes embora já tivessem transcript canônico.
+- `AD-SEXUALIDADE3.mp4` foi testado com `large-v3-turbo` com e sem VAD. A única
+  saída sem VAD foram blocos repetidos de "Thank you" cobrindo todo o vídeo;
+  foi classificado como `no_speech_validated`, sem promover alucinação.
+- Os dois arquivos antes bloqueados por tamanho foram baixados de forma
+  retomável no WSL e transcritos em `large-v3-turbo`: `AD 11.mp4` (33
+  segmentos) e `Aula Desafio 6 Low em 30.mp4` (40m42s, 1.442 segmentos em
+  chunks de 20 minutos).
+- A fila ficou sem `skipped_over_limit` e sem `transcribed_empty`: 158
+  referências transcritas, 18 referências YouTube já processadas e uma mídia
+  `no_speech_validated`.
+- O pipeline de Drive passou a preservar o transcript tiny anterior, retomar
+  downloads parciais, separar áudio longo em chunks e detectar alucinação de
+  silêncio repetitiva. O reprocessamento de qualidade das 156 fontes tiny e a
+  tradução Codex ficam deliberadamente depois da promoção dos novos sources.
+
+### 2026-07-16 - Gold Runtime Pilot 007 concluido
+
+- `beFYVzSv2bw` terminou `complete/passed/0` com 20 reviews, 37 IDs unicos,
+  calibracao pass e packet exato de cinco arquivos.
+- A auditoria Sol abriu quatro findings reais; uma revisao transacional unica
+  adicionou os limites 95/99, a sequencia de cinco segundos, os dois outcomes
+  sonoros e a trajetoria intermediaria de escala.
+- Readiness, build, validador normal e validador com auditoria obrigatoria
+  passaram; fingerprints protegidos permaneceram iguais.
+- Wall ate receipt: 1h31m12s; comandos deterministas: 4,28s. Os gargalos foram
+  prelint semantico (25m13s), auditoria (19m39s) e remediacao/reauditoria.
+- O delta de reauditoria foi rejeitado por invariantes mal definidos e a
+  verificacao voltou corretamente ao dossier integral. A limitacao foi
+  registrada como `MSF-PL-068`.
+
+### 2026-07-17 - Arquitetura gold canonica consolidada
+
+- `chronological_hybrid_v1` passou a ser a unica rota de producao: leitura
+  cronologica integral, autoria semantica principal, controles deterministas,
+  one-shot e auditoria Sol final unica.
+- Os quatro pilotos do compilador semantico cego foram arquivados como pesquisa
+  read-only. Shards, reducer global, janelas de relacao e gap resolver nao fazem
+  parte do runtime executavel.
+- Foram promovidos somente os controles que provaram valor: inventario
+  numerico, bindings de calibracao/fronteira, disposicoes source-scoped e
+  bloqueio de duplicata exata sem merge automatico.
+- Contexto e bootstrap agora registram a arquitetura. Contrato, prompt, AGENTS,
+  skills e plano canonico foram alinhados; 165 testes gold passaram no WSL.
+
+### 2026-07-18 - Retrospectiva do Gold Runtime Pilot 011 e plano de simplificacao
+
+- O run `MSF-R20-gold-next-NiT0-ABoVnk-f3321e2ba8` foi reconciliado pelos
+  receipts locais: `complete/passed/0`, 142 candidatos unicos, calibracao 12/16,
+  packet de cinco arquivos e fingerprints protegidos preservados.
+- O wall total foi 9h43m33,4s, mas os comandos deterministas somaram apenas
+  40,73s. O span de reauditoria de 8h06m59,2s esta contaminado por espera,
+  interrupcao e perda de continuidade; nao representa tempo ativo do Sol.
+- Contra o piloto 009, o prelint melhorou 66,8% e a auditoria inicial 42,1%,
+  enquanto o total piorou 7,84x, a remediacao autoral subiu 62,1% e o job
+  acumulou 182 arquivos, 27 helpers, nove finalizacoes e seis builds.
+- A retrospectiva concluiu que os controles de risco, matriz numerica,
+  atomicidade e dossier em duas camadas entregaram ganho real, mas o pacote de
+  melhorias falhou como otimizacao ponta a ponta por fragmentar autoria,
+  remediacao, derivados e continuidade da auditoria.
+- Foram registrados `MSF-PL-084` a `MSF-PL-087` e criado um plano com apenas
+  quatro mudancas de alto impacto: identidade terminal canonica, manifesto
+  autoral unico, uma passagem adversarial pre-apply e auditoria retomavel por
+  envelope/delta focal. Nenhuma mudanca de runtime ou dados foi executada nesta
+  retrospectiva.
+
+### 2026-07-18 - Simplificacao 011 implementada no runtime gold
+
+- HI-01 implementada com registry terminal central e identidade por episodio,
+  reconciliados contra a fonte ativa antes da selecao. Cursor/fila deixaram de
+  certificar terminalidade; fonte alterada exige reprocesso e motivo explicitos.
+- HI-02 implementada com `gold_authoring_manifest_v1` como unica autoridade
+  interna de decisoes. Preview, apply e remediacao usam o mesmo hash; reviews,
+  ledger, calibracao, workbench e payload sao derivados sem helper de episodio
+  ou patch separado de ledger/calibracao no caminho normal.
+- HI-03 implementada com view adversarial unica e receipt vinculado ao hash das
+  decisoes. Regressoes F019/F037 bloqueiam calibracao apenas tematica e invalidam
+  revisao adversarial stale antes da escrita.
+- HI-04 implementada com audit request/envelope duraveis, materializacao do
+  veredito antes de qualquer mutacao, retomada apenas da fase Sol, spans
+  `interrupted` fora do tempo ativo e remediacao por manifesto completo mais
+  delta focal. Delta invalido cai automaticamente para novo request do dossier
+  integral, sem repetir extracao/build.
+- A telemetria passou a contar audit requests e a expor separadamente quantidade
+  e wall de spans interrompidos. O schema de sessao foi elevado para 1.4.0.
+- Ambiente local reparado com Python 3.12.13 na `.venv`; o ambiente quebrado
+  anterior foi removido depois do preflight aprovado.
+- Validacoes: `py_compile` aprovado; 167 testes focados, 222 testes gold
+  ampliados e 287 testes da suite completa aprovados; preflight
+  `windows_native` aprovado contra `C:\MSF-data\Marketing_Swipe_File` com temp
+  gravavel. A suite completa tambem revelou e fechou uma incompatibilidade de
+  fixture VTurb: a lista opcional de IDs mirror-verified agora possui fallback
+  vazio sem alterar o comportamento de producao, validado por 21 testes.
+- Nenhum episodio real, raw, transcript, packet ou gold foi alterado. As metas
+  de 25-40/35-50 minutos permanecem honestamente pendentes dos dois pilotos
+  reais congelados previstos na Fase 5.
+
+### 2026-07-18 - Conclusao da transcricao dos materiais complementares VTurb
+
+- Concluida a atualizacao de todos os 33 HLS da VTurb Academy para
+  `faster_whisper:large-v3-turbo`; os 33 backups
+  `transcript_original_tiny.json` foram preservados.
+- A cobertura do acervo Drive tambem foi verificada: 126 de 126 fontes
+  `academyvid-*` usam `large-v3-turbo`; nao ha pendencias nos arquivos
+  canonicos HLS ou Drive.
+- Para aulas longas, o pipeline passou a usar checkpoints de 5 minutos. O
+  seletor de `--media-id` foi corrigido para recuperar uma fonte explicitamente
+  solicitada mesmo quando o status do CSV estiver stale ou duplicado, sem
+  dispensar a verificacao de fonte HLS e da necessidade real de upgrade.
+
+### 2026-07-18 - Fase 5 do benchmark real da Simplificacao Gold 011
+
+- Executados integralmente dois episodios reais na arquitetura
+  `chronological_hybrid_v1`: `jbFY16W5GTE` (1.106 segmentos, 21 chunks, 34
+  candidatos) e `fBaX4ixKkFo` (1.238 segmentos, 23 chunks, 44 candidatos).
+- Selecao+contexto levaram 0,80s e 2,43s; leitura/autoria, 24m23s e 19m59s;
+  one-shot inicial, 4,93s e 4,06s; completion, 0,17s e 0,38s.
+- A auditoria Sol inicial encontrou cinco findings no total. A remediacao
+  source-backed fechou todos, mas a reauditoria 02 ainda encontrou duas
+  inconsistencias locais: warning/ledger no G017 do primeiro episodio e um
+  record numerico duplicado no G044 do segundo.
+- Corrigida a validacao de calibracao duplicada para provar source target e
+  evidencia canonica sem depender de link lexical derivado. Corrigido tambem o
+  reconciliador numerico para representar repeticao oral explicitamente
+  declarada sem inventar nova observacao nem consumir records de mesmo valor.
+- Dossiers finais revision `benchmark-011-remediation-03` foram auditados por
+  `gpt-5.6-sol/high`; ambos passaram com zero findings. Hashes permaneceram
+  inalterados durante a auditoria.
+- `complete_gold_episode` registrou os dois como `complete/passed/0`, packet de
+  cinco arquivos, calibracao `pass`, fingerprints preservados, identidade
+  terminal e `additional_verify_required=false`.
+- O wall por receipt foi 3h34m01s e 3h08m10s; a wave sobreposta durou cerca de
+  3h34m23s. Portanto as metas ponta a ponta de 35-50 minutos foram rejeitadas,
+  apesar dos ganhos do startup, prelint deterministico, one-shot, reauditoria e
+  completion.
+- Telemetria nao aprovada para alegar complexidade: remediacoes/patches ficaram
+  zerados apesar das escritas reais, um span stale acumulou 53m04s e os gaps nao
+  classificados foram 2h13m18s e 1h20m05s. Registrados `MSF-PL-088` a
+  `MSF-PL-091`.
+- Validacoes finais: runtime `windows_native` aprovado com Python 3.12.13 e
+  temp gravavel; `py_compile` aprovado; suite completa `293 passed`; auditoria
+  final consolidada `passed/0` nos dois episodios.
+
+### 2026-07-18 - Analise criteriosa do benchmark 011 e plano de alto impacto 012
+
+- Reconciliados receipts, eventos, spans, dossiers e tres rodadas de auditoria
+  dos episodios `jbFY16W5GTE` e `fBaX4ixKkFo`.
+- A retrospectiva separa tempo deterministico, julgamento semantico, spans
+  sobrepostos, spans interrompidos e gaps nao classificados; nenhum tempo de
+  espera foi atribuido ao prelint ou a compute Sol.
+- Ganhos confirmados contra o piloto 011 anterior: wall da wave -63,3%,
+  leitura/autoria media -36,3%, crescimento pos-apply reduzido de 89,3% para
+  13,3%/12,8% e artefatos observados -62,1% mesmo processando dois episodios.
+- Falhas confirmadas: auditoria iniciada antes do gate final da wave, primeiro
+  dossier falso-limpo com 427 segmentos unreviewed e 183 must-close, cinco
+  findings major, warning/calibration churn, erro pos-commit por envelope
+  ausente, contadores de remediacao zerados e gaps de 42,6%-62,3%.
+- A anatomia dos dossiers mostrou que header mais workbench ocupam 62,5%-65,5%
+  dos 910-931 KB; a proxima reducao deve apagar duplicacao, nao criar outro
+  brief.
+- Criada a retrospectiva
+  `msf-r20-gold-runtime-benchmark-011-retrospective.md` e registrados
+  `MSF-PL-092` a `MSF-PL-094`.
+- Criado o plano `MSF-R20-GOLD-RUNTIME-SIMPLIFICATION-012` com apenas tres
+  iniciativas: invariante source-complete antes de ready, remediacao local
+  envelope-first transacional e uma unica superficie de auditoria com despacho
+  somente no gate final da wave.
+- Nenhuma melhoria foi implementada nesta etapa; dados gold, packets,
+  provenance e schema publico permaneceram inalterados.
+
+### 2026-07-18 - Implementacao da simplificacao gold 012
+
+- Implementadas integralmente HI-012-01..03 do plano aprovado.
+- Criada invariante source-complete unica e conectada a prelint, finalizer e
+  dossier; falso-ready com unreviewed/must-close agora bloqueia antes do write.
+- Remediacao alterada para envelope-first: request, envelope, hashes, episodio
+  e dossier anterior sao precondicoes; ausencia retorna zero write/build/finalizer.
+- Warning identity tornou-se local a fonte/candidato/proposicao com fallback de
+  provenance; delta ganhou impact set fechado e erros pos-commit declaram o
+  estado persistido e a proxima acao.
+- Dossier 3.2 removeu `audit_navigation`, compactou warnings, risk recall e
+  workbench como referencias e internou justificativas repetidas.
+- Benchmark read-only dos fixtures reais: `jbFY16W5GTE` 909.666 -> 457.785 B
+  (-49,68%); `fBaX4ixKkFo` 930.916 -> 492.286 B (-47,12%). Ambos passaram o
+  validator e o teto de 500.000 B.
+- Request consolidado N/N criado somente depois dos dois ramos ready, com
+  hashes fisicos/semanticos congelados e rota `gpt-5.6-sol/high`.
+- Validacoes: runtime Windows native pass; `py_compile` pass; regressao 159
+  passed; suite completa 300 passed; `git diff --check` pass.
+- Dados gold e packets persistidos nao foram alterados; commit, push e deploy
+  nao foram executados.
+- Registrados `MSF-PL-095` a `MSF-PL-097` e criada a retrospectiva
+  `msf-r20-gold-runtime-simplification-012-retrospective.md`.
+- Auditoria final consolidada `gpt-5.6-sol/high` encontrou cinco findings: um
+  defeito do runtime (warning IDs duplicados) e quatro defeitos semanticos nos
+  dois golds protegidos usados como fixtures.
+- O defeito do runtime foi corrigido com deduplicacao somente de linhas
+  semanticamente identicas e bloqueio de colisoes; regressao adicionada.
+- Reauditoria focal confirmou 134 rows/134 IDs em cada dossier, zero colisoes,
+  request/hash validos e fechou esse finding. Permanecem quatro findings
+  semanticos; status honesto da wave: `changes_requested/4`.
+- Suite final apos a correcao: `301 passed`; `py_compile` e
+  `git diff --check` aprovados. Dossiers finais: 457.810 e 491.827 bytes.
+- Reabertura dos episodios `complete/passed` nao foi executada porque altera
+  provenance protegida e exige autorizacao material explicita do owner.
+- Registrado `MSF-PL-098` e criado o relatorio
+  `msf-r20-gold-runtime-simplification-012-final-audit.md`.
+
+### 2026-07-18 - Wave gold 007 concluida com dois episodios
+
+- Processados integralmente `eCaODMtU5GY` (1.079 segmentos, 21 chunks, 56
+  candidatos) e `MiKloPf9-To` (1.051 segmentos, 19 chunks, 50 candidatos) na
+  arquitetura `chronological_hybrid_v1`.
+- Ambos terminaram `complete/passed/0`, packet 5/5, calibracao `pass`,
+  fingerprints preservados e `additional_verify_required=false`.
+- A auditoria Sol inicial encontrou 9 e 10 findings. Remediacoes source-backed
+  reduziram a fila para 5/3, depois 1/0 e finalmente 0/0 na auditoria
+  consolidada 003, `gpt-5.6-sol/high`.
+- One-shot inicial: 3,24 s e 3,04 s. Transactions de remediacao:
+  `eCaODMtU5GY` 5,77 s, 5,35 s e 5,07 s; `MiKloPf9-To` 6,58 s e 7,97 s.
+  Completion: 0,20 s e 0,35 s.
+- Leitura/autoria inicial: 28m55,58s e 11m05,58s. O wall sobreposto da wave
+  foi aproximadamente 2h01m09s; julgamento semantico continuou dominando o
+  tempo total.
+- Corrigida uma contradicao do autocheck: literal ASR como `030` pode receber
+  normalizacao inferida 0,30% somente quando raw, caveat e origem ASR estao
+  explicitamente ligados. Regressao adicionada.
+- Gate final: dois ramos protegidos, packet/audit/fingerprint validos, semantic
+  SHA-256 `96016344a8a32dfa34dbd29872ae4c3b958ee98133516b3459414daf088e01da`.
+- Validacoes: runtime Windows native pass, Python 3.12.13, temp gravavel;
+  regressao 172 passed; suite completa 304 passed em 18,63 s; `py_compile`
+  pass. Commit, push e deploy nao foram executados.
+- Retrospectiva criada em
+  `docs/coordination/msf-r20-wave-007-retrospective.md`.
+
+### 2026-07-18 - Remediacao protegida e fechamento final da Simplificacao Gold 012
+
+- O owner autorizou explicitamente corrigir os quatro findings semanticos da
+  auditoria final 012 nos episodios `jbFY16W5GTE` e `fBaX4ixKkFo`.
+- A revisao protegida arquivou as auditorias anteriores byte a byte e preservou
+  as identidades terminais anteriores antes da nova derivacao.
+- `jbFY16W5GTE` fechou bindings de G004/G005/G006/G009 e estreitou G024. A
+  transacao levou 4.874,61 ms, com uma escrita de reviews, um build, um
+  finalizer, um dossier, 34 candidatos e `hard_blockers=0`.
+- `fBaX4ixKkFo` corrigiu G043, a aritmetica ASR source-scoped e a classificacao
+  de G013. A transacao levou 4.024,33 ms, com uma escrita de reviews, um build,
+  um finalizer, um dossier, 44 candidatos e `hard_blockers=0`.
+- Corrigido o lifecycle para impedir que finalizacao semanticamente nova
+  reutilize audit aprovado anterior. A identidade terminal so e substituida
+  por revisao autorizada e replays protegidos permanecem idempotentes.
+- Auditoria final unica `/root/final_sol_remediation_012`, `gpt-5.6-sol/high`,
+  revisou integralmente os dois dossiers e retornou `passed/0`, sem findings
+  novos. F012-01..F012-04 foram fechados.
+- `complete_gold_episode` derivou ambos para `complete/passed/0`; packets 5/5,
+  fingerprints preservados, receipts e identidades terminais validos. Gate
+  consolidado: dois ramos ready, semantic hash
+  `d0810ef1260891716c4f04d8c675498064d755ddbfd3c40e44f344ae980a8a22`.
+- Validacoes finais: runtime Windows native pass, Python 3.12.13, temp gravavel,
+  `py_compile` pass, suite completa `303 passed` em 28,41 s e
+  `git diff --check` pass. Commit, push e deploy nao foram executados.
+
+### 2026-07-18 - Analise criteriosa da wave 007 e plano de convergencia 013
+
+- Reconciliados receipts, jobs, manifests, dossiers e quatro vereditos Sol dos
+  episodios `eCaODMtU5GY` e `MiKloPf9-To`, comparados ao benchmark 011 e a
+  implementacao 012.
+- Ganho estrutural confirmado: wall da wave 3h34m23s -> 2h01m09s (-43,5%),
+  media individual -47,5%, primeiro veredito consolidado de aproximadamente 13
+  minutos e dossiers 36,4%-48,4% menores que os pares de 910-931 KB.
+- Regressao de convergencia confirmada: primeiro veredito 5 -> 19 findings
+  (+280%); 10 eram numericos e, depois da remediacao 001, seis dos oito
+  restantes continuavam numericos. Foram necessarias 3/2 remediacoes e 4/3
+  revisoes de dossier.
+- A wave observou 109 arquivos transitórios, contra 69 no benchmark 011. O
+  helper numerico manteve rows opacos ao adicionar rows tipados; o delta focal
+  so descobriu dependencias globais depois da derivacao; spans de reauditoria
+  fecharam durante a autoria seguinte.
+- Confirmada uma lacuna de autoridade: `calibration_decisions` e validado no
+  manifesto, mas nao e levado por `manifest_to_compact_payload()` ao payload
+  compilado, obrigando bindings indiretos nas duplicatas do cold open.
+- Criada a analise
+  `docs/coordination/msf-r20-wave-007-process-analysis-013.md` e registrados
+  `MSF-PL-100` a `MSF-PL-104`.
+- Criado o plano `MSF-R20-GOLD-FIRST-PASS-CONVERGENCE-013` com somente duas
+  iniciativas: fechamento semantico P0 na invariante existente e remediacao
+  substitutiva/dependency-closed com medicao atomica.
+- Seleção, runtime de prelint, one-shot, completion, transcript integral e Sol
+  foram explicitamente congelados. Nenhuma melhoria foi implementada, nenhum
+  gold/packet foi alterado e commit, push ou deploy nao foram executados.
+
+### 2026-07-18 - Implementacao e benchmark da convergencia gold 013
+
+- Implementadas HI-013-01 e HI-013-02: fechamento numerico P0 exclusivo,
+  autoridade derivada de `calibration_decisions`, ledger merged para duplicata
+  equivalente, remediacao substitutiva e impact closure pre-commit.
+- O lifecycle fecha o span Sol na materializacao do veredito, encerra autoria
+  no one-shot ready e impede sobreposicao entre fases. O benchmark revelou a
+  ultima lacuna de transicao; ela foi corrigida e coberta por regressao.
+- Regressao 013 final: 15 passed; regressao ampliada anterior: 315 casos
+  existentes aprovados; `py_compile`, `git diff --check`, runtime Windows
+  native e validacao read-only dos packets protegidos aprovados.
+- Benchmark real: `-46vMG3l8Jo` (1.180 segmentos, 40 candidatos) e
+  `0sB3ia6LIVM` (951 segmentos, 38 candidatos) chegaram a packet-ready com
+  prelint limpo, calibracao pass, hard blockers zero, packet 5/5 e fingerprints
+  preservados.
+- Cada episodio fez uma escrita, um finalizer, um build e um dossier; one-shot
+  de 2,774s/2,539s. Dossiers: 471.229/413.540 bytes. Zero remediacao ate a fase
+  Sol e 43 arquivos job-local contra 109 na wave 007 (-60,6%).
+- Wall ate os dois packets: 52m06,35s; gate Sol aberto em 54m38,92s. Spans de
+  autoria foram reconciliados aos eventos one-shot factuais sem overlap.
+- Request consolidado `gpt-5.6-sol/high` selado com hash
+  `1121f2d96bbc09426792d396692dca2f00253a4eff938d2e4d1eaf2b3e344ed2`.
+- A tentativa de auditoria externa foi bloqueada antes de transmitir dados,
+  porque os dossiers locais privados exigem autorizacao explicita adicional do
+  owner. Estado honesto: ambos `awaiting_external_audit/pending_external`;
+  `passed/0` e `complete` ainda nao foram derivados.
+- Retrospectiva criada em
+  `docs/coordination/msf-r20-gold-first-pass-convergence-013-retrospective.md`.
+  Commit, push e deploy nao foram executados.
+
+### 2026-07-19 - Wave gold 009 concluida com dois episodios
+
+- Processados integralmente `yhjZTeFNMHk` (5.289 segmentos, 51 chunks, 47
+  candidatos finais) e `MGpXRmYvJDc` (943 segmentos, 17 chunks, 32 candidatos)
+  na arquitetura `chronological_hybrid_v1`.
+- One-shot inicial: 11,982 s e 7,175 s. Transacoes de remediacao aprovadas:
+  E01 12,016 s e 12,225 s; E02 4,559 s. Completion: 0,488 s e 0,385 s.
+- A auditoria Sol inicial (`gpt-5.6-sol/high`) levou 464,6 s e abriu quatro
+  findings no E01 e dois no E02. A primeira reauditoria consolidada levou
+  494,7 s: aprovou E02 e encontrou quatro dependencias residuais no E01. A
+  reauditoria focal final do E01 levou 308,9 s e fechou todos os findings.
+- E01 passou a preservar 60.000 por dia, sete lancamentos, duas a tres VSLs,
+  uma semana, terceira rota de produto, equacao de valor, faixas de tamanho da
+  VSL e o caso host-owned de 300/600 vendas por dia. O ledger foi redestinado
+  para G044-G047 em 96 segmentos source-backed.
+- E02 passou a representar 16 mil de investimento, 160 mil de resultado, a
+  comparacao host-owned de 10x, 40%-50% da receita front-end como custo de
+  trafego e 3K como preco de R$ 3.000.
+- Corrigido o reconciliador numerico para tratar grupos portugueses `.ddd` e
+  sufixo `k` adjacente como milhares; regressao adicionada para ambos.
+- Ambos terminaram `complete/passed/0`, packet 5/5, calibracao `pass`,
+  fingerprints preservados, identidades terminais validas e
+  `additional_verify_required=false`.
+- Gate consolidado: dois ramos protegidos, packet/audit/fingerprint validos,
+  semantic SHA-256
+  `02ecfacef87f7958f4c5f01cb7372ee613e58e52b6c070b1e5b64170b1dba86e`.
+- Wall por receipt: E01 4h30m59,9s; E02 3h53m10,6s. Wall sobreposto da wave:
+  aproximadamente 4h31m06s. O tempo Sol somado foi 21m08,2s; os gaps de
+  autoria/orquestracao ainda dominaram o wall.
+- Validacoes finais: runtime Windows native `pass`, Python 3.12.13, temp
+  gravavel; suite completa `322 passed` em 48,58 s. Commit, push e deploy nao
+  foram executados.

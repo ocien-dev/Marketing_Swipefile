@@ -9,8 +9,12 @@ import re
 from pathlib import Path
 from typing import Any
 
-from msf_common import data_path
-from youtube_common import extract_video_id, utc_now, write_json
+try:
+    from scripts.msf_common import data_path
+    from scripts.youtube_common import extract_video_id, utc_now, write_json
+except ImportError:  # Direct script execution keeps scripts/ on sys.path.
+    from msf_common import data_path
+    from youtube_common import extract_video_id, utc_now, write_json
 
 
 TIMESTAMP_RE = re.compile(r"^\s+- generic \[ref=[^\]]+\]: (?P<time>\d{1,2}:\d{2}(?::\d{2})?)\s*$")

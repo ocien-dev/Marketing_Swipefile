@@ -23,10 +23,12 @@ from scripts.gold_extraction_common import (
     load_json,
     make_signal_inventory,
     now,
+    preferred_transcript_path,
     protected_paths,
     sha256_json,
     write_json,
 )
+from scripts.transcript_semantic_index import INDEX_ALGORITHM_VERSION, ensure_semantic_index
 
 
 def validate(
@@ -180,7 +182,7 @@ def raw_preflight(video_id: str, data_root: Path) -> dict[str, Any]:
     """Validate the raw inputs needed by preparation without writing anything."""
     raw_dir = data_root / "raw" / "youtube" / video_id
     metadata_path = raw_dir / "metadata.json"
-    transcript_path = raw_dir / "transcript_original.json"
+    transcript_path = preferred_transcript_path(data_root, video_id)
     errors: list[str] = []
     metadata: dict[str, Any] = {}
     transcript: dict[str, Any] = {}
@@ -227,7 +229,8 @@ def prepare_episode(video_id: str, data_root: Path) -> dict[str, Any]:
     out = data_root / "processed" / video_id / "gold_extraction"
     archive_legacy_gold_once(out)
     metadata = load_json(raw_dir / "metadata.json")
-    original = load_json(raw_dir / "transcript_original.json")
+    source_transcript = preferred_transcript_path(data_root, video_id)
+    original = load_json(source_transcript)
     duration = float(metadata["duration_seconds"])
     raw_segments = original.get("segments") or []
     clean, removed = clean_segments(raw_segments, duration, video_id)
@@ -239,6 +242,13 @@ def prepare_episode(video_id: str, data_root: Path) -> dict[str, Any]:
     input_transcript_hash = sha256_json(clean)
     signals = reusable_signal_inventory(out, input_transcript_hash, previous_status, clean) or make_signal_inventory(clean)
     calibrations = discover_calibrations(clean, duration)
+    semantic_index = ensure_semantic_index(
+        video_id,
+        data_root,
+        clean,
+        chunks=chunks_raw,
+        signals=signals,
+    )
     chunk_index: list[dict[str, Any]] = []
     chunk_states: list[dict[str, Any]] = []
     for number, segments in enumerate(chunks_raw, 1):
@@ -270,7 +280,7 @@ def prepare_episode(video_id: str, data_root: Path) -> dict[str, Any]:
         })
     before = fingerprint_paths(protected_paths(data_root, video_id))
     write_json(out / "transcript_clean.json", {
-        "episode_video_id": video_id, "source": str(raw_dir / "transcript_original.json"),
+        "episode_video_id": video_id, "source": str(source_transcript),
         "duration_seconds": duration, "segments": clean,
     })
     write_json(out / "removed_segments.json", {"episode_video_id": video_id, "removed_count": len(removed), "segments": removed})
@@ -296,10 +306,33 @@ def prepare_episode(video_id: str, data_root: Path) -> dict[str, Any]:
         "route": "codex_manual_no_paid_api", "status": "validation_failed" if errors else "awaiting_semantic_review",
         "checkpoint_every_chunks": 1, "input_transcript_hash": input_transcript_hash,
         "chunks": chunk_states, "signal_count": len(signals), "calibration_target_count": len(calibrations["tests"]),
+        "transcript_semantic_index": {
+            "status": semantic_index["status"],
+            "algorithm_version": INDEX_ALGORITHM_VERSION,
+            "source_semantic_sha256": semantic_index["source_semantic_sha256"],
+            "index_semantic_sha256": semantic_index["index_semantic_sha256"],
+            "unit_count": semantic_index["unit_count"],
+            "reused": semantic_index["reused"],
+        },
         "audit_status": preserved_audit, "updated_at": now(), "errors": errors,
     }
     write_json(status_path, status)
-    return {"clean_segments": len(clean), "removed_segments": len(removed), "chunks": len(chunk_states), "signals": len(signals), "calibrations": len(calibrations["tests"]), "errors": errors}
+    return {
+        "clean_segments": len(clean),
+        "removed_segments": len(removed),
+        "chunks": len(chunk_states),
+        "signals": len(signals),
+        "calibrations": len(calibrations["tests"]),
+        "semantic_index": {
+            "status": semantic_index["status"],
+            "unit_count": semantic_index["unit_count"],
+            "reused": semantic_index["reused"],
+            "index_path": semantic_index["index_path"],
+            "source_semantic_sha256": semantic_index["source_semantic_sha256"],
+            "index_semantic_sha256": semantic_index["index_semantic_sha256"],
+        },
+        "errors": errors,
+    }
 
 
 def main() -> int:

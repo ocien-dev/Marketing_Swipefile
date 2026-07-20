@@ -94,34 +94,94 @@ The pilot evidence and decisions are recorded in
 Use o Fast Path para ondas novas sem criar microgates ou delegacoes. Ele nao
 substitui leitura integral, recall semantico ou a auditoria final unica.
 
+A rota oficial e `chronological_hybrid_v1`: uma leitura cronologica integral,
+autoria semantica principal, controles deterministas de risco e finalizacao
+one-shot. Os scripts `gold_semantic_*` permanecem pesquisa read-only e nao sao
+uma alternativa de producao, mesmo quando estiverem presentes no checkout.
+
+Para executar um episodio, aplique primeiro a skill focada
+`gold-episode-extraction`. Ela gera um brief deterministico de risco sobre o
+prelint e sobre o dossier final, priorizando multiplicidade numerica,
+trajetorias, mecanismos, before/after e outcomes. O brief e apenas navegacao:
+o transcript e o dossier source-complete continuam obrigatorios.
+
 1. Gere um manifesto com `mode=auto` por episodio e rode
    `scripts/run_gold_wave.py --manifest <arquivo> --data-root <raiz>` para
    classificar cada rota sem escrita.
 2. `new_raw_episode` valida raw e, com `--execute`, prepara transcript, chunks,
-   sinais e work orders compactos. O texto permanece uma unica vez nos chunks;
-   work orders usam referencias de segmentos, sinais e calibracoes.
+   sinais, work orders compactos e o indice semantico derivado just-in-time.
+   O indice fica em `processed/<video_id>/`, fora do gold, ligado ao hash da
+   transcricao e com autoridade apenas de navegacao. O texto permanece uma
+   unica vez nos chunks; work orders usam referencias de segmentos, sinais e
+   calibracoes.
 3. `resumable_incomplete_gold` reaproveita reviews com `input_hash` igual e
    informa somente chunks pendentes ou desatualizados. Nao reexecute review
    concluida sem uma causa registrada.
 4. `protected_complete_read_only` nunca pode ser preparado, patchado ou
    reexportado pelo modo automatico. Reabra um episodio complete/passed somente
    com autorizacao explicita do owner e revisao de escopo.
-5. Quando o episodio couber no contexto ativo, monte um payload com todos os
-   reviews e use `scripts/run_gold_episode_fast.py --check`. O comando compila
-   e executa o autocheck contra o estado final em memoria, sem escrever no gold
-   ou export. Corrija os `hard_blockers` source-backed no payload; mantenha
-   `audit_warnings` visiveis para a auditoria final.
-6. Depois de check limpo, use `run_gold_episode_fast.py --apply` com
-   `revision_id` e `export_suffix`. A rota faz uma persistencia atomica e chama
-   o finalizador uma vez, com tempos medidos por etapa. Use batches de 8-12
-   chunks somente quando o episodio nao couber com seguranca em uma unica
-   passagem. O receipt semantico torna a repeticao idempotente. Para correcao
-   fechada posterior, use
-   `gold_review_patch.py --check` e depois um unico `--apply` com asserts,
-   hashes e valores anteriores.
-7. Para reauditoria, rode `gold_reaudit_delta.py --before <packet> --after
-   <packet>`; ele e somente leitura. A primeira auditoria continua integral e
-   cega; o delta apenas orienta uma reauditoria posterior.
+5. Para escolher o proximo episodio, use o runner Windows-native depois de
+   `scripts.verify_gold_runtime.py --runtime windows_native`; nao use comando
+   shell interpolado. O runner gera selection receipt, request, IDs, hashes,
+   contexto e manifesto para uma fonte completa sem gold existente. O bootstrap
+   file-based permanece compativel para episodio ja escolhido. Use primeiro o resumo
+   `transcript_semantic_index` para ordenar riscos, numeros e fronteiras, mas
+   leia o contexto integral. Monte `payload_format=gold_episode_compact_v3`: candidatos uma
+   unica vez, `chunk` numerico, defaults por episodio/tipo, ranges, numbers
+   compactos, aliases locais de relacao e `zero_insight_chunks`. Para numeros,
+   use `sid`/`si` com `sp` ou `sl`; prefira literal/span estavel e mantenha `so`
+   apenas para compatibilidade. O compilador copia `raw` literalmente da
+   evidencia e rejeita literal ambiguo. O compilador hidrata reviews, IDs,
+   hashes e quotes verbatim.
+6. Durante a autoria, use `run_gold_episode_fast.py --dry-run` para reunir o
+   manifesto esparso sem receipt nem telemetria. Rode um `--prelint` oficial
+   quando o payload estiver fechado para reunir em memoria
+   steps procedurais, numeros/evidencia e o fixed point de ledger/risco sem
+   criar receipt. Marque suporte indispensavel como `retained_support` e revise
+   cada warning claim/evidence pelo `warning_id`, sem ocultar o warning. Com
+   `--output`, consuma primeiro o stdout esparso limitado a 8 KB e abra o
+   relatorio integral somente para erro novo. A lineage fonte de risk recall
+   permanece estavel para residuos que sejam subconjuntos; material novo volta
+   a ficar pendente. Suporte retido e residual incidental da mesma lineage usam
+   acknowledgements escopados separados; vence o escopo mais especifico.
+   Reconcilie cada mencao numerica material literal com um record em `numbers`;
+   um record parcial nao encerra o candidato. Preserve multiplicidade em
+   sequencias antes/depois. Decimal separado por ASR mantem raw literal,
+   `value_status=inferred` e caveat; multiplicador permanece independente.
+   Resolva tambem o `semantic_closure_index`: caudas adjacentes, fim do
+   episodio, fronteiras, claim-support, counterexamples e contencao de
+   evidencia. Feche `must_close` individualmente; `incidental` de risco alto
+   exige os source segment IDs revisados. `audit_only` permanece no packet sem
+   loop tecnico. Cada warning recebe `captured`/`retained_support` com candidate
+   IDs, `incidental` justificado ou `relation_not_useful` para contencao; nunca
+   crie claim para ocultar o gate.
+   Quando
+   o inventario estiver limpo, `--one-shot` e a rota padrao para preview,
+   receipt, persistencia, finalizacao e dossier v3 em um processo. `--check` +
+   `--apply` ficam somente para recovery/debug e continuam vinculados pelo mesmo
+   payload/hash. Nao chame recorder/autocheck/build separadamente nessa rota.
+   O prelint devolve um `gold_consolidated_repair_manifest` completo, separando
+   reparo mecanico de decisao semantica. Use batches de 8-12 chunks somente quando o episodio nao couber com seguranca
+   em uma unica passagem. Para correcao
+   fechada posterior, gere primeiro `run_gold_episode_fast --audit-scaffold`
+   para resolver ranges, quotes, chunks e asserts atuais; depois use
+   `gold_review_patch.py --generate-source-asserts`,
+   depois `--check --preview-receipt <arquivo>` e um unico `--apply` vinculado
+   ao mesmo receipt. Asserts vem dos reviews fonte e excluem `legacy_*`; nao
+   redigite valores UTF-8. Depois da auditoria final aceita,
+   `complete_gold_episode.py` gera receipt, relatorio de performance, resumo,
+   resposta final e `runtime_retrospective.md`; use `--mirror-job-dir` somente
+   para a copia final verificada
+   no checkout Windows. Receipt valido e autoridade terminal; nao execute uma
+   sequencia adicional Verify/Sync/Verify. Use as metas 6-10m ate 700 segmentos,
+   11-15m entre 701-1.300 e 18-30m acima de 1.300. Use a retrospectiva como
+   autoridade para active wall, command time, model judgment, semantic spans,
+   unattributed gaps, phase transitions e bytes; nao
+   reconstrua tempos manualmente.
+7. Para reauditoria focal, rode `gold_final_audit_bundle.py --reaudit-delta`
+   com os dossiers antes/depois e o audit. Ele e somente leitura e rejeita
+   qualquer drift de invariantes integrais. A primeira auditoria continua
+   integral; o delta apenas acelera uma reauditoria posterior.
 8. Defina `active_budget` no manifesto quando uma wave tiver carga relevante.
    O padrao admite 2.500 segmentos raw, 40 chunks ativos e tres episodios;
    episodios `protected_complete_read_only` e trabalho integralmente concluido
@@ -135,8 +195,10 @@ substitui leitura integral, recall semantico ou a auditoria final unica.
    `scripts/finalize_gold_episode.py`: autocheck, readiness, build, validacao
    normal e export do packet ocorrem nessa ordem. A mesma revisao pronta e
    idempotente; episodios `complete/passed` ficam read-only.
-11. Use `record_gold_external_audit.py --check` para validar envelopes sem
-   escrever. Compare packets por hash fisico e hash semantico JSON: CRLF/LF
+11. Transporte o audit por UTF-8 base64 para um arquivo job-local Linux com
+   `record_gold_external_audit.py --envelope-output`; use `--check` nesse mesmo
+   envelope para validar sem escrever o episodio. Compare packets por hash
+   fisico e hash semantico JSON: CRLF/LF
    isolado e provenance de serializacao, nao mudanca editorial.
 12. Ao fechar uma wave, use `run_gold_wave.py --wave-receipt <arquivo>`.
     `ready_for_audit` exige todos os episodios esperados; uma wave parcial
@@ -164,12 +226,47 @@ carregue narracao de sessao para outra tarefa. Para recorrencias gold:
 
 ## Batch Workflow
 
-### Runtime WSL
+### Runtime canonico Windows
 
-- Use Ubuntu 24.04/WSL 2 como runtime padrao, com repositorio, `.venv`,
-  `MSF_DATA_DIR` e `TMPDIR` no filesystem Linux, fora de `/mnt/c`.
-- Execute `scripts/bootstrap_wsl.sh` uma vez por clone e valide com
-  `python scripts/verify_wsl_environment.py` antes de qualquer escrita gold.
+- Use a `.venv` do repositorio e o data root Windows ativo como runtime padrao.
+  Execute `python -m scripts.verify_gold_runtime --runtime windows_native`
+  antes de qualquer escrita gold.
+- Mantenha o job-dir transitorio sob o data root `.tmp` ou em um diretorio
+  explicitamente aprovado pelo epic. Nao misture jobs de episodios.
+- Nao use `bash -lc`, pipes, redirecionamentos ou Python inline para encapsular
+  o pipeline. Passe argumentos explicitos ao Python.
+- WSL e opcional: so use `scripts/invoke_gold_wsl.ps1` quando uma distribuicao,
+  clone, `.venv` e data root Linux tiverem sido certificados. A ausencia de
+  Ubuntu nunca bloqueia a rota Windows.
+- Na fast lane, a partida padrao certifica Python/paths/temp, selecao, preparo
+  e contexto em um unico processo e um unico `run_id`.
+- `StartEpisode` fixa receipt e `execution_signature` no job-dir. Mudanca
+  posterior no checkout Windows vale somente para o proximo run; mutacao no
+  snapshot Linux bloqueia o run atual. Nao sincronize entre packet e completion.
+- Marque spans explicitos de leitura/autoria, prelint, auditoria Sol,
+  remediacao, reauditoria e closeout. A retrospectiva reconcilia esses spans
+  com runtime e gaps sem inventar tokens.
+- Depois que o payload completo estiver limpo, prefira `--one-shot` para
+  preview, apply, finalizador e bundle em um processo. Depois da auditoria
+  final passada, use `scripts.complete_gold_episode` para registro, build de
+  conclusao, validacao obrigatoria, receipt autoconsistente e resumo Markdown
+  em um processo.
+- Acoes `Fast` e `CompleteAudit` consomem o snapshot fixado no job e nao fazem
+  sync. Sincronizacao pertence ao inicio de um novo run; se o snapshot Linux
+  mudar durante o episodio, a paridade pinned bloqueia antes da escrita.
+- Depois de `changes_requested` em episodio com reviews completos, use
+  `run_gold_episode_fast.py --remediate --patch <manifest>` com nova revisao.
+  A rota valida o estado composto, aplica uma vez, refinaliza e reemite o
+  dossier; nao reentre no recorder compacto de chunks pendentes. Esse estado e
+  `remediation_required`, nao terminal: nao gere resposta final antes da
+  reauditoria `passed/open_findings=0` e do receipt de completion.
+- Acima de 1.300 segmentos, reserve 18-30 minutos e faca uma unica passagem de
+  fechamento semantico antes do primeiro packet. Nao comprima a leitura para
+  perseguir SLA de episodio curto e depois pagar duas rodadas de reauditoria.
+- A extracao e a auditoria gold sao source-only. Nao carregue conteudo de
+  `insights_v2`, indices legados ou comparacoes antigas no contexto. Preserve
+  apenas fingerprints. Comparacao com legado usa exclusivamente o benchmark
+  read-only posterior ao packet congelado.
 - Preserve quotes verbatim e o data root Windows durante a migracao. GitHub
   protege somente arquivos versionados; OneDrive pode guardar snapshot fechado,
   mas nao deve sincronizar o data root ativo.

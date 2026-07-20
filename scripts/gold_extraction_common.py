@@ -8,6 +8,7 @@ validates the resulting editorial records, and makes a rerun deterministic.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
@@ -95,6 +96,21 @@ DEFAULT_PROCESS_TAG_BY_THEME = {
 
 NUMBER_RE = re.compile(
     r"(?:r\$\s*)?\d{1,3}(?:[.\s]\d{3})*(?:[,\.]\d+)?\s*(?:%|x\b|k\b|milh(?:ao|oes)?\b|mil\b|dias?\b|mes(?:es)?\b|min(?:uto)?s?\b|horas?\b|leads?\b|compradores?\b|vendas?\b|alunos?\b)?",
+    re.IGNORECASE,
+)
+
+MATERIAL_NUMERIC_TOKEN_RE = re.compile(
+    r"(?P<currency>r\$\s*(?:\d{1,3}(?:[.\s]\d{3})+|\d+)(?:[,]\d+)?(?:\s*(?:k\b|milh(?:ao|oes)?\b|mil\b))?)"
+    r"|(?P<percent>\d+(?:[,\.]\d+)?(?:\s+\d+)?\s*%)"
+    r"|(?P<ratio>(?:\d+(?:[,\.]\d+)?\s*x\b|(?:um|uma|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\s+vezes\b))"
+    r"|(?P<unit>\d+(?:[,\.]\d+)?\s*(?:k\b|milh(?:ao|oes)?\b|mil\b|dias?\b|semanas?\b|mes(?:es)?\b|min(?:uto)?s?\b|horas?\b|leads?\b|compradores?\b|vendas?\b|alunos?\b))"
+    r"|(?P<bare>\d+(?:[,\.]\d+)?)",
+    re.IGNORECASE,
+)
+
+NUMERIC_CLAIM_TYPES = {"quantitative_case", "test_result"}
+NUMERIC_SEQUENCE_RE = re.compile(
+    r"\b(?:sucessiv|etapa|depois|seguinte|aplica|aplicou|vira|chega|composto|base atualizada)\w*\b",
     re.IGNORECASE,
 )
 
@@ -343,9 +359,27 @@ def sha256_json(value: Any) -> str:
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
+def preferred_transcript_path(data_root: Path, video_id: str) -> Path:
+    """Use the pt-BR translation for gold when it exists, preserving the source transcript."""
+    raw_dir = data_root / "raw" / "youtube" / video_id
+    translated = raw_dir / "transcript_pt_br.json"
+    return translated if translated.is_file() else raw_dir / "transcript_original.json"
+
+
+def transcript_source_paths(data_root: Path, video_id: str) -> list[Path]:
+    raw_dir = data_root / "raw" / "youtube" / video_id
+    paths = [raw_dir / "transcript_original.json"]
+    translated = raw_dir / "transcript_pt_br.json"
+    if translated.is_file():
+        paths.append(translated)
+    return paths
+
+
 def protected_paths(data_root: Path, video_id: str) -> list[Path]:
+    raw_capture = data_root / "raw" / "youtube" / video_id / "transcript_original_browser_capture.json"
     return [
-        data_root / "raw" / "youtube" / video_id / "transcript_original.json",
+        *transcript_source_paths(data_root, video_id),
+        *([raw_capture] if raw_capture.is_file() else []),
         data_root / "processed" / video_id / "insights_v2.json",
         data_root / "exports" / "curated_insights.json",
         data_root / "exports" / "insights_v2_master.json",
@@ -572,6 +606,397 @@ def evidence_quotes(candidate: dict[str, Any]) -> list[dict[str, Any]]:
     return list(evidence.get("minimal_quote") or []) + list(evidence.get("support_segments") or [])
 
 
+def _numeric_core(raw: Any) -> str:
+    normalized = normalize_ascii(raw)
+    split_decimal = re.search(r"(\d+)[,.](\d+)\s+(\d+)\s*%", normalized)
+    if split_decimal:
+        return f"{split_decimal.group(1)}.{split_decimal.group(2)}{split_decimal.group(3)}"
+    normalized = normalized.replace("r$", "").strip()
+    magnitude = re.search(r"((?<=\d)k\b|\b(?:k|mil|milhao|milhoes)\b)", normalized)
+    numeric = re.search(r"\d[\d.\s]*(?:,\d+)?|\d+(?:\.\d+)?", normalized)
+    if not numeric:
+        return normalized
+    token = numeric.group(0).strip()
+    if "," in token:
+        token = token.replace(".", "").replace(" ", "").replace(",", ".")
+    elif (
+        re.fullmatch(r"\d{1,3}(?:\.\d{3})+", token)
+        or (" " in token and re.fullmatch(r"\d{1,3}(?:[.\s]\d{3})+", token))
+    ):
+        token = token.replace(".", "").replace(" ", "")
+    else:
+        token = token.replace(" ", "")
+    return f"{token}:{magnitude.group(1)}" if magnitude else token
+
+
+def numeric_mentions(text: Any) -> list[dict[str, Any]]:
+    """Extract literal numeric tokens without changing their source form."""
+    source = str(text or "")
+    mentions: list[dict[str, Any]] = []
+    for match in MATERIAL_NUMERIC_TOKEN_RE.finditer(source):
+        kind = str(match.lastgroup or "bare")
+        raw = match.group(0)
+        mentions.append({
+            "raw": raw,
+            "kind": kind,
+            "canonical": _numeric_core(raw),
+            "asr_separated_decimal": bool(re.fullmatch(
+                r"(?:0\s+\d{1,2}|0\d{2}|\d+[,.]\d+\s+\d+)\s*%",
+                raw.strip(),
+            )),
+            "start": match.start(),
+            "end": match.end(),
+        })
+    return mentions
+
+
+def _number_record_mentions(number: dict[str, Any], record_index: int) -> list[dict[str, Any]]:
+    mentions = numeric_mentions(number.get("raw", ""))
+    inferred_kind = {
+        "currency": "currency",
+        "percent": "percent",
+        "ratio": "ratio",
+        "duration": "unit",
+        "count": "unit",
+    }.get(str(number.get("unit_kind")), "bare")
+    if not mentions and number.get("value") is not None:
+        mentions = [{
+            "raw": str(number["value"]),
+            "kind": inferred_kind,
+            "canonical": _numeric_core(number["value"]),
+            "start": 0,
+            "end": len(str(number["value"])),
+        }]
+    result: list[dict[str, Any]] = []
+    for mention in mentions:
+        item = dict(mention)
+        if item["kind"] == "bare":
+            item["kind"] = inferred_kind
+        item["record_index"] = record_index
+        result.append(item)
+    return result
+
+
+def _numeric_kinds_compatible(evidence_kind: str, record_kind: str) -> bool:
+    if evidence_kind == "bare":
+        return True
+    if record_kind == "bare":
+        return True
+    return evidence_kind == record_kind
+
+
+def _expected_unit_kind(mention: dict[str, Any]) -> str | None:
+    kind = str(mention.get("kind") or "")
+    if kind in {"currency", "percent", "ratio"}:
+        return kind
+    if kind != "unit":
+        return None
+    raw = normalize_ascii(mention.get("raw"))
+    if re.search(r"\b(?:dia|dias|semana|semanas|mes|meses|min|minuto|minutos|hora|horas)\b", raw):
+        return "duration"
+    if re.fullmatch(r"\d+(?:[.,]\d+)?\s*k", raw.strip()):
+        # ``K`` carries scale but not semantic ownership: in source speech it
+        # can mean currency, audience, leads or another count.  The authored
+        # unit/role and surrounding proposition must decide it.
+        return None
+    return "count"
+
+
+def _number_has_structured_value(number: dict[str, Any]) -> bool:
+    return any(number.get(field) is not None for field in ("value", "min_value", "max_value"))
+
+
+def _explicit_unknown_asr_number(
+    candidate: dict[str, Any],
+    number: dict[str, Any],
+    mention: dict[str, Any],
+) -> bool:
+    """Accept an unknown ASR scale only when the ambiguity is explicit.
+
+    Null is not a shortcut for unfinished authoring.  It is valid only when the
+    source raw is preserved, the candidate caveat names ASR and the unknown
+    scale/unit, and the record is deliberately classified as inferred/other.
+    """
+    if _number_has_structured_value(number):
+        return False
+    if number.get("value_status") != "inferred" or number.get("role") != "other":
+        return False
+    raw = normalize_ascii(number.get("raw")).strip()
+    if not raw or raw != normalize_ascii(mention.get("raw")).strip():
+        return False
+    caveat = normalize_ascii(" ".join(str(item) for item in candidate.get("caveats") or []))
+    unit = normalize_ascii(number.get("unit")).strip()
+    ambiguity_markers = (
+        "unknown", "uncertain", "ambiguous", "unclear", "desconhecid",
+        "incert", "ambigu", "sem escala", "escala", "unidade",
+    )
+    return (
+        raw in caveat
+        and "asr" in caveat
+        and any(marker in caveat for marker in ambiguity_markers)
+        and ("asr" in unit or any(marker in unit for marker in ambiguity_markers))
+    )
+
+
+def _material_numeric_occurrence(
+    *,
+    layer: str,
+    candidate_type: str,
+    signal_types: set[str],
+    mention: dict[str, Any],
+    editorial_cores: set[str],
+) -> bool:
+    explicit_kind = mention["kind"] != "bare"
+    numeric_signal = "number" in signal_types
+    proposition_signal = bool({"comparison", "experiment", "test_result"} & signal_types)
+    claim_mentions_value = mention["canonical"] in editorial_cores
+    material = layer == "minimal" and (explicit_kind or candidate_type in NUMERIC_CLAIM_TYPES)
+    material = material or (
+        layer == "support"
+        and candidate_type in NUMERIC_CLAIM_TYPES
+        and numeric_signal
+        and proposition_signal
+    )
+    return material or claim_mentions_value
+
+
+def _explicit_source_duplicate_record_position(
+    candidate: dict[str, Any],
+    mention: dict[str, Any],
+    record_mentions: list[dict[str, Any]],
+    used_records: set[int],
+) -> int | None:
+    """Return a previously bound record for an explicitly declared repetition.
+
+    A bare number repeated orally can otherwise consume an unrelated record
+    with the same value (for example, a repeated 20-slot capacity consuming a
+    later 20-sales result). Reuse is deliberately narrow: the evidence token
+    must be bare and a human-written caveat must identify it as a ``source
+    duplicate`` and ``not a second observation``, including the reused unit.
+    This keeps exact source repetitions visible without inventing a second
+    public numeric observation or silently merging ambiguous values.
+    """
+    if mention.get("kind") != "bare":
+        return None
+    caveat_text = normalize_ascii(" ".join(str(item) for item in candidate.get("caveats") or []))
+    if "source duplicate" not in caveat_text or "not a second observation" not in caveat_text:
+        return None
+    canonical = str(mention.get("canonical") or "")
+    if not re.search(rf"(?<!\d){re.escape(canonical)}(?!\d)", caveat_text):
+        return None
+    numbers = candidate.get("numbers") or []
+    for position in sorted(used_records):
+        record_mention = record_mentions[position]
+        if record_mention.get("canonical") != canonical:
+            continue
+        record_index = record_mention["record_index"]
+        unit = normalize_ascii(str(numbers[record_index].get("unit") or "")).strip()
+        if unit and unit in caveat_text:
+            return position
+    return None
+
+
+def candidate_numeric_coverage(
+    candidate: dict[str, Any],
+    signal_types_by_segment: dict[str, set[str]] | None = None,
+) -> dict[str, Any]:
+    """Reconcile material evidence mentions with structured number records.
+
+    Minimal evidence is authoritative. Support-only mentions become blockers
+    only for explicitly quantitative/test candidates when the source signal is
+    numeric and comparative/experimental; other unmatched support remains an
+    audit warning instead of being silently promoted into a claim.
+    """
+    signal_types_by_segment = signal_types_by_segment or {}
+    evidence = candidate.get("evidence") or {}
+    if isinstance(evidence, list):
+        layers = [("minimal", evidence)]
+    else:
+        layers = [
+            ("minimal", list(evidence.get("minimal_quote") or [])),
+            ("support", list(evidence.get("support_segments") or [])),
+        ]
+    record_mentions = [
+        mention
+        for index, number in enumerate(candidate.get("numbers") or [])
+        if isinstance(number, dict)
+        for mention in _number_record_mentions(number, index)
+    ]
+    used_records: set[int] = set()
+    candidate_type = str(candidate.get("type", ""))
+    editorial = " ".join(
+        str(candidate.get(field, ""))
+        for field in ("source_claim", "takeaway_applicavel")
+    ) + " " + " ".join(str(step) for step in candidate.get("steps", []))
+    editorial_cores = {item["canonical"] for item in numeric_mentions(editorial)}
+    evidence_text = " ".join(
+        str(citation.get("quote_verbatim", ""))
+        for _layer, citations in layers
+        for citation in citations
+    )
+    preserve_multiplicity = candidate_type in NUMERIC_CLAIM_TYPES and bool(
+        NUMERIC_SEQUENCE_RE.search(normalize_ascii(f"{editorial} {evidence_text}"))
+    )
+    seen: set[tuple[Any, ...]] = set()
+    matrix: list[dict[str, Any]] = []
+    for layer, citations in layers:
+        for citation in citations:
+            segment_id = str(citation.get("segment_id") or "")
+            signal_types = set(signal_types_by_segment.get(segment_id, set()))
+            for occurrence, mention in enumerate(numeric_mentions(citation.get("quote_verbatim", ""))):
+                identity = (
+                    segment_id if preserve_multiplicity else "*",
+                    mention["canonical"],
+                    occurrence if preserve_multiplicity else 0,
+                )
+                if identity in seen:
+                    continue
+                seen.add(identity)
+                material = _material_numeric_occurrence(
+                    layer=layer,
+                    candidate_type=candidate_type,
+                    signal_types=signal_types,
+                    mention=mention,
+                    editorial_cores=editorial_cores,
+                )
+                duplicate_position = _explicit_source_duplicate_record_position(
+                    candidate, mention, record_mentions, used_records
+                )
+                matched_position = duplicate_position
+                if matched_position is None:
+                    matched_position = next(
+                        (
+                            position for position, item in enumerate(record_mentions)
+                            if position not in used_records
+                            and item["canonical"] == mention["canonical"]
+                            and _numeric_kinds_compatible(mention["kind"], item["kind"])
+                        ),
+                        None,
+                    )
+                if matched_position is not None:
+                    matched = record_mentions[matched_position]
+                    if duplicate_position is None:
+                        used_records.add(matched_position)
+                    record_index = matched["record_index"]
+                    number = candidate.get("numbers", [])[record_index]
+                    record = {
+                        key: copy.deepcopy(number.get(key))
+                        for key in (
+                            "raw", "value", "min_value", "max_value", "unit_kind",
+                            "unit", "period", "role", "value_status", "denominator",
+                            "attribution_window",
+                        )
+                        if key in number
+                    }
+                    if duplicate_position is not None:
+                        disposition = "covered_explicit_duplicate"
+                        severity = None
+                        issue = "source repetition reuses one explicitly identified numeric observation"
+                    elif _explicit_unknown_asr_number(candidate, number, mention):
+                        disposition = "covered_unknown_asr"
+                        severity = None
+                        issue = "unknown ASR scale is explicit and retains a null structured value"
+                    elif material and not _number_has_structured_value(number):
+                        disposition = "missing_material"
+                        severity = "hard_blocker"
+                        issue = "material numeric record is opaque; type its value/range or declare explicit unknown ASR scale"
+                    elif (
+                        material
+                        and _expected_unit_kind(mention) is not None
+                        and number.get("unit_kind") != _expected_unit_kind(mention)
+                    ):
+                        disposition = "missing_material"
+                        severity = "hard_blocker"
+                        issue = "material numeric record unit_kind does not match the source occurrence"
+                    elif material and number.get("role") == "other":
+                        disposition = "missing_material"
+                        severity = "hard_blocker"
+                        issue = "material numeric record needs a semantic role"
+                    elif mention.get("asr_separated_decimal"):
+                        raw_preserved = str(number.get("raw", "")) == mention["raw"]
+                        inferred = number.get("value_status") == "inferred"
+                        caveated = bool(candidate.get("caveats"))
+                        if raw_preserved and inferred and caveated:
+                            disposition = "covered_asr_ambiguous"
+                            severity = "audit_warning"
+                            issue = "ASR-separated decimal preserved with inferred value and caveat"
+                        else:
+                            disposition = "missing_material"
+                            severity = "hard_blocker"
+                            issue = "ASR-separated decimal requires literal raw, inferred value_status, and caveat"
+                    else:
+                        disposition = "covered"
+                        severity = None
+                        issue = None
+                else:
+                    disposition = "missing_material" if material else "unresolved_support"
+                    severity = "hard_blocker" if material else "audit_warning"
+                    record_index = None
+                    record = None
+                    issue = "material numeric mention has no matching number record" if material else "support-only numeric mention needs semantic confirmation"
+                matrix.append({
+                    "segment_id": segment_id,
+                    "layer": layer,
+                    "raw": mention["raw"],
+                    "canonical": mention["canonical"],
+                    "kind": mention["kind"],
+                    "signal_types": sorted(signal_types),
+                    "disposition": disposition,
+                    "severity": severity,
+                    "issue": issue,
+                    "record_index": record_index,
+                    "record": record,
+                })
+    used_record_indexes = {
+        int(item["record_index"])
+        for item in matrix
+        if item.get("record_index") is not None
+    }
+    evidence_canonicals = {str(item.get("canonical")) for item in matrix}
+    for record_index, number in enumerate(candidate.get("numbers") or []):
+        if not isinstance(number, dict) or record_index in used_record_indexes:
+            continue
+        mentions = _number_record_mentions(number, record_index)
+        shadows_source = any(str(item.get("canonical")) in evidence_canonicals for item in mentions)
+        if shadows_source and not _number_has_structured_value(number):
+            matrix.append({
+                "segment_id": None,
+                "layer": "record",
+                "raw": number.get("raw"),
+                "canonical": mentions[0].get("canonical") if mentions else _numeric_core(number.get("raw")),
+                "kind": mentions[0].get("kind") if mentions else "bare",
+                "signal_types": [],
+                "disposition": "duplicate_opaque_record",
+                "severity": "hard_blocker",
+                "issue": "unused opaque number record duplicates a represented source occurrence",
+                "record_index": record_index,
+                "record": copy.deepcopy(number),
+            })
+    return {
+        "candidate_id": candidate.get("candidate_id"),
+        "attribution": {
+            "reported_case": bool(candidate.get("reported_case")),
+            "causal_certainty": candidate.get("causal_certainty"),
+            "claim_risk": candidate.get("claim_risk"),
+            "caveats": list(candidate.get("caveats") or []),
+        },
+        "status": "blocked" if any(item["severity"] == "hard_blocker" for item in matrix) else "pass",
+        "mentions": matrix,
+        "sequence": {
+            "preserved_multiplicity": preserve_multiplicity,
+            "ordered_values": [
+                item["canonical"]
+                for item in matrix
+                if item["disposition"] != "covered_explicit_duplicate"
+            ] if preserve_multiplicity else [],
+        },
+        "missing_material": [item for item in matrix if item["severity"] == "hard_blocker"],
+        "audit_warnings": [item for item in matrix if item["severity"] == "audit_warning"],
+        "record_count": len(candidate.get("numbers") or []),
+        "covered_record_indexes": sorted({item["record_index"] for item in matrix if item["record_index"] is not None}),
+    }
+
+
 def normalize_relations(candidates: list[dict[str, Any]]) -> list[str]:
     """Canonicalize parent/child edges and reject ambiguous links and cycles."""
     errors: list[str] = []
@@ -755,6 +1180,24 @@ def ledger_for_signals(signal_inventory: list[dict[str, Any]], candidates: list[
         for candidate in candidates
     }
     inventory_by_segment = {item["segment_id"]: item for item in signal_inventory}
+    # A reviewer may explicitly disposition a clean transcript row that was not
+    # promoted into the automatic signal inventory.  Those source-scoped
+    # decisions are intentional coverage, not disposable metadata: preserve
+    # them in the derived ledger so the semantic workbench cannot leave the
+    # reviewed row as ``unreviewed``.  Gold transcript ids end in a one-based
+    # ordinal; ignore non-canonical ids rather than inventing an index.
+    for segment_id in manual_decisions:
+        if segment_id in inventory_by_segment:
+            continue
+        suffix = str(segment_id).rsplit("-", 1)[-1]
+        if not suffix.isdigit() or int(suffix) <= 0:
+            continue
+        inventory_by_segment[segment_id] = {
+            "segment_id": segment_id,
+            "clean_index": int(suffix) - 1,
+            "signal_types": ["manual_review"],
+            "evidence": [],
+        }
     for candidate in candidates:
         for item in evidence_quotes(candidate):
             inventory_by_segment.setdefault(item["segment_id"], {
@@ -837,11 +1280,28 @@ def calibration_target_errors(calibration: dict[str, Any], segments_by_id: dict[
     return errors
 
 
-def calibration_coverage(calibration: dict[str, Any], candidates: list[dict[str, Any]]) -> dict[str, Any]:
+def calibration_coverage(
+    calibration: dict[str, Any],
+    candidates: list[dict[str, Any]],
+    ledger: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     evidence = {
         candidate["candidate_id"]: {item["segment_id"] for item in evidence_quotes(candidate)}
         for candidate in candidates
     }
+    candidate_ids = set(evidence)
+    ledger = ledger or []
+    ledger_candidates: dict[str, set[str]] = defaultdict(set)
+    for entry in ledger:
+        if not isinstance(entry, dict) or entry.get("disposition") not in {"captured", "merged"}:
+            continue
+        segment_id = str(entry.get("segment_id") or "")
+        destinations = {
+            str(candidate_id)
+            for candidate_id in entry.get("candidate_ids") or []
+            if str(candidate_id) in candidate_ids
+        }
+        ledger_candidates[segment_id].update(destinations)
     tests: list[dict[str, Any]] = []
     seen_segments: set[str] = set()
     duplicate_target_segments: list[str] = []
@@ -849,7 +1309,15 @@ def calibration_coverage(calibration: dict[str, Any], candidates: list[dict[str,
         target_ids = set(test["segment_ids"])
         duplicate_target_segments.extend(sorted(target_ids & seen_segments))
         seen_segments.update(target_ids)
-        matched = sorted(candidate_id for candidate_id, ids in evidence.items() if set(test["segment_ids"]) & ids)
+        matched = sorted({
+            candidate_id
+            for candidate_id, ids in evidence.items()
+            if target_ids & ids
+        } | {
+            candidate_id
+            for segment_id in target_ids
+            for candidate_id in ledger_candidates.get(str(segment_id), set())
+        })
         tests.append({**test, "semantic_candidate_ids": matched, "semantic_coverage": "pass" if matched else "fail"})
     required = min(calibration.get("minimum_required", 0), len(tests))
     passed = sum(item["semantic_coverage"] == "pass" for item in tests)

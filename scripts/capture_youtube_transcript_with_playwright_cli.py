@@ -5,21 +5,30 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from collect_youtube_transcript_from_playwright_snapshot import extract_segments
-from msf_common import data_path
-from youtube_common import canonical_watch_url, extract_video_id, write_json
+try:
+    from scripts.collect_youtube_transcript_from_playwright_snapshot import extract_segments
+    from scripts.msf_common import data_path
+    from scripts.youtube_common import canonical_watch_url, extract_video_id, write_json
+except ImportError:  # Direct script execution keeps scripts/ on sys.path.
+    from collect_youtube_transcript_from_playwright_snapshot import extract_segments
+    from msf_common import data_path
+    from youtube_common import canonical_watch_url, extract_video_id, write_json
 
 
 BUTTON_REF_RE = re.compile(r'- button "(?P<label>[^"]+)" \[ref=(?P<ref>[^\]]+)\]')
+NODE_PACKAGE = "node@22.23.1"
+PLAYWRIGHT_CLI_PACKAGE = "@playwright/cli@0.1.17"
 
 DOM_TRANSCRIPT_CODE = r"""
 async (page) => {
@@ -66,21 +75,21 @@ async (page) => {
       }).filter((segment) => segment.timestamp && segment.text);
     };
 
-    await clickButton(['^\\.\\.\\.mais$', '^mostrar\\s+mais$', '^show\\s+more$']);
+    await clickButton(['^\\.\\.\\.mais$', '^\\.\\.\\.more$', '^mostrar\\s+mais$', '^show\\s+more$']);
 
-    let segments = readSegments();
-    let transcriptButton = null;
-    if (!segments.length) {
-      transcriptButton = await clickButton(['mostrar\\s+transcri', 'show\\s+transcript']);
-      await sleep(3500);
-      segments = readSegments();
-    }
+    // A transcript engagement panel can survive a navigation and briefly
+    // expose segments from the previous video. Always activate the current
+    // description button before reading nodes instead of trusting an already
+    // populated panel.
+    const transcriptButton = await clickButton(['mostrar\\s+transcri', 'show\\s+transcript']);
+    if (transcriptButton) await sleep(3500);
+    const segments = readSegments();
 
     const transcriptButtons = Array.from(document.querySelectorAll(buttonSelector))
       .map(labelFor)
       .filter((label) => /transcri|transcript/i.test(label))
       .slice(0, 20);
-    return { segments, transcriptButton, transcriptButtons };
+    return { url: window.location.href, title: document.title, segments, transcriptButton, transcriptButtons };
   });
 }
 """.strip()
@@ -91,11 +100,22 @@ def utc_now_slug() -> str:
 
 
 def run_cli(session: str, command: list[str], timeout: int) -> subprocess.CompletedProcess[str]:
-    npx = shutil.which("npx.cmd") or shutil.which("npx")
+    candidates = ("npx.cmd", "npx") if os.name == "nt" else ("npx",)
+    npx = next((resolved for candidate in candidates if (resolved := shutil.which(candidate))), None)
     if not npx:
-        raise FileNotFoundError("Could not find npx or npx.cmd on PATH")
+        raise FileNotFoundError(f"Could not find a native npx executable on PATH for os.name={os.name}")
     completed = subprocess.run(
-        [npx, "--yes", "--package", "@playwright/cli", "playwright-cli", "--session", session, *command],
+        [
+            npx,
+            "--yes",
+            "--package",
+            NODE_PACKAGE,
+            "--package",
+            PLAYWRIGHT_CLI_PACKAGE,
+            "playwright-cli",
+            f"-s={session}",
+            *command,
+        ],
         text=True,
         capture_output=True,
         encoding="utf-8",
@@ -112,6 +132,53 @@ def run_cli(session: str, command: list[str], timeout: int) -> subprocess.Comple
             + completed.stderr[-4000:]
         )
     return completed
+
+
+def classify_capability_error(message: str) -> str:
+    lowered = message.lower()
+    if "exec format error" in lowered or "npx.cmd" in lowered:
+        return "path_mixed"
+    if "requires node.js 20" in lowered or "node.js 20 or higher" in lowered:
+        return "node_engine"
+    if "unknown command" in lowered:
+        return "cli_protocol"
+    if "distribution 'chrome' is not found" in lowered or "executable doesn't exist" in lowered:
+        return "browser_missing"
+    if "error while loading shared libraries" in lowered or ".so: cannot open shared object file" in lowered:
+        return "system_library_missing"
+    return "browser_probe_failed"
+
+
+def capability_preflight(timeout: int) -> dict[str, Any]:
+    started = time.perf_counter()
+    session = f"msf-capability-{uuid.uuid4().hex[:10]}"
+    result: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "kind": "youtube_transcript_ui_capability",
+        "available": False,
+        "node_package": NODE_PACKAGE,
+        "playwright_cli_package": PLAYWRIGHT_CLI_PACKAGE,
+        "browser": "chromium",
+    }
+    try:
+        version = run_cli(session, ["--version"], timeout=timeout)
+        result["cli_version"] = version.stdout.strip()
+        run_cli(session, ["open", "about:blank", "--browser=chromium"], timeout=timeout)
+        result["available"] = True
+        result["error_class"] = None
+        result["error"] = None
+    except Exception as error:
+        message = str(error)[-4000:]
+        result["error_class"] = classify_capability_error(message)
+        result["error"] = message
+    finally:
+        if result["available"]:
+            try:
+                run_cli(session, ["close"], timeout=min(timeout, 30))
+            except Exception:
+                pass
+        result["duration_ms"] = round((time.perf_counter() - started) * 1000, 3)
+    return result
 
 
 def run_code_json(session: str, code: str, timeout: int) -> dict[str, Any]:
@@ -148,6 +215,8 @@ def normalize_dom_segments(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         text = " ".join(str(item.get("text") or "").split())
         if start_seconds is None or not text:
             continue
+        if normalized and start_seconds < float(normalized[-1]["start_seconds"]):
+            return []
         normalized.append(
             {
                 "index": index,
@@ -164,12 +233,32 @@ def normalize_dom_segments(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return normalized
 
 
-def capture_dom_segments(session: str, timeout: int) -> list[dict[str, Any]]:
+def capture_dom_segments(session: str, timeout: int, expected_video_id: str) -> list[dict[str, Any]]:
     payload = run_code_json(session, DOM_TRANSCRIPT_CODE, timeout=timeout)
+    page_url = str(payload.get("url") or "") if isinstance(payload, dict) else ""
+    try:
+        current_video_id = extract_video_id(page_url)
+    except ValueError:
+        return []
+    if current_video_id != expected_video_id:
+        return []
     segments = payload.get("segments") if isinstance(payload, dict) else None
     if not isinstance(segments, list):
         return []
     return normalize_dom_segments([item for item in segments if isinstance(item, dict)])
+
+
+def segments_are_monotonic(segments: list[dict[str, Any]]) -> bool:
+    previous = -1.0
+    for segment in segments:
+        try:
+            start = float(segment.get("start_seconds"))
+        except (TypeError, ValueError):
+            return False
+        if start < previous:
+            return False
+        previous = start
+    return bool(segments)
 
 
 def latest_snapshot(root: Path, previous: set[Path]) -> Path:
@@ -259,7 +348,17 @@ def wait_for_panel(session: str, timeout: int, milliseconds: int = 2500) -> None
 
 def capture_snapshot(session: str, snapshot_root: Path, timeout: int) -> Path:
     previous = set(snapshot_root.glob("page-*.yml")) if snapshot_root.exists() else set()
-    run_cli(session, ["snapshot"], timeout=timeout)
+    completed = run_cli(session, ["snapshot"], timeout=timeout)
+    stdout = completed.stdout
+    marker = "### Snapshot\n```yaml\n"
+    if marker in stdout:
+        snapshot = stdout.split(marker, 1)[1]
+        if snapshot.endswith("\n```\n"):
+            snapshot = snapshot[:-5]
+        snapshot_root.mkdir(parents=True, exist_ok=True)
+        inline_path = snapshot_root / f"page-{uuid.uuid4().hex}.yml"
+        inline_path.write_text(snapshot, encoding="utf-8")
+        return inline_path
     return latest_snapshot(snapshot_root, previous)
 
 
@@ -314,8 +413,8 @@ def snapshot_until_button_with_reload(
 
 def capture_transcript(url: str, output: Path, session: str, snapshot_root: Path, timeout: int) -> tuple[Path, int]:
     video_id = extract_video_id(url)
-    run_cli(session, ["open", canonical_watch_url(video_id)], timeout=timeout)
-    segments = capture_dom_segments(session, timeout=timeout)
+    run_cli(session, ["open", canonical_watch_url(video_id), "--browser=chromium"], timeout=timeout)
+    segments = capture_dom_segments(session, timeout=timeout, expected_video_id=video_id)
     if segments:
         payload: dict[str, Any] = {
             "schema_version": "1.0",
@@ -333,12 +432,12 @@ def capture_transcript(url: str, output: Path, session: str, snapshot_root: Path
         session,
         snapshot_root=snapshot_root,
         timeout=timeout,
-        patterns=[r"^\.\.\.mais$", r"^mostrar\s+mais$", r"^show\s+more$", r"mostrar\s+transcri", r"show\s+transcript"],
+        patterns=[r"^\.\.\.mais$", r"^\.\.\.more$", r"^mostrar\s+mais$", r"^show\s+more$", r"mostrar\s+transcri", r"show\s+transcript"],
         max_wait_seconds=45,
     )
     transcript_ref = find_button_ref(snapshot_text, [r"mostrar\s+transcri", r"show\s+transcript"])
     if not transcript_ref:
-        more_ref = initial_ref or find_button_ref(snapshot_text, [r"^\.\.\.mais$", r"^mostrar\s+mais$", r"^show\s+more$"])
+        more_ref = initial_ref or find_button_ref(snapshot_text, [r"^\.\.\.mais$", r"^\.\.\.more$", r"^mostrar\s+mais$", r"^show\s+more$"])
         if more_ref:
             run_cli(session, ["click", more_ref], timeout=timeout)
             snapshot_path, snapshot_text, transcript_ref = snapshot_until_button(
@@ -359,6 +458,8 @@ def capture_transcript(url: str, output: Path, session: str, snapshot_root: Path
     segments = extract_segments(snapshot_text)
     if not segments:
         raise RuntimeError(f"Transcript panel produced zero segments. Snapshot: {snapshot_path}")
+    if not segments_are_monotonic(segments):
+        raise RuntimeError(f"Transcript panel produced out-of-order segments. Snapshot: {snapshot_path}")
 
     payload: dict[str, Any] = {
         "schema_version": "1.0",
@@ -375,13 +476,20 @@ def capture_transcript(url: str, output: Path, session: str, snapshot_root: Path
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--url", required=True, help="YouTube URL. Use this for ids beginning with '-' too.")
+    parser.add_argument("--url", help="YouTube URL. Use this for ids beginning with '-' too.")
     parser.add_argument("--output", type=Path, help="Path to transcript_original.json")
     parser.add_argument("--output-root", default=data_path("raw", "youtube"), type=Path)
     parser.add_argument("--session", default="msf-transcript")
     parser.add_argument("--snapshot-root", default=Path(".playwright-cli"), type=Path)
     parser.add_argument("--timeout", default=90, type=int)
+    parser.add_argument("--preflight", action="store_true")
     args = parser.parse_args()
+
+    if args.preflight:
+        print(json.dumps(capability_preflight(args.timeout), ensure_ascii=False, indent=2))
+        return 0
+    if not args.url:
+        parser.error("--url is required unless --preflight is used")
 
     video_id = extract_video_id(args.url)
     output_path = args.output or args.output_root / video_id / "transcript_original.json"

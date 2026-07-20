@@ -10,6 +10,7 @@ independent external audit unless that audit has explicitly passed.
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import json
 import re
@@ -56,6 +57,41 @@ COMPATIBILITY = {
     },
     "migration_policy": "parallel_only_until_owner_approves_a_dedicated_gold_to_v2_migration",
 }
+
+
+def apply_calibration_overrides(
+    calibration: dict[str, Any], overrides: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Apply source-canonical calibration redirects without mutating their source.
+
+    The builder rewrites ``calibration_tests.json`` as a derived coverage
+    artifact.  Keeping redirects only in that derived artifact made every
+    rebuild silently reintroduce stale calibration bindings.  The small
+    override file is now the durable source of those redirects.
+    """
+    effective = copy.deepcopy(calibration)
+    redirects = (overrides or {}).get("redirects", {})
+    if not isinstance(redirects, dict):
+        return effective
+    tests = {
+        str(item.get("calibration_id")): item
+        for item in effective.get("tests", [])
+        if isinstance(item, dict) and item.get("calibration_id")
+    }
+    for calibration_id, fields in redirects.items():
+        target = tests.get(str(calibration_id))
+        if target is None or not isinstance(fields, dict):
+            continue
+        for field, value in fields.items():
+            target[field] = copy.deepcopy(value)
+    return effective
+
+
+def effective_calibration(out: Path) -> dict[str, Any]:
+    calibration = load_json(out / "calibration_tests.json")
+    overrides_path = out / "calibration_overrides.json"
+    overrides = load_json(overrides_path) if overrides_path.exists() else None
+    return apply_calibration_overrides(calibration, overrides)
 
 
 def read_reviews(review_dir: Path) -> list[dict[str, Any]]:
@@ -211,11 +247,13 @@ def readiness_check(video_id: str, data_root: Path, reviews_dir: Path) -> dict[s
     transcript = load_json(out / "transcript_clean.json")["segments"]
     chunks = load_json(out / "chunks" / "chunk_index.json")["chunks"]
     status = load_json(out / "gold_extraction_status.json")
-    calibration = load_json(out / "calibration_tests.json")
+    calibration = effective_calibration(out)
+    signals = load_json(out / "signal_inventory.json").get("signals", [])
     segments_by_id = {item["segment_id"]: item for item in transcript}
     reviews = {item.get("chunk_id"): item for item in read_reviews(reviews_dir)}
     errors: list[str] = []
     candidates: list[dict[str, Any]] = []
+    manual_decisions: dict[str, dict[str, Any]] = {}
     for chunk in status.get("chunks", []):
         review = reviews.get(chunk["chunk_id"])
         if review is None:
@@ -228,6 +266,12 @@ def readiness_check(video_id: str, data_root: Path, reviews_dir: Path) -> dict[s
         if not review.get("full_chunk_reviewed"):
             errors.append(f"{chunk['chunk_id']}: review did not confirm full chunk read")
         candidates.extend(normalize_candidate(item, video_id, segments_by_id) for item in review.get("candidates", []))
+        for decision in review.get("ledger_decisions", []):
+            segment_id = decision.get("segment_id")
+            if segment_id in manual_decisions:
+                errors.append(f"duplicate manual ledger decision {segment_id}")
+            elif segment_id:
+                manual_decisions[str(segment_id)] = decision
     document = {
         "schema_version": SCHEMA_VERSION,
         "insight_layer": "gold_extraction",
@@ -237,7 +281,8 @@ def readiness_check(video_id: str, data_root: Path, reviews_dir: Path) -> dict[s
     }
     errors.extend(normalize_relations(candidates))
     errors.extend(validate_document(document, transcript, chunks, require_external_audit=False))
-    covered_calibration = calibration_coverage(calibration, candidates)
+    preview_ledger = ledger_for_signals(signals, candidates, manual_decisions)
+    covered_calibration = calibration_coverage(calibration, candidates, preview_ledger)
     errors.extend(calibration_target_errors(calibration, segments_by_id))
     if covered_calibration["status"] != "pass":
         errors.append("calibration coverage below episode minimum")
@@ -260,6 +305,7 @@ def build_from_reviews(
     audit_warnings: list[dict[str, Any]] | None = None,
     revision_id: str | None = None,
     defer_packet: bool = False,
+    force_pending_external: bool = False,
 ) -> dict[str, Any]:
     out = data_root / "processed" / video_id / "gold_extraction"
     # Fast Path invariant: deterministic review defects are reported before
@@ -270,10 +316,19 @@ def build_from_reviews(
     transcript = load_json(out / "transcript_clean.json")["segments"]
     chunks = load_json(out / "chunks" / "chunk_index.json")["chunks"]
     signals = load_json(out / "signal_inventory.json")["signals"]
-    calibration = load_json(out / "calibration_tests.json")
+    calibration = effective_calibration(out)
     status = load_json(out / "gold_extraction_status.json")
     executor_thread_id = executor_thread_id or status.get("executor_thread_id")
-    audit_gate = external_audit_gate(out, executor_thread_id)
+    audit_gate = (
+        {
+            "status": "pending_external",
+            "eligible_for_complete": False,
+            "errors": [],
+            "report": None,
+        }
+        if force_pending_external
+        else external_audit_gate(out, executor_thread_id)
+    )
     audit_status = audit_gate["status"]
     chunks_by_id = {item["chunk_id"]: item for item in chunks}
     segments_by_id = {item["segment_id"]: item for item in transcript}
@@ -349,7 +404,7 @@ def build_from_reviews(
     ledger = ledger_for_signals(ledger_signals, candidates, manual_decisions)
     errors.extend(ledger_errors(ledger, {item["candidate_id"] for item in candidates}, {item["segment_id"] for item in ledger}))
     errors.extend(calibration_target_errors(calibration, segments_by_id))
-    covered_calibration = calibration_coverage(calibration, candidates)
+    covered_calibration = calibration_coverage(calibration, candidates, ledger)
     if covered_calibration["status"] != "pass":
         errors.append("calibration coverage below episode minimum")
     protected = load_json(out / "protected_fingerprints.json")

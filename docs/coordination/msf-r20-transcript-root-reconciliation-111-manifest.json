@@ -1,0 +1,2155 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "transcript_root_reconciliation_manifest",
+  "epic_id": "MSF-R20-TRANSCRIPT-ROOT-RECONCILIATION-111",
+  "generated_at": "2026-07-18T00:25:43.383640+00:00",
+  "priority_queue": "docs/coordination/gold-episode-priority-queue.json",
+  "source": {
+    "distribution": "Ubuntu-24.04",
+    "data_root": "/home/luish/msf-data/Marketing_Swipe_File",
+    "inventory": ".codex-work/worker-jobs/MSF-R20-TRANSCRIPT-ROOT-RECONCILIATION-001/gold_source_inventory_wsl_285.json"
+  },
+  "destination": {
+    "data_root": "C:/MSF-data/Marketing_Swipe_File",
+    "inventory": ".codex-work/worker-jobs/MSF-R20-TRANSCRIPT-ROOT-RECONCILIATION-001/gold_source_inventory_285.json"
+  },
+  "episode_count": 111,
+  "windows_state_counts": {
+    "invalid_source": 45,
+    "missing_source_artifacts": 66
+  },
+  "category_counts": {
+    "ads": 11,
+    "affiliate": 4,
+    "ai_automation": 2,
+    "business_operations": 7,
+    "content_organic": 2,
+    "copy": 15,
+    "crm_retention": 4,
+    "digital_business": 6,
+    "direct_response": 3,
+    "evergreen": 5,
+    "experts": 3,
+    "funnel": 6,
+    "growth_cases": 6,
+    "infoproducts": 5,
+    "international": 3,
+    "nutra": 10,
+    "scale": 12,
+    "vsl": 7
+  },
+  "total_duration_seconds": 1055759.0,
+  "batch_size": 10,
+  "episodes": [
+    {
+      "rank": 1,
+      "video_id": "beFYVzSv2bw",
+      "category": "vsl",
+      "title": "Segredos do ClickBank: Escalando os Maiores VSLs do Mundo | Jairet Crum  - Segredos da Escala #041",
+      "duration_seconds": 5579.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": "complete_passed",
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/beFYVzSv2bw/metadata.json",
+        "raw/youtube/beFYVzSv2bw/transcript_original.json",
+        "processed/beFYVzSv2bw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/beFYVzSv2bw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 2,
+      "video_id": "eCaODMtU5GY",
+      "category": "vsl",
+      "title": "A Estrutura De VSL Que Já Vendeu +70MM Em 1 Ano | Elton Cipriano - Segredos da Escala #044",
+      "duration_seconds": 8663.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": "complete_passed",
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/eCaODMtU5GY/metadata.json",
+        "raw/youtube/eCaODMtU5GY/transcript_original.json",
+        "processed/eCaODMtU5GY/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/eCaODMtU5GY/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 3,
+      "video_id": "NiT0-ABoVnk",
+      "category": "vsl",
+      "title": "19 Anos E +100MM Com VSLs, Lançamentos E Startups | Kayky Janiszewski - Segredos da Escala #034",
+      "duration_seconds": 8664.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/NiT0-ABoVnk/metadata.json",
+        "raw/youtube/NiT0-ABoVnk/transcript_original.json",
+        "processed/NiT0-ABoVnk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/NiT0-ABoVnk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 4,
+      "video_id": "jbFY16W5GTE",
+      "category": "vsl",
+      "title": "Ele Ganha de 40 a 50 Mil Reais Para Escrever um Único Vídeo de Vendas | Derick Carneiro - SDE #14",
+      "duration_seconds": 8900.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/jbFY16W5GTE/metadata.json",
+        "raw/youtube/jbFY16W5GTE/transcript_original.json",
+        "processed/jbFY16W5GTE/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/jbFY16W5GTE/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 5,
+      "video_id": "yhjZTeFNMHk",
+      "category": "vsl",
+      "title": "Perpétuo Para Público Frio: Conheça O “Funil De VSL” | Tiago Filemon - Segredos da Escala #161",
+      "duration_seconds": 10504.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/yhjZTeFNMHk/metadata.json",
+        "raw/youtube/yhjZTeFNMHk/transcript_original.json",
+        "processed/yhjZTeFNMHk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/yhjZTeFNMHk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 6,
+      "video_id": "J3HKvFrOnAw",
+      "category": "vsl",
+      "title": "Criando VSLs Que Vendem 100K/Dia Na Prática | Lucas Nóbrega - Segredos da Escala #077",
+      "duration_seconds": 11329.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/J3HKvFrOnAw/metadata.json",
+        "raw/youtube/J3HKvFrOnAw/transcript_original.json",
+        "processed/J3HKvFrOnAw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/J3HKvFrOnAw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 8,
+      "video_id": "61XTw1pfDXc",
+      "category": "vsl",
+      "title": "Eles Fizeram 1 Bilhão Em Vendas Com VSLs | Derick, Diogo e Samuel - Segredos da Escala #100",
+      "duration_seconds": 12182.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/61XTw1pfDXc/metadata.json",
+        "raw/youtube/61XTw1pfDXc/transcript_original.json",
+        "processed/61XTw1pfDXc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/61XTw1pfDXc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 12,
+      "video_id": "9wfKG0bf53o",
+      "category": "copy",
+      "title": "Copy Hacking: Como Criar Uma Copy Milionária (Sem Ser Copywriter!) | Jim Edwards - SDE #115",
+      "duration_seconds": 4096.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/9wfKG0bf53o/metadata.json",
+        "raw/youtube/9wfKG0bf53o/transcript_original.json",
+        "processed/9wfKG0bf53o/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/9wfKG0bf53o/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 15,
+      "video_id": "bdcvBZLyDqE",
+      "category": "copy",
+      "title": "Como Ele Cria Ofertas Que Convertem Tanto? | Junior Iwanowski - Segredos da Escala #004",
+      "duration_seconds": 7277.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/bdcvBZLyDqE/metadata.json",
+        "raw/youtube/bdcvBZLyDqE/transcript_original.json",
+        "processed/bdcvBZLyDqE/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/bdcvBZLyDqE/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 16,
+      "video_id": "FV-KR1eEbCw",
+      "category": "copy",
+      "title": "De CTO Da Empiricus A Fundador Do Maior Swipe File Do Brasil | Bruno Monteiro - SDE #154",
+      "duration_seconds": 9253.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/FV-KR1eEbCw/metadata.json",
+        "raw/youtube/FV-KR1eEbCw/transcript_original.json",
+        "processed/FV-KR1eEbCw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/FV-KR1eEbCw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 18,
+      "video_id": "fBaX4ixKkFo",
+      "category": "copy",
+      "title": "Ela Criou Narrativas Que Fizeram +45MM | Queila Trizotti - Segredos da Escala #058",
+      "duration_seconds": 9924.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/fBaX4ixKkFo/metadata.json",
+        "raw/youtube/fBaX4ixKkFo/transcript_original.json",
+        "processed/fBaX4ixKkFo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/fBaX4ixKkFo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 20,
+      "video_id": "Rz1Y7fhXGFI",
+      "category": "copy",
+      "title": "Ela Já Faturou +100MM Com Suas Copys (Aos 17 Anos!) | Amanda Khayat - Segredos da Escala #123",
+      "duration_seconds": 10292.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/Rz1Y7fhXGFI/metadata.json",
+        "raw/youtube/Rz1Y7fhXGFI/transcript_original.json",
+        "processed/Rz1Y7fhXGFI/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Rz1Y7fhXGFI/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 21,
+      "video_id": "LO-kTzkkeTg",
+      "category": "copy",
+      "title": "A Copywriter Que Já Fez +25MM Em Vendas | Bela Franceschini - Segredos da Escala #101",
+      "duration_seconds": 10753.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/LO-kTzkkeTg/metadata.json",
+        "raw/youtube/LO-kTzkkeTg/transcript_original.json",
+        "processed/LO-kTzkkeTg/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/LO-kTzkkeTg/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 22,
+      "video_id": "aJ4o-FSi5aU",
+      "category": "copy",
+      "title": "O Copywriter Que Fatura 8 Dígitos Por Mês | Gustavo Menezes - Segredos da Escala #029",
+      "duration_seconds": 10860.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/aJ4o-FSi5aU/metadata.json",
+        "raw/youtube/aJ4o-FSi5aU/transcript_original.json",
+        "processed/aJ4o-FSi5aU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/aJ4o-FSi5aU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 23,
+      "video_id": "TJWm18zeRy8",
+      "category": "copy",
+      "title": "De Funcionário Do McDonald's A Líder De Copy De Uma Operação De +100MM/Mês | SDE - Covolam #150",
+      "duration_seconds": 10886.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/TJWm18zeRy8/metadata.json",
+        "raw/youtube/TJWm18zeRy8/transcript_original.json",
+        "processed/TJWm18zeRy8/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/TJWm18zeRy8/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 24,
+      "video_id": "Jbp5wm_SkA4",
+      "category": "copy",
+      "title": "Criando Copies Milionárias Com IA | André CIA - Segredos da Escala #060",
+      "duration_seconds": 11094.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/Jbp5wm_SkA4/metadata.json",
+        "raw/youtube/Jbp5wm_SkA4/transcript_original.json",
+        "processed/Jbp5wm_SkA4/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Jbp5wm_SkA4/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 25,
+      "video_id": "mW-IonS81vQ",
+      "category": "copy",
+      "title": "O Copywriter Que Fez +200MM Em Vendas | Diogo Gomes - Segredos da Escala #095",
+      "duration_seconds": 11179.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/mW-IonS81vQ/metadata.json",
+        "raw/youtube/mW-IonS81vQ/transcript_original.json",
+        "processed/mW-IonS81vQ/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/mW-IonS81vQ/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 26,
+      "video_id": "lDbq8xNDskI",
+      "category": "copy",
+      "title": "Criando Uma Oferta Milionária Para Tráfego Frio Na Prática | Diogo Arnold - Segredos da Escala #032",
+      "duration_seconds": 11233.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/lDbq8xNDskI/metadata.json",
+        "raw/youtube/lDbq8xNDskI/transcript_original.json",
+        "processed/lDbq8xNDskI/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/lDbq8xNDskI/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 27,
+      "video_id": "brNqzMszM0Q",
+      "category": "copy",
+      "title": "De Copywriter Júnior A Head De Ads Em Apenas 6 Meses | Paola Barbosa - Segredos da Escala #163",
+      "duration_seconds": 11648.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/brNqzMszM0Q/metadata.json",
+        "raw/youtube/brNqzMszM0Q/transcript_original.json",
+        "processed/brNqzMszM0Q/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/brNqzMszM0Q/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 28,
+      "video_id": "qMuqkAE2PPE",
+      "category": "copy",
+      "title": "A Copywriter Que Já Fez +60MM Em Vendas | Helena de Guide - Segredos da Escala #053",
+      "duration_seconds": 11717.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/qMuqkAE2PPE/metadata.json",
+        "raw/youtube/qMuqkAE2PPE/transcript_original.json",
+        "processed/qMuqkAE2PPE/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/qMuqkAE2PPE/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 29,
+      "video_id": "ey9AosWQcOI",
+      "category": "copy",
+      "title": "Ele Já Faturou +200MM Com Suas Copys (Aos 20 Anos!) | Paulo Sanches - Segredos da Escala #148",
+      "duration_seconds": 12475.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/ey9AosWQcOI/metadata.json",
+        "raw/youtube/ey9AosWQcOI/transcript_original.json",
+        "processed/ey9AosWQcOI/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ey9AosWQcOI/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 30,
+      "video_id": "cPeX-mZS9dM",
+      "category": "copy",
+      "title": "De 50K Em Dívidas A +250MM Como Copywriter (Em 6 Meses!) | Bruno Bismaq - Segredos da Escala #151",
+      "duration_seconds": 12662.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/cPeX-mZS9dM/metadata.json",
+        "raw/youtube/cPeX-mZS9dM/transcript_original.json",
+        "processed/cPeX-mZS9dM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/cPeX-mZS9dM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 77,
+      "video_id": "LyVVWy8IYzo",
+      "category": "ads",
+      "title": "Investindo 60K/Dia Em Native Ads | Guilherme Campos - Segredos da Escala #064",
+      "duration_seconds": 7823.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/LyVVWy8IYzo/metadata.json",
+        "raw/youtube/LyVVWy8IYzo/transcript_original.json",
+        "processed/LyVVWy8IYzo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/LyVVWy8IYzo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 78,
+      "video_id": "MiKloPf9-To",
+      "category": "ads",
+      "title": "Investindo +15MM Em Native Ads  | Kaio Larroque - SDE #042",
+      "duration_seconds": 8408.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/MiKloPf9-To/metadata.json",
+        "raw/youtube/MiKloPf9-To/transcript_original.json",
+        "processed/MiKloPf9-To/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/MiKloPf9-To/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 79,
+      "video_id": "QsKik-GvTlM",
+      "category": "ads",
+      "title": "Ele Já Investiu +300MM Em Tráfego Pago | Cadu Neiva - Segredos da Escala #056",
+      "duration_seconds": 9305.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/QsKik-GvTlM/metadata.json",
+        "raw/youtube/QsKik-GvTlM/transcript_original.json",
+        "processed/QsKik-GvTlM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/QsKik-GvTlM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 80,
+      "video_id": "-46vMG3l8Jo",
+      "category": "ads",
+      "title": "Ele Já Fez +20MM Com Essas Estratégias De Tráfego Pago | Gabriel Martins - Segredos da Escala #050",
+      "duration_seconds": 9444.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/-46vMG3l8Jo/metadata.json",
+        "raw/youtube/-46vMG3l8Jo/transcript_original.json",
+        "processed/-46vMG3l8Jo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/-46vMG3l8Jo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 81,
+      "video_id": "BCAG0rlCBIA",
+      "category": "ads",
+      "title": "Subindo Campanhas De Múltiplos 8 Dígitos No YouTube Ads Na Prática | Segredos da Escala #005",
+      "duration_seconds": 9629.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/BCAG0rlCBIA/metadata.json",
+        "raw/youtube/BCAG0rlCBIA/transcript_original.json",
+        "processed/BCAG0rlCBIA/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/BCAG0rlCBIA/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 82,
+      "video_id": "bTt1ZBLB3xc",
+      "category": "ads",
+      "title": "O Passo a Passo Que Me Permitiu Investir 7D no Youtube Ads | Denis Pereira - Segredos da Escala #017",
+      "duration_seconds": 9943.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/bTt1ZBLB3xc/metadata.json",
+        "raw/youtube/bTt1ZBLB3xc/transcript_original.json",
+        "processed/bTt1ZBLB3xc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/bTt1ZBLB3xc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 83,
+      "video_id": "JmN0Tsfrljk",
+      "category": "ads",
+      "title": "O Afiliado Que Ficou MILIONÁRIO Com Google Ads (Veja Como Ele Fez!) | Caio Calderaro - SDE #099",
+      "duration_seconds": 10204.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/JmN0Tsfrljk/metadata.json",
+        "raw/youtube/JmN0Tsfrljk/transcript_original.json",
+        "processed/JmN0Tsfrljk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/JmN0Tsfrljk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 85,
+      "video_id": "o1oFtiENuTo",
+      "category": "ads",
+      "title": "Absolutamente TUDO Para Escalar No Tik Tok Ads Em 2026 | Henrique, Anacleto e João Lucas - SDE #145",
+      "duration_seconds": 11116.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/o1oFtiENuTo/metadata.json",
+        "raw/youtube/o1oFtiENuTo/transcript_original.json",
+        "processed/o1oFtiENuTo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/o1oFtiENuTo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 86,
+      "video_id": "JlnchqiINg8",
+      "category": "ads",
+      "title": "Segredos Para Escalar Múltiplos 7D/Mês No Facebook Ads | Pedro Andrade - Segredos da Escala #071",
+      "duration_seconds": 12208.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/JlnchqiINg8/metadata.json",
+        "raw/youtube/JlnchqiINg8/transcript_original.json",
+        "processed/JlnchqiINg8/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/JlnchqiINg8/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 87,
+      "video_id": "t8_vzmE4dtQ",
+      "category": "ads",
+      "title": "Escalando Native Ads Na Gringa (Na Prática) | Marcelo Ornelas – Segredos da Escala #137",
+      "duration_seconds": 12513.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/t8_vzmE4dtQ/metadata.json",
+        "raw/youtube/t8_vzmE4dtQ/transcript_original.json",
+        "processed/t8_vzmE4dtQ/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/t8_vzmE4dtQ/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 89,
+      "video_id": "wJincuVXxxc",
+      "category": "ads",
+      "title": "Escalando 8D/Mês Com Nutra Nos EUA (Tráfego Interno) | Hugo e Derlan - Segredos da Escala #155",
+      "duration_seconds": 13178.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/wJincuVXxxc/metadata.json",
+        "raw/youtube/wJincuVXxxc/transcript_original.json",
+        "processed/wJincuVXxxc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/wJincuVXxxc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 93,
+      "video_id": "7CVKRYDEGa0",
+      "category": "funnel",
+      "title": "Ele Já Fez 250MM De Dólares Com Webinários | Jason Fladlien - Segredos da Escala #072",
+      "duration_seconds": 3759.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/7CVKRYDEGa0/metadata.json",
+        "raw/youtube/7CVKRYDEGa0/transcript_original.json",
+        "processed/7CVKRYDEGa0/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/7CVKRYDEGa0/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 94,
+      "video_id": "0sB3ia6LIVM",
+      "category": "funnel",
+      "title": "Ele Trackeou +100MM De Dólares Em Apenas 1 Ano | Linecker Nunes - Segredos da Escala #082",
+      "duration_seconds": 7639.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/0sB3ia6LIVM/metadata.json",
+        "raw/youtube/0sB3ia6LIVM/transcript_original.json",
+        "processed/0sB3ia6LIVM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/0sB3ia6LIVM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 95,
+      "video_id": "c_usaRCj0O4",
+      "category": "funnel",
+      "title": "Ele Já Faturou Múltiplos 7 Dígitos Com Funis De Vendas | Mateus Dias - Segredos da Escala #022",
+      "duration_seconds": 8430.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/c_usaRCj0O4/metadata.json",
+        "raw/youtube/c_usaRCj0O4/transcript_original.json",
+        "processed/c_usaRCj0O4/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/c_usaRCj0O4/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 96,
+      "video_id": "7yAKrbaDzSA",
+      "category": "funnel",
+      "title": "O Ecossistema De Funis Que Gera Múltiplos 7D/Mês | Vicente Lima - Segredos da Escala #164",
+      "duration_seconds": 10258.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/7yAKrbaDzSA/metadata.json",
+        "raw/youtube/7yAKrbaDzSA/transcript_original.json",
+        "processed/7yAKrbaDzSA/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/7yAKrbaDzSA/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 97,
+      "video_id": "8jScDKuq048",
+      "category": "funnel",
+      "title": "Ele Escala 7D/Mês Com Funil De Marketing E Comercial | Matheus Matuta - Segredos da Escala #069",
+      "duration_seconds": 12650.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/8jScDKuq048/metadata.json",
+        "raw/youtube/8jScDKuq048/transcript_original.json",
+        "processed/8jScDKuq048/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/8jScDKuq048/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 98,
+      "video_id": "C9Q1_B9RdcA",
+      "category": "funnel",
+      "title": "Criando Funis De Vendas Que Fazem +7D Na Prática | Fernando Brasão - Segredos da Escala #040",
+      "duration_seconds": 13837.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/C9Q1_B9RdcA/metadata.json",
+        "raw/youtube/C9Q1_B9RdcA/transcript_original.json",
+        "processed/C9Q1_B9RdcA/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/C9Q1_B9RdcA/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 99,
+      "video_id": "xNrLpLTOPHU",
+      "category": "scale",
+      "title": "Os Segredos Para Escalar No Mercado Americano | Ning Li - Segredos da Escala #109",
+      "duration_seconds": 5411.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/xNrLpLTOPHU/metadata.json",
+        "raw/youtube/xNrLpLTOPHU/transcript_original.json",
+        "processed/xNrLpLTOPHU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/xNrLpLTOPHU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 100,
+      "video_id": "VzvaaQK-Gv0",
+      "category": "scale",
+      "title": "Usando Espionagem Avançada Para Escalar No Digital | Gabriel Fogaça - Segredos da Escala #062",
+      "duration_seconds": 7387.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/VzvaaQK-Gv0/metadata.json",
+        "raw/youtube/VzvaaQK-Gv0/transcript_original.json",
+        "processed/VzvaaQK-Gv0/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/VzvaaQK-Gv0/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 101,
+      "video_id": "alJWeBccCdo",
+      "category": "scale",
+      "title": "Escalando Uma Agência De Marketing Na Prática (Com IA!) | Sérgio Fernandes - Segredos da Escala #088",
+      "duration_seconds": 7604.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/alJWeBccCdo/metadata.json",
+        "raw/youtube/alJWeBccCdo/transcript_original.json",
+        "processed/alJWeBccCdo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/alJWeBccCdo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 102,
+      "video_id": "xGeg1b9-o-k",
+      "category": "scale",
+      "title": "Escalando Negócios Com Inteligência Artificial | Bruno Picinini - Segredos da Escala #091",
+      "duration_seconds": 8937.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/xGeg1b9-o-k/metadata.json",
+        "raw/youtube/xGeg1b9-o-k/transcript_original.json",
+        "processed/xGeg1b9-o-k/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/xGeg1b9-o-k/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 104,
+      "video_id": "UPlYj3uIyDI",
+      "category": "scale",
+      "title": "Escalando 9D/Mês No Mercado Americano | Arthur PC - Segredos da Escala #103",
+      "duration_seconds": 10118.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/UPlYj3uIyDI/metadata.json",
+        "raw/youtube/UPlYj3uIyDI/transcript_original.json",
+        "processed/UPlYj3uIyDI/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/UPlYj3uIyDI/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 105,
+      "video_id": "Qr6qS8sPpEo",
+      "category": "scale",
+      "title": "Como Eles Escalam Milhões Nos EUA Com Só 1 Gestor? | Wellington e Lucas - Segredos da Escala #149",
+      "duration_seconds": 10645.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/Qr6qS8sPpEo/metadata.json",
+        "raw/youtube/Qr6qS8sPpEo/transcript_original.json",
+        "processed/Qr6qS8sPpEo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Qr6qS8sPpEo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 106,
+      "video_id": "ArlNB_5wZGs",
+      "category": "scale",
+      "title": "Escalando Produtos High Ticket No Perpétuo | Cami Figueira - Segredos da Escala #094",
+      "duration_seconds": 10726.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/ArlNB_5wZGs/metadata.json",
+        "raw/youtube/ArlNB_5wZGs/transcript_original.json",
+        "processed/ArlNB_5wZGs/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ArlNB_5wZGs/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 107,
+      "video_id": "FZCocJsO1X0",
+      "category": "scale",
+      "title": "Segredos Para Escalar Um Negócio Digital Com Lucro (No Automático!) | Felipe Gobbi - SDE #085",
+      "duration_seconds": 10774.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/FZCocJsO1X0/metadata.json",
+        "raw/youtube/FZCocJsO1X0/transcript_original.json",
+        "processed/FZCocJsO1X0/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/FZCocJsO1X0/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 108,
+      "video_id": "YfI0CjI_XaE",
+      "category": "scale",
+      "title": "Escalando Operações Americanas Para +$100MM/Ano | Gabriel Medeiros - Segredos da Escala #147",
+      "duration_seconds": 11007.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/YfI0CjI_XaE/metadata.json",
+        "raw/youtube/YfI0CjI_XaE/transcript_original.json",
+        "processed/YfI0CjI_XaE/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/YfI0CjI_XaE/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 110,
+      "video_id": "tvUEn2XTuuo",
+      "category": "scale",
+      "title": "3 Pilares Para Escalar Com Lucro E Liberdade No Digital | Tiago Guedes - Segredos da Escala #098",
+      "duration_seconds": 11275.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/tvUEn2XTuuo/metadata.json",
+        "raw/youtube/tvUEn2XTuuo/transcript_original.json",
+        "processed/tvUEn2XTuuo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/tvUEn2XTuuo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 111,
+      "video_id": "3Wm3sa-AQ6E",
+      "category": "scale",
+      "title": "Segredos para Escalar Múltiplos 7D/mês  | Alexandre e Luka - Segredos da Escala #039",
+      "duration_seconds": 11614.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/3Wm3sa-AQ6E/metadata.json",
+        "raw/youtube/3Wm3sa-AQ6E/transcript_original.json",
+        "processed/3Wm3sa-AQ6E/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/3Wm3sa-AQ6E/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 113,
+      "video_id": "kJZkvNSkzpk",
+      "category": "scale",
+      "title": "Escalando Empiricus, Wendell Carvalho e Pedro Sobral | Rodrigo Dias - SDE #038",
+      "duration_seconds": 13508.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/kJZkvNSkzpk/metadata.json",
+        "raw/youtube/kJZkvNSkzpk/transcript_original.json",
+        "processed/kJZkvNSkzpk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/kJZkvNSkzpk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 117,
+      "video_id": "Mqrdwh3-8Pg",
+      "category": "evergreen",
+      "title": "Ele Fatura Milhões Com O Mesmo Produto Há 5 Anos | Alex Nosse - Segredos da Escala #074",
+      "duration_seconds": 7797.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/Mqrdwh3-8Pg/metadata.json",
+        "raw/youtube/Mqrdwh3-8Pg/transcript_original.json",
+        "processed/Mqrdwh3-8Pg/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Mqrdwh3-8Pg/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 118,
+      "video_id": "uaDWP7ElJEo",
+      "category": "evergreen",
+      "title": "Como Ele Vendeu +350.000 Infoprodutos No Perpétuo? | Wesley Cleam - Segredos da Escala #066",
+      "duration_seconds": 9621.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/uaDWP7ElJEo/metadata.json",
+        "raw/youtube/uaDWP7ElJEo/transcript_original.json",
+        "processed/uaDWP7ElJEo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/uaDWP7ElJEo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 119,
+      "video_id": "Trd0xiMq3rE",
+      "category": "evergreen",
+      "title": "Ele Fez +55MM Unindo Lançamentos e Perpétuos | Julio Mulati - Segredos da Escala #090",
+      "duration_seconds": 9831.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/Trd0xiMq3rE/metadata.json",
+        "raw/youtube/Trd0xiMq3rE/transcript_original.json",
+        "processed/Trd0xiMq3rE/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Trd0xiMq3rE/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 120,
+      "video_id": "tu-BnCnt3HU",
+      "category": "evergreen",
+      "title": "Como Ela Faz 1.500 Vendas Por Dia No Perpétuo? | Ana Neves - Segredos da Escala #084",
+      "duration_seconds": 9890.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/tu-BnCnt3HU/metadata.json",
+        "raw/youtube/tu-BnCnt3HU/transcript_original.json",
+        "processed/tu-BnCnt3HU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/tu-BnCnt3HU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 121,
+      "video_id": "ZaZM0-09Yhc",
+      "category": "evergreen",
+      "title": "Eles Fizeram +20MM Com Perpétuo | Micha Menezes e Pedro Aredes - Segredos da Escala #055",
+      "duration_seconds": 10016.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/ZaZM0-09Yhc/metadata.json",
+        "raw/youtube/ZaZM0-09Yhc/transcript_original.json",
+        "processed/ZaZM0-09Yhc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ZaZM0-09Yhc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 122,
+      "video_id": "NQ7_KtnIB6U",
+      "category": "experts",
+      "title": "Ele É Especialista Em Jornada Do Cliente E Já fez +8 Dígitos No Digital | Luiz Filippe - SDE #024",
+      "duration_seconds": 6167.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/NQ7_KtnIB6U/metadata.json",
+        "raw/youtube/NQ7_KtnIB6U/transcript_original.json",
+        "processed/NQ7_KtnIB6U/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/NQ7_KtnIB6U/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 123,
+      "video_id": "MGpXRmYvJDc",
+      "category": "experts",
+      "title": "Ele Faz 7 Dígitos Por Mês Trabalhando Com Experts  | Anderson Freitas - Segredos da Escala #021",
+      "duration_seconds": 7522.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/MGpXRmYvJDc/metadata.json",
+        "raw/youtube/MGpXRmYvJDc/transcript_original.json",
+        "processed/MGpXRmYvJDc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/MGpXRmYvJDc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 125,
+      "video_id": "nksadR9ePfw",
+      "category": "experts",
+      "title": "Ele É Especialista Em IA E Já Fez 150 Milhões No Digital | Alan Nicolas - Segredos Da Escala #026",
+      "duration_seconds": 10230.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/nksadR9ePfw/metadata.json",
+        "raw/youtube/nksadR9ePfw/transcript_original.json",
+        "processed/nksadR9ePfw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/nksadR9ePfw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 126,
+      "video_id": "xWgbTnntGY4",
+      "category": "affiliate",
+      "title": "Ele Já Fez Múltiplos 7D Como Afiliado Nos EUA | Thiago Boeira - Segredos da Escala #080",
+      "duration_seconds": 8483.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/xWgbTnntGY4/metadata.json",
+        "raw/youtube/xWgbTnntGY4/transcript_original.json",
+        "processed/xWgbTnntGY4/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/xWgbTnntGY4/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 127,
+      "video_id": "S14ocOWxseM",
+      "category": "affiliate",
+      "title": "De Afiliado a Produtor Multimilionário: Como Ele Fez Mais de 9D no Digital? | Otávio Passos SDE #011",
+      "duration_seconds": 9233.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/S14ocOWxseM/metadata.json",
+        "raw/youtube/S14ocOWxseM/transcript_original.json",
+        "processed/S14ocOWxseM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/S14ocOWxseM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 128,
+      "video_id": "jfYDIc9oQpc",
+      "category": "affiliate",
+      "title": "O Afiliado Que Faz 5 Milhões Por Mês | Thiago Lucena - Segredos Da Escala #020",
+      "duration_seconds": 10867.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/jfYDIc9oQpc/metadata.json",
+        "raw/youtube/jfYDIc9oQpc/transcript_original.json",
+        "processed/jfYDIc9oQpc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/jfYDIc9oQpc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 129,
+      "video_id": "yuXxKaKXQpM",
+      "category": "affiliate",
+      "title": "Ele Vendia Bala No Sinal E Fez +7D Como Afiliado | Yuuji Brito - Segredos da Escala #027",
+      "duration_seconds": 11233.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/yuXxKaKXQpM/metadata.json",
+        "raw/youtube/yuXxKaKXQpM/transcript_original.json",
+        "processed/yuXxKaKXQpM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/yuXxKaKXQpM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 130,
+      "video_id": "5iruAaYg6j0",
+      "category": "nutra",
+      "title": "Segredos Para Fazer Milhões Com Nutra Nos EUA | Gabriela Lotto - Segredos da Escala #078",
+      "duration_seconds": 5522.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/5iruAaYg6j0/metadata.json",
+        "raw/youtube/5iruAaYg6j0/transcript_original.json",
+        "processed/5iruAaYg6j0/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/5iruAaYg6j0/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 132,
+      "video_id": "566ufym8SmY",
+      "category": "nutra",
+      "title": "Ele Já Fez +100MM Com Infoprodutos e Nutracêuticos | Filipe Santana - Segredos da Escala #079",
+      "duration_seconds": 7780.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/566ufym8SmY/metadata.json",
+        "raw/youtube/566ufym8SmY/transcript_original.json",
+        "processed/566ufym8SmY/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/566ufym8SmY/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 133,
+      "video_id": "mx70hfeBqRg",
+      "category": "nutra",
+      "title": "Ele É O Primeiro Produtor De Nutra Global Do Brasil E Já Vendeu +200MM | Álvaro Ezequiel - SDE #092",
+      "duration_seconds": 7905.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/mx70hfeBqRg/metadata.json",
+        "raw/youtube/mx70hfeBqRg/transcript_original.json",
+        "processed/mx70hfeBqRg/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/mx70hfeBqRg/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 134,
+      "video_id": "VAA1vuEW-ak",
+      "category": "nutra",
+      "title": "Ele Fez 7D/Dia Vendendo Nutracêuticos Nos EUA | Arthur PC - Segredos da Escala #083",
+      "duration_seconds": 9672.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/VAA1vuEW-ak/metadata.json",
+        "raw/youtube/VAA1vuEW-ak/transcript_original.json",
+        "processed/VAA1vuEW-ak/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/VAA1vuEW-ak/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 135,
+      "video_id": "wSpyHDRZDgo",
+      "category": "nutra",
+      "title": "Ele Faz Múltiplos 6D/Dia Vendendo Nutracêuticos Nos EUA | Mateus Moreira - Segredos da Escala #075",
+      "duration_seconds": 9689.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/wSpyHDRZDgo/metadata.json",
+        "raw/youtube/wSpyHDRZDgo/transcript_original.json",
+        "processed/wSpyHDRZDgo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/wSpyHDRZDgo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 136,
+      "video_id": "sVUrU9gvxyk",
+      "category": "nutra",
+      "title": "Ele Fez 350MM Em 12 Meses Com Nutra Nos EUA | Rubens Araujo - Segredos da Escala #153",
+      "duration_seconds": 9822.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/sVUrU9gvxyk/metadata.json",
+        "raw/youtube/sVUrU9gvxyk/transcript_original.json",
+        "processed/sVUrU9gvxyk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/sVUrU9gvxyk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 137,
+      "video_id": "7eQ9H2eoSJw",
+      "category": "nutra",
+      "title": "Ele Faz 200K/Dia Vendendo Nutracêuticos Nos EUA | Higor Neves - Segredos da Escala #073",
+      "duration_seconds": 9891.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/7eQ9H2eoSJw/metadata.json",
+        "raw/youtube/7eQ9H2eoSJw/transcript_original.json",
+        "processed/7eQ9H2eoSJw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/7eQ9H2eoSJw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 138,
+      "video_id": "-eP7HM0ybZA",
+      "category": "nutra",
+      "title": "Como Ele Fez +8 Dígitos Em Vendas Com Nutracêuticos? | Lucas Nóbrega - Segredos da Escala #015",
+      "duration_seconds": 10020.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/-eP7HM0ybZA/metadata.json",
+        "raw/youtube/-eP7HM0ybZA/transcript_original.json",
+        "processed/-eP7HM0ybZA/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/-eP7HM0ybZA/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 139,
+      "video_id": "IlpLHFLK8DM",
+      "category": "nutra",
+      "title": "Como Ele Fez +150MM Em 6 Meses Com Nutra Nos EUA? | Felipe Ferreira - Segredos da Escala #089",
+      "duration_seconds": 10789.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/IlpLHFLK8DM/metadata.json",
+        "raw/youtube/IlpLHFLK8DM/transcript_original.json",
+        "processed/IlpLHFLK8DM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/IlpLHFLK8DM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 140,
+      "video_id": "AcmEFj-fPm8",
+      "category": "nutra",
+      "title": "Ele Já Fez +100 Milhões Com Nutra Global | Antonio Carneiro - Segredos da Escala #162",
+      "duration_seconds": 11083.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/AcmEFj-fPm8/metadata.json",
+        "raw/youtube/AcmEFj-fPm8/transcript_original.json",
+        "processed/AcmEFj-fPm8/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/AcmEFj-fPm8/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 141,
+      "video_id": "D_k50yoQhxk",
+      "category": "ai_automation",
+      "title": "Usando Automações E IA Para Lucrar Mais Em Menos Tempo | Thales Laray - Segredos da Escala #025",
+      "duration_seconds": 7831.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/D_k50yoQhxk/metadata.json",
+        "raw/youtube/D_k50yoQhxk/transcript_original.json",
+        "processed/D_k50yoQhxk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/D_k50yoQhxk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 142,
+      "video_id": "foH_huKTegc",
+      "category": "ai_automation",
+      "title": "Inteligência Artificial: A Verdade Sobre O Fim Dos Empregos | Alan Nicolas - Segredos da Escala #070",
+      "duration_seconds": 9671.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/foH_huKTegc/metadata.json",
+        "raw/youtube/foH_huKTegc/transcript_original.json",
+        "processed/foH_huKTegc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/foH_huKTegc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 143,
+      "video_id": "HRuMLbkMO0E",
+      "category": "direct_response",
+      "title": "Segredos Das Campanhas De Marketing Direto Milionárias | Todd Brown - Segredos da Escala #086",
+      "duration_seconds": 2974.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/HRuMLbkMO0E/metadata.json",
+        "raw/youtube/HRuMLbkMO0E/transcript_original.json",
+        "processed/HRuMLbkMO0E/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/HRuMLbkMO0E/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 144,
+      "video_id": "ZcH7NMO5als",
+      "category": "direct_response",
+      "title": "Como Ele Ficou Multimilionário Com O Marketing Direto Antes dos 20 Anos? | Iago Peixoto - SDE #037",
+      "duration_seconds": 9475.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/ZcH7NMO5als/metadata.json",
+        "raw/youtube/ZcH7NMO5als/transcript_original.json",
+        "processed/ZcH7NMO5als/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ZcH7NMO5als/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 145,
+      "video_id": "R3JxJVz2qC8",
+      "category": "direct_response",
+      "title": "De 2MM Em Dívidas Para +20MM Faturados Com Marketing Direto | Jeoacas - Segredos da Escala #045",
+      "duration_seconds": 12047.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/R3JxJVz2qC8/metadata.json",
+        "raw/youtube/R3JxJVz2qC8/transcript_original.json",
+        "processed/R3JxJVz2qC8/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/R3JxJVz2qC8/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 147,
+      "video_id": "f5VFdFOYhNs",
+      "category": "crm_retention",
+      "title": "Ele Já Recuperou +8 Dígitos Em Vendas | Alex Nosse - Segredos da Escala #016",
+      "duration_seconds": 6365.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/f5VFdFOYhNs/metadata.json",
+        "raw/youtube/f5VFdFOYhNs/transcript_original.json",
+        "processed/f5VFdFOYhNs/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/f5VFdFOYhNs/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 148,
+      "video_id": "CM5a2NSZVec",
+      "category": "crm_retention",
+      "title": "Ele Já Fez +50MM E 30% Da Sua Receita Vem Da Recuperação de Vendas - Fernando Nogueira SDE #018",
+      "duration_seconds": 6651.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/CM5a2NSZVec/metadata.json",
+        "raw/youtube/CM5a2NSZVec/transcript_original.json",
+        "processed/CM5a2NSZVec/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/CM5a2NSZVec/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 149,
+      "video_id": "VACN2PpwenE",
+      "category": "crm_retention",
+      "title": "Como Ele Fez +20 Milhões Em Vendas Com E-mail Marketing? | Laschuk - Segredos da Escala #019",
+      "duration_seconds": 8026.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/VACN2PpwenE/metadata.json",
+        "raw/youtube/VACN2PpwenE/transcript_original.json",
+        "processed/VACN2PpwenE/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/VACN2PpwenE/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 150,
+      "video_id": "ZsMxJ5K4Imc",
+      "category": "crm_retention",
+      "title": "Como Ela Fez 13 Milhões em Vendas Pelo WhatsApp?  | Morgana Kayser - Segredos da Escala #012",
+      "duration_seconds": 9484.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/ZsMxJ5K4Imc/metadata.json",
+        "raw/youtube/ZsMxJ5K4Imc/transcript_original.json",
+        "processed/ZsMxJ5K4Imc/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ZsMxJ5K4Imc/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 151,
+      "video_id": "UU9d5E2XTLg",
+      "category": "international",
+      "title": "O Passo A Passo Para Faturar Milhões No Mercado Americano | Alex Gunoe - Segredos da Escala #049",
+      "duration_seconds": 6984.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/UU9d5E2XTLg/metadata.json",
+        "raw/youtube/UU9d5E2XTLg/transcript_original.json",
+        "processed/UU9d5E2XTLg/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/UU9d5E2XTLg/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 153,
+      "video_id": "hluHnZ5fA2U",
+      "category": "international",
+      "title": "Da Roça A +8D Vendendo Infoprodutos No Exterior | Marcio Araujo - Segredos da Escala #047",
+      "duration_seconds": 10236.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/hluHnZ5fA2U/metadata.json",
+        "raw/youtube/hluHnZ5fA2U/transcript_original.json",
+        "processed/hluHnZ5fA2U/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/hluHnZ5fA2U/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 154,
+      "video_id": "IXiHNdcPXhk",
+      "category": "international",
+      "title": "Ele Fatura 7D/Dia No Mercado Americano | Guilherme Bifi - Segredos da Escala #067",
+      "duration_seconds": 10789.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/IXiHNdcPXhk/metadata.json",
+        "raw/youtube/IXiHNdcPXhk/transcript_original.json",
+        "processed/IXiHNdcPXhk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/IXiHNdcPXhk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 155,
+      "video_id": "ohk3mCw8hNU",
+      "category": "content_organic",
+      "title": "Ela Já Fez Mais De 5 Milhões Vendendo Pelo Pinterest | Duda Serenine - Segredos da Escala #035",
+      "duration_seconds": 10732.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/ohk3mCw8hNU/metadata.json",
+        "raw/youtube/ohk3mCw8hNU/transcript_original.json",
+        "processed/ohk3mCw8hNU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ohk3mCw8hNU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 156,
+      "video_id": "TA6Pp9Je0BM",
+      "category": "content_organic",
+      "title": "O Passo A Passo Para Crescer No Youtube (100% Orgânico) | Marco Burgin - Segredos da Escala #061",
+      "duration_seconds": 11012.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/TA6Pp9Je0BM/metadata.json",
+        "raw/youtube/TA6Pp9Je0BM/transcript_original.json",
+        "processed/TA6Pp9Je0BM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/TA6Pp9Je0BM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 158,
+      "video_id": "Cfqs9KZmhWQ",
+      "category": "infoproducts",
+      "title": "Ele Fez Múltiplos 8D Vendendo Infoprodutos | André Victor - Segredos da Escala #068",
+      "duration_seconds": 7758.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/Cfqs9KZmhWQ/metadata.json",
+        "raw/youtube/Cfqs9KZmhWQ/transcript_original.json",
+        "processed/Cfqs9KZmhWQ/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Cfqs9KZmhWQ/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 159,
+      "video_id": "cJMt8YUGn0M",
+      "category": "infoproducts",
+      "title": "Ele É Estrategista De Produtos Digitais E Fez +178M Vendas Sem Aparecer | Bruno Tassitani - SDE #023",
+      "duration_seconds": 8370.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/cJMt8YUGn0M/metadata.json",
+        "raw/youtube/cJMt8YUGn0M/transcript_original.json",
+        "processed/cJMt8YUGn0M/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/cJMt8YUGn0M/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 160,
+      "video_id": "gLKz08wRX0s",
+      "category": "infoproducts",
+      "title": "Como Ele Fez +27MM Vendendo Infoprodutos Sem Aparecer? | Felipe Ferreira - Segredos da Escala #048",
+      "duration_seconds": 8460.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/gLKz08wRX0s/metadata.json",
+        "raw/youtube/gLKz08wRX0s/transcript_original.json",
+        "processed/gLKz08wRX0s/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/gLKz08wRX0s/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 161,
+      "video_id": "32dBB_6fjpo",
+      "category": "infoproducts",
+      "title": "Ela Largou A Faculdade E Fez 9MM Vendendo Infoprodutos | Eduarda Bach - Segredos da Escala #160",
+      "duration_seconds": 9970.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/32dBB_6fjpo/metadata.json",
+        "raw/youtube/32dBB_6fjpo/transcript_original.json",
+        "processed/32dBB_6fjpo/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/32dBB_6fjpo/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 163,
+      "video_id": "H0Z6q2c-iUw",
+      "category": "infoproducts",
+      "title": "Como Ele Saiu Das Dívidas e Fez +100 Milhões Com Infoprodutos? | Iuri Meira - SDE #028",
+      "duration_seconds": 12027.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/H0Z6q2c-iUw/metadata.json",
+        "raw/youtube/H0Z6q2c-iUw/transcript_original.json",
+        "processed/H0Z6q2c-iUw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/H0Z6q2c-iUw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 164,
+      "video_id": "Q-dg8ishKNw",
+      "category": "business_operations",
+      "title": "Seus Mentorados Faturam Mais de 45MM Por Mês com Engenharia de Negócios | Gabriel Breier - SDE #010",
+      "duration_seconds": 8124.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/Q-dg8ishKNw/metadata.json",
+        "raw/youtube/Q-dg8ishKNw/transcript_original.json",
+        "processed/Q-dg8ishKNw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/Q-dg8ishKNw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 165,
+      "video_id": "BiCbQg8BGyk",
+      "category": "business_operations",
+      "title": "Eles Transformaram Uma Operação De Dropshipping Em Uma Marca Milionária |  Segredos da Escala #007",
+      "duration_seconds": 8593.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/BiCbQg8BGyk/metadata.json",
+        "raw/youtube/BiCbQg8BGyk/transcript_original.json",
+        "processed/BiCbQg8BGyk/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/BiCbQg8BGyk/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 166,
+      "video_id": "FopJTaK9CuY",
+      "category": "business_operations",
+      "title": "Ele Fez R$ 50MM Na Internet e Fundou a Transfer English | Bruno Simantob - Segredos da Escala #006",
+      "duration_seconds": 9159.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/FopJTaK9CuY/metadata.json",
+        "raw/youtube/FopJTaK9CuY/transcript_original.json",
+        "processed/FopJTaK9CuY/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/FopJTaK9CuY/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 167,
+      "video_id": "3XcCDfSIT-I",
+      "category": "business_operations",
+      "title": "As Estratégias De Gestão Que Fizeram +160MM | Hugo Nicchio - Segredos da Escala #057",
+      "duration_seconds": 9192.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/3XcCDfSIT-I/metadata.json",
+        "raw/youtube/3XcCDfSIT-I/transcript_original.json",
+        "processed/3XcCDfSIT-I/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/3XcCDfSIT-I/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 168,
+      "video_id": "tPVTlqgirkw",
+      "category": "business_operations",
+      "title": "Ele Criou 4 Negócios Milionários Em Apenas 5 Anos | Max Peters - Segredos da Escala #051",
+      "duration_seconds": 10346.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/tPVTlqgirkw/metadata.json",
+        "raw/youtube/tPVTlqgirkw/transcript_original.json",
+        "processed/tPVTlqgirkw/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/tPVTlqgirkw/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 169,
+      "video_id": "A2UPNo7ECuM",
+      "category": "business_operations",
+      "title": "Ela Já Recrutou Times Para +600 Negócios Digitais | Kelly Eleto - Segredos da Escala #063",
+      "duration_seconds": 10692.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/A2UPNo7ECuM/metadata.json",
+        "raw/youtube/A2UPNo7ECuM/transcript_original.json",
+        "processed/A2UPNo7ECuM/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/A2UPNo7ECuM/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 170,
+      "video_id": "0DlzYLUmKcU",
+      "category": "business_operations",
+      "title": "Os Bastidores Das Operações Que Fazem Múltiplos 9D/Mês | Otaviano Assis - Segredos da Escala #158",
+      "duration_seconds": 12759.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/0DlzYLUmKcU/metadata.json",
+        "raw/youtube/0DlzYLUmKcU/transcript_original.json",
+        "processed/0DlzYLUmKcU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/0DlzYLUmKcU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 171,
+      "video_id": "xK7TaShNEEA",
+      "category": "digital_business",
+      "title": "Ele Já Fez 200 Milhões Com Marketing Digital | Leandro Ladeira - Segredos da Escala #052",
+      "duration_seconds": 5917.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/xK7TaShNEEA/metadata.json",
+        "raw/youtube/xK7TaShNEEA/transcript_original.json",
+        "processed/xK7TaShNEEA/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/xK7TaShNEEA/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 172,
+      "video_id": "YYb4cPZks_s",
+      "category": "digital_business",
+      "title": "Eles Largaram a Engenharia Aeronáutica e Fizeram + R$60 MM no Digital | Ton e Diego - SDE #013",
+      "duration_seconds": 7388.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/YYb4cPZks_s/metadata.json",
+        "raw/youtube/YYb4cPZks_s/transcript_original.json",
+        "processed/YYb4cPZks_s/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/YYb4cPZks_s/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 173,
+      "video_id": "3f1LgV4LgAY",
+      "category": "digital_business",
+      "title": "Ele Já Faturou 100 Milhões Com Marketing Digital | Leonardo Tabari - Segredos da Escala #076",
+      "duration_seconds": 9496.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/3f1LgV4LgAY/metadata.json",
+        "raw/youtube/3f1LgV4LgAY/transcript_original.json",
+        "processed/3f1LgV4LgAY/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/3f1LgV4LgAY/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 174,
+      "video_id": "mhesugiHNAU",
+      "category": "digital_business",
+      "title": "Ele Já Fez 272 Milhões Com Marketing Digital | Ícaro De Carvalho - Segredos da Escala #087",
+      "duration_seconds": 9793.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/mhesugiHNAU/metadata.json",
+        "raw/youtube/mhesugiHNAU/transcript_original.json",
+        "processed/mhesugiHNAU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/mhesugiHNAU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 176,
+      "video_id": "3xpIbFWP04E",
+      "category": "digital_business",
+      "title": "O Ex-Vendedor De Plano De Saúde Que Fez +100MM No Digital | Leandro Ferrari - SDE #096",
+      "duration_seconds": 11151.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/3xpIbFWP04E/metadata.json",
+        "raw/youtube/3xpIbFWP04E/transcript_original.json",
+        "processed/3xpIbFWP04E/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/3xpIbFWP04E/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 178,
+      "video_id": "N4zoAPoBKEI",
+      "category": "digital_business",
+      "title": "Tudo O Que Ele Fez Para Faturar +70MM Na Internet | Hytallo Soares - Segredos da Escala #036",
+      "duration_seconds": 12256.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/N4zoAPoBKEI/metadata.json",
+        "raw/youtube/N4zoAPoBKEI/transcript_original.json",
+        "processed/N4zoAPoBKEI/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/N4zoAPoBKEI/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 179,
+      "video_id": "2PU3sZIDRR8",
+      "category": "growth_cases",
+      "title": "De 40K Em Dívidas Para Múltiplos 7D Faturados Em Apenas 1 Ano | Gabriel Saraiva - SDE  #033",
+      "duration_seconds": 6943.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/2PU3sZIDRR8/metadata.json",
+        "raw/youtube/2PU3sZIDRR8/transcript_original.json",
+        "processed/2PU3sZIDRR8/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/2PU3sZIDRR8/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 180,
+      "video_id": "ZXR14KGUE0o",
+      "category": "growth_cases",
+      "title": "Do Absoluto Zero A Multimilionária Aos 24 Anos | Gimena de Souza - Segredos da Escala #093",
+      "duration_seconds": 7414.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/ZXR14KGUE0o/metadata.json",
+        "raw/youtube/ZXR14KGUE0o/transcript_original.json",
+        "processed/ZXR14KGUE0o/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/ZXR14KGUE0o/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 181,
+      "video_id": "_qxEZ796MYU",
+      "category": "growth_cases",
+      "title": "Ele Tem +10 Anos De Mercado E Já Fez +100MM Em Vendas | Fábio Cavalcante - Segredos da Escala #031",
+      "duration_seconds": 8440.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/_qxEZ796MYU/metadata.json",
+        "raw/youtube/_qxEZ796MYU/transcript_original.json",
+        "processed/_qxEZ796MYU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/_qxEZ796MYU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 182,
+      "video_id": "DflEVoYRl3k",
+      "category": "growth_cases",
+      "title": "Ele Fez Múltiplos 8 Dígitos Em Nichos Inexplorados Sem Mostrar o Rosto | Higor Neves - SDE #009",
+      "duration_seconds": 8444.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/DflEVoYRl3k/metadata.json",
+        "raw/youtube/DflEVoYRl3k/transcript_original.json",
+        "processed/DflEVoYRl3k/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/DflEVoYRl3k/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 183,
+      "video_id": "RBDWm5XNdCU",
+      "category": "growth_cases",
+      "title": "Da Extrema Pobreza A +8D Faturados Em 3 Anos | Bruna Pereira - Segredos da Escala #030",
+      "duration_seconds": 8598.0,
+      "windows_source_state": "missing_source_artifacts",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "materialize_missing_mirror",
+      "required_artifacts": [
+        "raw/youtube/RBDWm5XNdCU/metadata.json",
+        "raw/youtube/RBDWm5XNdCU/transcript_original.json",
+        "processed/RBDWm5XNdCU/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/RBDWm5XNdCU/transcript_pt_br.json"
+      ]
+    },
+    {
+      "rank": 184,
+      "video_id": "OnVfrBRgpeQ",
+      "category": "growth_cases",
+      "title": "Mãe milionária: ela fez múltiplos 7D em 8 meses trabalhando nas madrugadas | Segredos da Escala #008",
+      "duration_seconds": 8609.0,
+      "windows_source_state": "invalid_source",
+      "ubuntu_source_state": "ready_for_gold",
+      "queue_terminal_state": null,
+      "action": "replace_invalid_mirror",
+      "required_artifacts": [
+        "raw/youtube/OnVfrBRgpeQ/metadata.json",
+        "raw/youtube/OnVfrBRgpeQ/transcript_original.json",
+        "processed/OnVfrBRgpeQ/content_segments.json"
+      ],
+      "optional_artifacts": [
+        "raw/youtube/OnVfrBRgpeQ/transcript_pt_br.json"
+      ]
+    }
+  ],
+  "semantic_sha256": "30d483055b9e6533cb03b6faa7b872b97da1a25e8f7265b6cb27fbc612a2a7fe"
+}

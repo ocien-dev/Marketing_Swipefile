@@ -76,6 +76,36 @@ def test_raw_preflight_rejects_unavailable_metadata_status_without_writing(tmp_p
     assert not (tmp_path / "processed" / video_id / "gold_extraction").exists()
 
 
+def test_prepare_prefers_pt_br_translation_and_preserves_original(tmp_path):
+    video_id = "episode"
+    seed_episode(tmp_path, video_id)
+    raw = tmp_path / "raw" / "youtube" / video_id
+    original_path = raw / "transcript_original.json"
+    original_before = original_path.read_bytes()
+    translated_path = raw / "transcript_pt_br.json"
+    write_json(translated_path, {
+        "youtube_video_id": video_id,
+        "transcript_status": "available",
+        "language": "pt-BR",
+        "source_language": "en",
+        "segments": [
+            {"start_seconds": 0, "duration_seconds": 5, "text": "Este e o texto traduzido."},
+            {"start_seconds": 5, "duration_seconds": 5, "text": "A fonte original permanece preservada."},
+        ],
+    })
+
+    preflight = raw_preflight(video_id, tmp_path)
+    prepared = prepare_episode(video_id, tmp_path)
+    clean = load_json(tmp_path / "processed" / video_id / "gold_extraction" / "transcript_clean.json")
+
+    assert preflight["status"] == "pass"
+    assert preflight["transcript_path"] == str(translated_path)
+    assert prepared["errors"] == []
+    assert clean["source"] == str(translated_path)
+    assert clean["segments"][0]["text"] == "Este e o texto traduzido."
+    assert original_path.read_bytes() == original_before
+
+
 def test_readiness_reports_missing_procedural_steps_without_writing(tmp_path):
     video_id = "episode"
     seed_episode(tmp_path, video_id)
@@ -114,6 +144,28 @@ def test_legacy_export_suffix_remains_default(tmp_path):
 
     assert result["status"] == "awaiting_external_audit"
     assert (tmp_path / "exports" / f"msf_r20_piloto_{video_id}" / "packet_manifest.json").exists()
+
+
+def test_new_finalization_snapshot_does_not_reuse_prior_passed_audit(tmp_path):
+    video_id = "episode"
+    seed_episode(tmp_path, video_id)
+    prepare_episode(video_id, tmp_path)
+    review_path = write_valid_review(tmp_path, video_id)
+    out = tmp_path / "processed" / video_id / "gold_extraction"
+    write_json(out / "editorial_audit_report.json", audit_payload())
+
+    result = build_from_reviews(
+        video_id,
+        tmp_path,
+        review_path.parent,
+        executor_thread_id="executor",
+        defer_packet=True,
+        force_pending_external=True,
+    )
+
+    assert result["status"] == "awaiting_external_audit"
+    assert load_json(out / "gold_extraction_status.json")["audit_status"] == "pending_external"
+    assert load_json(out / "insights_exhaustive.json")["audit"]["status"] == "pending_external"
 
 
 def test_prepare_and_build_are_resumable_and_idempotent(tmp_path):
